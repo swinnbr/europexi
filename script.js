@@ -2,15 +2,18 @@
 // Draft XI: Europe v2.0 — integrated CodePen JSX
 // Includes expanded teams, contextual alternate positions, fair spinner, reroll, locked players, smarter greying, live simulation, and Play Again.
 function setMobileViewportHeight() {
+  if (typeof window === "undefined" || typeof document === "undefined") return;
+
   document.documentElement.style.setProperty(
   "--vh",
   `${window.innerHeight * 0.01}px`);
-
 }
 
 setMobileViewportHeight();
-window.removeEventListener("resize", setMobileViewportHeight);
-window.addEventListener("resize", setMobileViewportHeight);
+if (typeof window !== "undefined") {
+  window.removeEventListener("resize", setMobileViewportHeight);
+  window.addEventListener("resize", setMobileViewportHeight);
+}
 const { useMemo, useState, useRef, useEffect } = React;
 
 const FORMATIONS = {
@@ -1223,6 +1226,137 @@ function getClubCollectionStats(collectionIds) {
 
 }
 
+
+const CLUB_COLLECTION_STYLES = {
+  card: {
+    display: "grid",
+    gap: "12px",
+    padding: "14px",
+    borderRadius: "18px",
+    border: "1px solid rgba(255,255,255,0.12)",
+    background: "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.035))",
+    boxShadow: "0 14px 30px rgba(0,0,0,0.18)" },
+
+  header: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "12px",
+    flexWrap: "wrap" },
+
+  title: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "2px" },
+
+  eyebrow: {
+    fontSize: "0.72rem",
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    opacity: 0.7 },
+
+  count: {
+    fontSize: "1rem",
+    fontWeight: 800 },
+
+  percent: {
+    minWidth: "58px",
+    textAlign: "center",
+    padding: "7px 10px",
+    borderRadius: "999px",
+    background: "rgba(105, 211, 111, 0.14)",
+    border: "1px solid rgba(105, 211, 111, 0.28)",
+    color: "#78e27e",
+    fontWeight: 900 },
+
+  bar: {
+    height: "9px",
+    width: "100%",
+    overflow: "hidden",
+    borderRadius: "999px",
+    background: "rgba(255,255,255,0.09)" },
+
+  fill: percent => ({
+    height: "100%",
+    width: `${Math.max(0, Math.min(100, percent))}%`,
+    borderRadius: "999px",
+    background: "linear-gradient(90deg, #35c765, #9af06f)",
+    transition: "width 0.35s ease" }),
+
+  leagueGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(135px, 1fr))",
+    gap: "8px" },
+
+  leaguePill: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: "8px",
+    padding: "9px 10px",
+    borderRadius: "12px",
+    background: "rgba(0,0,0,0.16)",
+    border: "1px solid rgba(255,255,255,0.07)",
+    fontSize: "0.86rem" },
+
+  leagueCount: {
+    fontWeight: 900,
+    color: "#ffffff" },
+
+  note: {
+    opacity: 0.72,
+    lineHeight: 1.35 } };
+
+
+
+function getLeagueIcon(league) {
+  const icons = {
+    "Premier League": "🏴",
+    "La Liga": "🇪🇸",
+    Bundesliga: "🇩🇪",
+    "Serie A": "🇮🇹",
+    "Ligue 1": "🇫🇷" };
+
+
+  return icons[league] || "⚽";
+}
+
+function renderClubCollectionCard(collectionStats, options = {}) {
+  const { showNoRepeat = false, usedClubIds = [] } = options;
+  const totalClubs = ALL_CLUBS.length;
+  const discoveredText = `${collectionStats.total} / ${totalClubs} clubs discovered`;
+
+  return /*#__PURE__*/React.createElement(
+  "section",
+  { className: "collection-panel club-collection-card", style: CLUB_COLLECTION_STYLES.card }, /*#__PURE__*/
+  React.createElement("div", { style: CLUB_COLLECTION_STYLES.header }, /*#__PURE__*/
+  React.createElement("div", { style: CLUB_COLLECTION_STYLES.title }, /*#__PURE__*/
+  React.createElement("span", { style: CLUB_COLLECTION_STYLES.eyebrow }, "Club Collection"), /*#__PURE__*/
+  React.createElement("strong", { style: CLUB_COLLECTION_STYLES.count }, discoveredText)), /*#__PURE__*/
+  React.createElement("span", { style: CLUB_COLLECTION_STYLES.percent }, collectionStats.percent, "%")), /*#__PURE__*/
+
+  React.createElement("div", { className: "collection-bar", style: CLUB_COLLECTION_STYLES.bar }, /*#__PURE__*/
+  React.createElement("div", {
+    className: "collection-fill",
+    style: CLUB_COLLECTION_STYLES.fill(collectionStats.percent) })),
+  /*#__PURE__*/
+
+  React.createElement("div", { className: "league-collection-mini", style: CLUB_COLLECTION_STYLES.leagueGrid },
+  collectionStats.byLeague.map(item => /*#__PURE__*/React.createElement(
+  "span",
+  { key: item.league, style: CLUB_COLLECTION_STYLES.leaguePill }, /*#__PURE__*/
+  React.createElement("span", null, getLeagueIcon(item.league), " ", item.league), /*#__PURE__*/
+  React.createElement("strong", { style: CLUB_COLLECTION_STYLES.leagueCount }, item.count)))),
+
+
+  showNoRepeat && usedClubIds.length > 0 && /*#__PURE__*/React.createElement(
+  "small",
+  { style: CLUB_COLLECTION_STYLES.note },
+  "No-repeat active: ", usedClubIds.length, " landed club", usedClubIds.length === 1 ? "" : "s", " locked out this run."));
+
+
+}
+
 function buildSchedule() {
   const home = shuffleArray(OPPONENTS);
   const away = shuffleArray(OPPONENTS);
@@ -1633,8 +1767,6 @@ function calculateSeasonAwards(summary, playerStats) {
   const goldenGlove = [...playerStats].
   filter(p => p.position === "GK").
   sort((a, b) => b.cleanSheets - a.cleanSheets || b.averageRating - a.averageRating)[0];
-  const flop = [...playerStats].sort((a, b) => a.averageRating - b.averageRating)[0];
-
   const awards = [
   { icon: "🏆", title: "Player of the Season", value: `${mvp.name} · ${mvp.averageRating} AVG` },
   { icon: "⚽", title: "Golden Boot", value: `${topScorer.name} · ${topScorer.goals} goals` },
@@ -1645,7 +1777,6 @@ function calculateSeasonAwards(summary, playerStats) {
     awards.push({ icon: "🧤", title: "Golden Glove", value: `${goldenGlove.name} · ${goldenGlove.cleanSheets} clean sheets` });
   }
 
-  awards.push({ icon: "😬", title: "Flop Watch", value: `${flop.name} · ${flop.averageRating} AVG` });
 
   if (summary.wins === 38) {
     awards.unshift({ icon: "🐐", title: "Perfect Season", value: "38 wins from 38 matches" });
@@ -1671,36 +1802,67 @@ function makeHistoryEntry(summary, playerStats, formationName, teamRating) {
 
 }
 
+
+function makeShareCardText(results, playerSeasonStats, formationName, teamRating) {var _results$table$find;
+  if (!results) return "";
+  const topScorer = [...playerSeasonStats].sort((a, b) => b.goals - a.goals || b.averageRating - a.averageRating)[0];
+  const mvp = [...playerSeasonStats].sort((a, b) => b.averageRating - a.averageRating || b.goals - a.goals)[0];
+  const tablePosition = Array.isArray(results.table) ? (_results$table$find = results.table.find(row => row.user)) === null || _results$table$find === void 0 ? void 0 : _results$table$find.position : null;
+  const positionText = tablePosition ? `League Finish: ${tablePosition}${tablePosition === 1 ? "st" : tablePosition === 2 ? "nd" : tablePosition === 3 ? "rd" : "th"}` : "League Finish: --";
+
+  return [
+  "⚽ Draft XI: Europe",
+  "━━━━━━━━━━━━━━━━",
+  `Formation: ${formationName}`,
+  `XI Rating: ${teamRating || "--"}`,
+  `Record: ${results.wins}-${results.draws}-${results.losses}`,
+  `Points: ${results.points}`,
+  `Goals: ${results.gf}-${results.ga}`,
+  positionText,
+  `Top Scorer: ${topScorer ? `${topScorer.name} (${topScorer.goals})` : "None"}`,
+  `MVP: ${mvp ? `${mvp.name} (${mvp.averageRating} AVG)` : "None"}`,
+  results.badge,
+  "━━━━━━━━━━━━━━━━",
+  "Can you beat my XI?"].
+  join("\n");
+}
+
 function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch$allSco;
-  const [gameStarted, setGameStarted] = useState(false);
-  const [selectedFormationName, setSelectedFormationName] = useState(DEFAULT_FORMATION_NAME);
-  const [currentClub, setCurrentClub] = useState(null);
-  const [draft, setDraft] = useState({});
+  const savedProgress = getStoredJson("draftXIProgressV1", null) || {};
+  const savedFormationName = FORMATIONS[savedProgress.selectedFormationName] ? savedProgress.selectedFormationName : DEFAULT_FORMATION_NAME;
+  const [gameStarted, setGameStarted] = useState(!!savedProgress.gameStarted);
+  const [selectedFormationName, setSelectedFormationName] = useState(savedFormationName);
+  const [currentClub, setCurrentClub] = useState(savedProgress.currentClub || null);
+  const [draft, setDraft] = useState(savedProgress.draft || {});
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const [pickedNames, setPickedNames] = useState([]);
+  const [pickedNames, setPickedNames] = useState(savedProgress.pickedNames || []);
   const [spinning, setSpinning] = useState(false);
   const [spinWinner, setSpinWinner] = useState(null);
   const [spinReel, setSpinReel] = useState([]);
   const [spinOffset, setSpinOffset] = useState(0);
   const [spinTargetIndex, setSpinTargetIndex] = useState(-1);
-  const [lastClubId, setLastClubId] = useState(null);
-  const [recentClubIds, setRecentClubIds] = useState([]);
-  const [usedClubIds, setUsedClubIds] = useState([]);
+  const [spinReady, setSpinReady] = useState(false);
+  const [spinKey, setSpinKey] = useState(0);
+  const spinFinishedRef = useRef(false);
+  const spinFallbackRef = useRef(null);
+  const [lastClubId, setLastClubId] = useState(savedProgress.lastClubId || null);
+  const [recentClubIds, setRecentClubIds] = useState(savedProgress.recentClubIds || []);
+  const [usedClubIds, setUsedClubIds] = useState(savedProgress.usedClubIds || []);
   const [simulating, setSimulating] = useState(false);
   const [liveMatch, setLiveMatch] = useState(null);
   const [liveSeason, setLiveSeason] = useState(null);
   const [simProgress, setSimProgress] = useState(0);
   const [lastPlacedSlot, setLastPlacedSlot] = useState(null);
-  const [results, setResults] = useState(null);
-  const [rerollsLeft, setRerollsLeft] = useState(3);
+  const [results, setResults] = useState(savedProgress.results || null);
+  const [rerollsLeft, setRerollsLeft] = useState(Number.isFinite(savedProgress.rerollsLeft) ? savedProgress.rerollsLeft : 3);
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [soundMuted, setSoundMuted] = useState(false);
-  const [rewards, setRewards] = useState([]);
-  const [playerSeasonStats, setPlayerSeasonStats] = useState([]);
-  const [seasonAwards, setSeasonAwards] = useState([]);
-  const [liveLeagueTable, setLiveLeagueTable] = useState([]);
+  const [rewards, setRewards] = useState(savedProgress.rewards || []);
+  const [playerSeasonStats, setPlayerSeasonStats] = useState(savedProgress.playerSeasonStats || []);
+  const [seasonAwards, setSeasonAwards] = useState(savedProgress.seasonAwards || []);
+  const [liveLeagueTable, setLiveLeagueTable] = useState(savedProgress.liveLeagueTable || []);
   const [transferMode, setTransferMode] = useState(false);
-  const [transferUsed, setTransferUsed] = useState(false);
+  const [transferUsed, setTransferUsed] = useState(!!savedProgress.transferUsed);
   const [draftHistory, setDraftHistory] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("draftXIHistory") || "[]");
@@ -1709,8 +1871,16 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     }
   });
   const [movingSlotId, setMovingSlotId] = useState(null);
-  const [clubCollection, setClubCollection] = useState(() => getStoredJson("draftXIClubCollection", []));
+  const [clubCollection, setClubCollection] = useState(() => savedProgress.clubCollection || getStoredJson("draftXIClubCollection", []));
   const [isMobileFormation, setIsMobileFormation] = useState(() => window.innerWidth <= 768);
+  const [showTutorial, setShowTutorial] = useState(() => !getStoredJson("draftXITutorialSeen", false));
+  const [saveNotice, setSaveNotice] = useState(!!savedProgress.gameStarted);
+  const [shareCopied, setShareCopied] = useState(false);
+
+  function closeTutorial() {
+    setShowTutorial(false);
+    saveStoredJson("draftXITutorialSeen", true);
+  }
 
   useEffect(() => {
     function handleFormationResize() {
@@ -1722,8 +1892,38 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     return () => window.removeEventListener("resize", handleFormationResize);
   }, []);
 
+  useEffect(() => {
+    if (!gameStarted) return;
+    const progress = {
+      gameStarted,
+      selectedFormationName,
+      currentClub,
+      draft,
+      pickedNames,
+      lastClubId,
+      recentClubIds,
+      usedClubIds,
+      results,
+      rerollsLeft,
+      rewards,
+      seasonAwards,
+      liveLeagueTable,
+      playerSeasonStats,
+      transferUsed,
+      clubCollection };
+
+    saveStoredJson("draftXIProgressV1", progress);
+  }, [gameStarted, selectedFormationName, currentClub, draft, pickedNames, lastClubId, recentClubIds, usedClubIds, results, rerollsLeft, rewards, seasonAwards, liveLeagueTable, playerSeasonStats, transferUsed, clubCollection]);
+
+  useEffect(() => {
+    if (!saveNotice) return;
+    const timeout = window.setTimeout(() => setSaveNotice(false), 2600);
+    return () => window.clearTimeout(timeout);
+  }, [saveNotice]);
+
 
   const spinnerRef = useRef(null);
+  const spinnerWindowRef = useRef(null);
   const clubPanelRef = useRef(null);
   const pitchRef = useRef(null);
   const simulationRef = useRef(null);
@@ -1741,6 +1941,58 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const FORMATION = FORMATIONS[selectedFormationName] || FORMATIONS[DEFAULT_FORMATION_NAME];
   const draftedPlayers = Object.values(draft);
   const collectionStats = useMemo(() => getClubCollectionStats(clubCollection), [clubCollection]);
+
+  useEffect(() => {
+    if (!spinning || !spinReel.length || spinTargetIndex < 0) return;
+
+    setSpinReady(false);
+
+    const firstFrame = window.requestAnimationFrame(() => {
+      const secondFrame = window.requestAnimationFrame(() => {
+        const spinnerWindow = spinnerWindowRef.current;
+        if (!spinnerWindow) return;
+
+        const targetCard = spinnerWindow.querySelector(`[data-spin-index="${spinTargetIndex}"]`);
+        if (!targetCard) return;
+
+        const windowWidth = spinnerWindow.clientWidth || spinnerWindow.getBoundingClientRect().width || 320;
+        const cardWidth = targetCard.offsetWidth || targetCard.getBoundingClientRect().width || 160;
+        const winnerCenter = targetCard.offsetLeft + cardWidth / 2;
+        const nextOffset = Math.max(0, winnerCenter - windowWidth / 2);
+
+        setSpinOffset(nextOffset);
+        setSpinKey(prev => prev + 1);
+        setSpinReady(true);
+      });
+
+      spinnerWindowRef.current && (spinnerWindowRef.current.dataset.secondFrame = String(secondFrame));
+    });
+
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      const secondFrame = Number(spinnerWindowRef.current && spinnerWindowRef.current.dataset.secondFrame);
+      if (secondFrame) window.cancelAnimationFrame(secondFrame);
+    };
+  }, [spinning, spinReel, spinTargetIndex]);
+
+  useEffect(() => {
+    if (!spinning || !spinReady || !spinWinner) return;
+
+    if (spinFallbackRef.current) {
+      window.clearTimeout(spinFallbackRef.current);
+    }
+
+    spinFallbackRef.current = window.setTimeout(() => {
+      finishSpin(spinWinner);
+    }, 2900);
+
+    return () => {
+      if (spinFallbackRef.current) {
+        window.clearTimeout(spinFallbackRef.current);
+        spinFallbackRef.current = null;
+      }
+    };
+  }, [spinning, spinReady, spinWinner, spinKey]);
 
   const teamRating = useMemo(() => {
     if (!draftedPlayers.length) return 0;
@@ -1840,16 +2092,19 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     const winnerIndex = reel.length - 4;
     reel[winnerIndex] = winner;
 
-    const cardFullWidth = 202;
-    const windowWidth = Math.min(window.innerWidth - 56, 680);
-    const windowCenter = windowWidth / 2;
-    const winnerCenter = winnerIndex * cardFullWidth + cardFullWidth / 2;
-    const finalOffset = winnerCenter - windowCenter;
-
+    // The real offset is measured after the reel renders.
+    // This avoids mobile/CodePen iframe bugs where window.innerWidth is not
+    // the same as the spinner window width.
+    spinFinishedRef.current = false;
+    if (spinFallbackRef.current) {
+      window.clearTimeout(spinFallbackRef.current);
+      spinFallbackRef.current = null;
+    }
+    setSpinReady(false);
     setSpinWinner(winner);
     setSpinReel(reel);
     setSpinTargetIndex(winnerIndex);
-    setSpinOffset(finalOffset);
+    setSpinOffset(0);
   }
 
   function pickClub(excludeCurrentId = null) {
@@ -1906,6 +2161,13 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
   function finishSpin(winner) {
+    if (!winner || spinFinishedRef.current) return;
+    spinFinishedRef.current = true;
+    if (spinFallbackRef.current) {
+      window.clearTimeout(spinFallbackRef.current);
+      spinFallbackRef.current = null;
+    }
+
     setCurrentClub(winner);
     setLastClubId(winner.id);
     setRecentClubIds(prev => [...prev, winner.id].slice(-4));
@@ -1916,6 +2178,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       return next;
     });
     setSpinning(false);
+    setSpinReady(false);
 
     setTimeout(() => scrollToSection(clubPanelRef, "start"), 120);
   }
@@ -1934,7 +2197,6 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setSpinning(true);
 
     setTimeout(() => scrollToSection(spinnerRef, "center"), 60);
-    setTimeout(() => finishSpin(winner), 2100);
   }
 
   function rerollClub() {
@@ -1952,18 +2214,21 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setSpinning(true);
 
     setTimeout(() => scrollToSection(spinnerRef, "center"), 60);
-    setTimeout(() => finishSpin(winner), 2100);
   }
 
   function selectPlayer(player) {
     if (pickedNames.includes(player.name)) return;
     playSound("select", soundMuted);
     setSelectedPlayer(player);
+    setTimeout(() => scrollToSection(pitchRef, "center"), 90);
   }
 
   function placePlayer(slotId) {
     if (!selectedPlayer || draft[slotId]) return;
     if (pickedNames.includes(selectedPlayer.name)) return;
+
+    const slotLabel = getSlotLabel(slotId);
+    if (!canPlaySlot(selectedPlayer, slotLabel)) return;
 
     const penalty = getPenalty(selectedPlayer, slotId);
     const placedPlayer = {
@@ -2064,6 +2329,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
   function resetGame() {
+    try {localStorage.removeItem("draftXIProgressV1");} catch {}
+    setSaveNotice(false);
     setCurrentClub(null);
     setDraft({});
     setSelectedPlayer(null);
@@ -2120,11 +2387,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
   function copyLatestResult() {var _navigator$clipboard;
     if (!results) return;
-
-    const topScorer = [...playerSeasonStats].sort((a, b) => b.goals - a.goals)[0];
-    const mvp = [...playerSeasonStats].sort((a, b) => b.averageRating - a.averageRating)[0];
-    const text = `⚽ Draft XI: Europe\nFormation: ${selectedFormationName}\nRecord: ${results.wins}-${results.draws}-${results.losses}\nPoints: ${results.points}\nTop Scorer: ${(topScorer === null || topScorer === void 0 ? void 0 : topScorer.name) || "None"} (${(topScorer === null || topScorer === void 0 ? void 0 : topScorer.goals) || 0})\nMVP: ${(mvp === null || mvp === void 0 ? void 0 : mvp.name) || "None"} (${(mvp === null || mvp === void 0 ? void 0 : mvp.averageRating) || "--"})\n${results.badge}`;
-
+    const text = makeShareCardText(results, playerSeasonStats, selectedFormationName, teamRating);
+    setShareCopied(true);
+    window.setTimeout(() => setShareCopied(false), 1600);
     (_navigator$clipboard = navigator.clipboard) === null || _navigator$clipboard === void 0 ? void 0 : _navigator$clipboard.writeText(text);
   }
 
@@ -2415,8 +2680,43 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
   }
 
+  const emptySlots = FORMATION.filter(slot => !draft[slot.id]);
+  const nextNeededSlot = emptySlots[0];
+  const selectedOpenSlots = selectedPlayer ? FORMATION.filter(slot => !draft[slot.id] && canPlaySlot(selectedPlayer, slot.label)) : [];
+  const bestSelectedSlot = selectedPlayer ?
+  selectedOpenSlots.find(slot => {
+    const positions = selectedPlayer.positions || [selectedPlayer.position];
+    return positions.includes(slot.label) || selectedPlayer.position === slot.label;
+  }) || selectedOpenSlots[0] :
+  null;
+
+  const guideStep = selectedPlayer ? "place" : currentClub ? "select" : draftedPlayers.length >= 11 ? "simulate" : "spin";
+  const guideTitle = guideStep === "spin" ? "Spin for your next club" :
+  guideStep === "select" ? `Choose one player from ${currentClub.name}` :
+  guideStep === "place" ? `Place ${selectedPlayer.name}` :
+  results ? "Season complete" : "Your XI is ready";
+  const guideText = guideStep === "spin" ? `Your XI is ${draftedPlayers.length}/11 complete. Use Spin Club to continue.` :
+  guideStep === "select" ? "Pick the player who best fits your empty positions." :
+  guideStep === "place" ? bestSelectedSlot ? `Tap the glowing ${bestSelectedSlot.label} slot. Best fit is highlighted brighter.` : "No open natural role. Choose another player or use Transfer Lifeline." :
+  results ? "Review your results, awards, table, and share card." :
+  "Hit Simulate Season and chase 38-0.";
+  const nextNeededText = nextNeededSlot ? `Next needed: ${nextNeededSlot.label}` : "Squad complete";
+  const shareCardText = results ? makeShareCardText(results, playerSeasonStats, selectedFormationName, teamRating) : "";
+
   return /*#__PURE__*/(
-    React.createElement("main", { className: "app" }, /*#__PURE__*/
+    React.createElement("main", { className: "app" },
+    saveNotice && /*#__PURE__*/React.createElement("div", { className: "save-toast" }, "Saved draft restored"),
+    showTutorial && /*#__PURE__*/React.createElement("div", { className: "tutorial-overlay", role: "dialog", "aria-modal": "true" }, /*#__PURE__*/
+    React.createElement("div", { className: "tutorial-card" }, /*#__PURE__*/
+    React.createElement("button", { className: "tutorial-close", type: "button", onClick: closeTutorial, "aria-label": "Close tutorial" }, "×"), /*#__PURE__*/
+    React.createElement("span", { className: "tutorial-kicker" }, "First Time Guide"), /*#__PURE__*/
+    React.createElement("h2", null, "Build your XI in 4 steps"), /*#__PURE__*/
+    React.createElement("div", { className: "tutorial-steps" }, /*#__PURE__*/
+    React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "1. Spin"), /*#__PURE__*/React.createElement("p", null, "Land on a European club.")), /*#__PURE__*/
+    React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "2. Pick"), /*#__PURE__*/React.createElement("p", null, "Choose one player from that squad.")), /*#__PURE__*/
+    React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "3. Place"), /*#__PURE__*/React.createElement("p", null, "Tap a glowing slot on the pitch.")), /*#__PURE__*/
+    React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "4. Sim"), /*#__PURE__*/React.createElement("p", null, "Complete 11 players and chase 38-0."))), /*#__PURE__*/
+    React.createElement("button", { className: "tutorial-start", type: "button", onClick: closeTutorial }, "Got it"))), /*#__PURE__*/
     React.createElement("section", { className: "hero" }, /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/
     React.createElement("p", { className: "eyebrow" }, "Top 5 Leagues Draft"), /*#__PURE__*/
@@ -2438,23 +2738,30 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
 
-    React.createElement("section", { className: "collection-panel" }, /*#__PURE__*/
-    React.createElement("div", null, /*#__PURE__*/
-    React.createElement("strong", null, "Club Collection"), /*#__PURE__*/
-    React.createElement("span", null, collectionStats.total, "/", ALL_CLUBS.length, " clubs discovered \xB7 ", collectionStats.percent, "%")), /*#__PURE__*/
-
-    React.createElement("div", { className: "league-collection-mini" },
-    collectionStats.byLeague.map((item) => /*#__PURE__*/
-    React.createElement("span", { key: item.league }, item.league, ": ", item.count))),
+    renderClubCollectionCard(collectionStats, { showNoRepeat: true, usedClubIds }), /*#__PURE__*/
 
 
-    usedClubIds.length > 0 && /*#__PURE__*/
-    React.createElement("small", null, "No-repeat active: ", usedClubIds.length, " landed club", usedClubIds.length === 1 ? "" : "s", " locked out this run.")), /*#__PURE__*/
+
+    React.createElement("section", { className: `next-move-card step-${guideStep}` }, /*#__PURE__*/
+    React.createElement("div", { className: "next-move-top" }, /*#__PURE__*/
+    React.createElement("span", null, "🟢 NEXT MOVE"), /*#__PURE__*/
+    React.createElement("strong", null, draftedPlayers.length, "/11")), /*#__PURE__*/
+    React.createElement("h2", null, guideTitle), /*#__PURE__*/
+    React.createElement("p", null, guideText), /*#__PURE__*/
+    React.createElement("div", { className: "squad-progress" }, /*#__PURE__*/
+    React.createElement("div", null, /*#__PURE__*/React.createElement("span", { style: { width: `${Math.round(draftedPlayers.length / 11 * 100)}%` } }))), /*#__PURE__*/
+    React.createElement("small", null, nextNeededText)), /*#__PURE__*/
+
+    React.createElement("section", { className: "draft-steps", "aria-label": "Draft progress" }, /*#__PURE__*/
+    React.createElement("span", { className: guideStep === "spin" ? "active" : draftedPlayers.length > 0 || currentClub || selectedPlayer ? "done" : "" }, "🎰 Spin"), /*#__PURE__*/
+    React.createElement("span", { className: guideStep === "select" ? "active" : selectedPlayer || draftedPlayers.length > 0 ? "done" : "" }, "👤 Select"), /*#__PURE__*/
+    React.createElement("span", { className: guideStep === "place" ? "active" : draftedPlayers.length > 0 ? "done" : "" }, "📍 Place"), /*#__PURE__*/
+    React.createElement("span", { className: guideStep === "simulate" ? "active" : results ? "done" : "" }, "⚽ Sim")), /*#__PURE__*/
 
 
 
     React.createElement("section", { className: "controls" }, /*#__PURE__*/
-    React.createElement("button", { onClick: spinClub, disabled: spinning || !!currentClub || draftedPlayers.length >= 11 },
+    React.createElement("button", { className: guideStep === "spin" && !spinning ? "guide-pulse" : "", onClick: spinClub, disabled: spinning || !!currentClub || draftedPlayers.length >= 11 },
     spinning ? "Spinning..." : currentClub ? "Pick or Reroll" : "Spin Club"), /*#__PURE__*/
 
     React.createElement("button", { className: "reroll", onClick: rerollClub, disabled: !currentClub || rerollsLeft <= 0 || spinning || draftedPlayers.length >= 11 },
@@ -2463,11 +2770,11 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("button", {
       className: "transfer-lifeline",
       onClick: () => setTransferMode(prev => !prev),
-      disabled: draftedPlayers.length < 11 || transferUsed || simulating || !!results },
+      disabled: draftedPlayers.length < 6 || transferUsed || spinning || simulating || !!results },
 
     transferUsed ? "Transfer Used" : transferMode ? "Cancel Transfer" : "Transfer Lifeline"), /*#__PURE__*/
 
-    React.createElement("button", { onClick: simulateSeason, disabled: draftedPlayers.length < 11 || simulating || !!results },
+    React.createElement("button", { className: guideStep === "simulate" && !results ? "guide-pulse" : "", onClick: simulateSeason, disabled: draftedPlayers.length < 11 || simulating || !!results },
     results ? "Season Complete" : simulating ? "Simulating..." : "Simulate Season"), /*#__PURE__*/
 
     React.createElement("button", { className: "ghost", onClick: resetGame }, "Reset"), /*#__PURE__*/
@@ -2487,7 +2794,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       key: name,
       className: selectedFormationName === name ? "active" : "",
       onClick: () => changeFormation(name),
-      disabled: spinning || simulating },
+      disabled: spinning || simulating || draftedPlayers.length > 0 },
 
     name))),
 
@@ -2500,12 +2807,17 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     spinning && spinWinner && /*#__PURE__*/
     React.createElement("section", { className: "spinner-card auto-focus-section", ref: spinnerRef }, /*#__PURE__*/
-    React.createElement("div", { className: "spinner-window" }, /*#__PURE__*/
+    React.createElement("div", { className: "spinner-window", ref: spinnerWindowRef }, /*#__PURE__*/
     React.createElement("div", { className: "spinner-pointer" }, "\u25BC"), /*#__PURE__*/
-    React.createElement("div", { className: "reel-spinner", style: { "--spinOffset": `-${spinOffset}px` } },
+    React.createElement("div", { key: spinKey, className: `reel-spinner ${spinReady ? "spin-active" : "spin-measuring"}`, style: { "--spinOffset": `-${spinOffset}px` }, onAnimationEnd: event => {
+        if (event.target !== event.currentTarget) return;
+        if (event.animationName !== "dynamicReelSpin") return;
+        finishSpin(spinWinner);
+      } },
     spinReel.map((club, index) => /*#__PURE__*/
     React.createElement("div", {
       key: `${club.id}_${index}`,
+      "data-spin-index": index,
       className: `reel-team ${index === spinTargetIndex ? "winner-team" : ""} ${club.jackpot ? "jackpot-team" : ""}`,
       style: { "--teamColor": club.color } }, /*#__PURE__*/
 
@@ -2521,7 +2833,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
     simulating && liveSeason && /*#__PURE__*/
-    React.createElement("section", { className: "simulation-loader season-sim auto-focus-section", ref: simulationRef }, /*#__PURE__*/
+    React.createElement("section", { className: "season-sim auto-focus-section", ref: simulationRef }, /*#__PURE__*/
     React.createElement("div", { className: "season-sim-top" }, /*#__PURE__*/
     React.createElement("span", null, "Simulating Season"), /*#__PURE__*/
     React.createElement("strong", null, "GW ", liveSeason.week, "/38")), /*#__PURE__*/
@@ -2674,12 +2986,15 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("div", { className: "pitch" },
     FORMATION.map(slot => {var _slot$mobileX, _slot$mobileY;
       const player = draft[slot.id];
+      const slotPlayable = selectedPlayer && !player && canPlaySlot(selectedPlayer, slot.label);
+      const slotBest = slotPlayable && bestSelectedSlot && bestSelectedSlot.id === slot.id;
+      const slotInvalid = selectedPlayer && !player && !slotPlayable;
       return /*#__PURE__*/(
         React.createElement("div", {
           key: slot.id,
           role: "button",
           tabIndex: 0,
-          className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${transferMode && player ? "transfer-remove" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""} ${movingSlotId === slot.id ? "moving-source" : ""}`,
+          className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${slotPlayable ? "valid-slot" : ""} ${slotBest ? "best-slot" : ""} ${slotInvalid ? "invalid-slot" : ""} ${transferMode && player ? "transfer-remove" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,
           style: { left: `${isMobileFormation ? (_slot$mobileX = slot.mobileX) !== null && _slot$mobileX !== void 0 ? _slot$mobileX : slot.x : slot.x}%`, top: `${isMobileFormation ? (_slot$mobileY = slot.mobileY) !== null && _slot$mobileY !== void 0 ? _slot$mobileY : slot.y : slot.y}%` },
           onClick: () => {
             if (transferMode && player) removePlayerForTransfer(slot.id);else
@@ -2703,11 +3018,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         React.createElement("em", null, player.positions.join("/")), /*#__PURE__*/
 
         React.createElement("div", {
-          className: `move-overlay pitch-move ${movingSlotId === slot.id ? "active" : ""}`,
-          title: movingSlotId === slot.id ? "Cancel move" : "Move player",
+          className: `move-overlay pitch-only ${movingSlotId === slot.id ? "active" : ""}`,
           onClick: e => {
             e.stopPropagation();
-            if (transferMode) return;
             setMovingSlotId(movingSlotId === slot.id ? null : slot.id);
           } },
 
@@ -2715,7 +3028,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
 
-        React.createElement("em", null, movingSlotId ? "Move Here" : selectedPlayer ? "Place" : "Empty")));
+        React.createElement("em", null, movingSlotId ? "Move Here" : slotBest ? "Best Fit" : slotPlayable ? "Place Here" : selectedPlayer ? "Not Fit" : "Empty")));
 
 
 
@@ -2734,8 +3047,16 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.gf, "-", results.ga), /*#__PURE__*/React.createElement("span", null, "Goals"))), /*#__PURE__*/
 
 
+    React.createElement("div", { className: "share-card-panel" }, /*#__PURE__*/
+    React.createElement("div", { className: "share-card-preview" }, /*#__PURE__*/
+    React.createElement("div", { className: "share-card-brand" }, "⚽ Draft XI: Europe"), /*#__PURE__*/
+    React.createElement("strong", null, results.badge), /*#__PURE__*/
+    React.createElement("p", null, selectedFormationName, " · ", teamRating || "--", " OVR"), /*#__PURE__*/
+    React.createElement("div", { className: "share-card-record" }, results.wins, "-", results.draws, "-", results.losses), /*#__PURE__*/
+    React.createElement("small", null, results.points, " pts · ", results.gf, "-", results.ga, " goals")), /*#__PURE__*/
+    React.createElement("textarea", { readOnly: true, value: shareCardText, "aria-label": "Share card text" }), /*#__PURE__*/
     React.createElement("div", { className: "results-actions" }, /*#__PURE__*/
-    React.createElement("button", { type: "button", onClick: copyLatestResult }, "Copy Share Card")),
+    React.createElement("button", { type: "button", onClick: copyLatestResult }, shareCopied ? "Copied!" : "Copy Share Card"))),
 
 
     ((_results$table = results.table) === null || _results$table === void 0 ? void 0 : _results$table.length) > 0 && /*#__PURE__*/
@@ -2912,12 +3233,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
 
-    React.createElement("div", { className: "collection-panel results-collection" }, /*#__PURE__*/
-    React.createElement("h3", null, "Club Collection Progress"), /*#__PURE__*/
-    React.createElement("p", null, collectionStats.total, "/", ALL_CLUBS.length, " clubs discovered."), /*#__PURE__*/
-    React.createElement("div", { className: "league-collection-mini" },
-    collectionStats.byLeague.map((item) => /*#__PURE__*/
-    React.createElement("span", { key: item.league }, item.league, ": ", item.count)))), /*#__PURE__*/
+    renderClubCollectionCard(collectionStats), /*#__PURE__*/
 
 
 
@@ -2929,4 +3245,12 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render( /*#__PURE__*/React.createElement(App, null));
+const rootElement = document.getElementById("root");
+
+if (rootElement && typeof ReactDOM !== "undefined") {
+  if (ReactDOM.createRoot) {
+    ReactDOM.createRoot(rootElement).render( /*#__PURE__*/React.createElement(App, null));
+  } else if (ReactDOM.render) {
+    ReactDOM.render( /*#__PURE__*/React.createElement(App, null), rootElement);
+  }
+}
