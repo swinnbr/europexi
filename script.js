@@ -1552,26 +1552,29 @@ function seededRandom(seed) {
   return x - Math.floor(x);
 }
 
-function simulateOpponentSeason(teamName, rating, week, index) {
+function simulateOpponentSeason(teamName, rating, week, index, seasonSeed = 1) {
   let wins = 0;
   let draws = 0;
   let losses = 0;
 
-  // Gives every AI club its own identity so the table does not look copy-pasted.
-  const clubPersonality = (seededRandom(index + 11) - 0.5) * 0.12;
-  const formWave = Math.sin((week + index * 2.7) / 5) * 0.035;
+  // Each season now gets a fresh seed.
+  // This keeps the live table stable during one run, but stops AI clubs
+  // from finishing in the exact same order every new simulation.
+  const clubPersonality = (seededRandom(seasonSeed + index * 47 + 11) - 0.5) * 0.18;
+  const seasonForm = (seededRandom(seasonSeed + index * 131 + 29) - 0.5) * 0.14;
   const strength = (rating - 82) / 10;
 
   for (let match = 1; match <= week; match++) {
-    const gameNoise = (seededRandom(index * 73 + match * 19) - 0.5) * 0.12;
+    const formWave = Math.sin((match + index * 2.7 + seasonSeed % 17) / 5) * 0.045;
+    const gameNoise = (seededRandom(seasonSeed + index * 73 + match * 19) - 0.5) * 0.22;
 
-    let winChance = 0.36 + strength * 0.06 + clubPersonality + formWave + gameNoise;
-    let drawChance = 0.23 - strength * 0.015 + (seededRandom(index * 31 + match * 7) - 0.5) * 0.05;
+    let winChance = 0.36 + strength * 0.055 + clubPersonality + seasonForm + formWave + gameNoise;
+    let drawChance = 0.23 - strength * 0.012 + (seededRandom(seasonSeed + index * 31 + match * 7) - 0.5) * 0.08;
 
-    winChance = clampNumber(winChance, 0.16, 0.72);
-    drawChance = clampNumber(drawChance, 0.12, 0.31);
+    winChance = clampNumber(winChance, 0.13, 0.76);
+    drawChance = clampNumber(drawChance, 0.10, 0.33);
 
-    const roll = seededRandom(index * 997 + match * 101 + Math.round(rating * 13));
+    const roll = seededRandom(seasonSeed + index * 997 + match * 101 + Math.round(rating * 13));
 
     if (roll < winChance) wins += 1;else
     if (roll < winChance + drawChance) draws += 1;else
@@ -1588,7 +1591,7 @@ function simulateOpponentSeason(teamName, rating, week, index) {
 
 }
 
-function buildLiveLeagueTable(matches, yourTeamName = "Draft XI") {
+function buildLiveLeagueTable(matches, yourTeamName = "Draft XI", seasonSeed = 1) {
   const week = Math.min(38, Math.max(matches.length, 1));
   const yourWins = matches.filter(m => m.result === "W").length;
   const yourDraws = matches.filter(m => m.result === "D").length;
@@ -1596,7 +1599,7 @@ function buildLiveLeagueTable(matches, yourTeamName = "Draft XI") {
   const yourPts = yourWins * 3 + yourDraws;
 
   const rows = OPPONENTS.slice(0, 19).map(([name, rating], index) =>
-  simulateOpponentSeason(name, rating, week, index));
+  simulateOpponentSeason(name, rating, week, index, seasonSeed));
 
 
   rows.push({
@@ -1615,6 +1618,7 @@ function buildLiveLeagueTable(matches, yourTeamName = "Draft XI") {
   b.points - a.points ||
   b.wins - a.wins ||
   a.losses - b.losses ||
+  seededRandom(seasonSeed + a.team.length * 17) - seededRandom(seasonSeed + b.team.length * 17) ||
   a.team.localeCompare(b.team)).
 
   map((row, index) => ({ ...row, position: index + 1 }));
@@ -2143,7 +2147,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       recent: [] });
 
     setSimProgress(0);
-    setLiveLeagueTable(buildLiveLeagueTable([]));
+    const aiSeasonSeed = Math.floor(Math.random() * 1000000000);
+    setLiveLeagueTable(buildLiveLeagueTable([], "Draft XI", aiSeasonSeed));
 
     const fullRating =
     draftedPlayers.reduce((sum, player) => sum + player.finalRating, 0) / draftedPlayers.length;
@@ -2319,7 +2324,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         0);
 
 
-        setLiveLeagueTable(buildLiveLeagueTable(gamesSoFar));
+        setLiveLeagueTable(buildLiveLeagueTable(gamesSoFar, "Draft XI", aiSeasonSeed));
 
         setLiveSeason({
           week,
@@ -2354,7 +2359,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         ga,
         badge,
         matches,
-        table: buildLiveLeagueTable(matches) };
+        table: buildLiveLeagueTable(matches, "Draft XI", aiSeasonSeed) };
 
       const finalPlayerStats = createPlayerSeasonStats(draftedPlayers, matches);
       const finalAwards = calculateSeasonAwards(summary, finalPlayerStats);
@@ -2674,7 +2679,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           key: slot.id,
           role: "button",
           tabIndex: 0,
-          className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${transferMode && player ? "transfer-remove" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,
+          className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${transferMode && player ? "transfer-remove" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""} ${movingSlotId === slot.id ? "moving-source" : ""}`,
           style: { left: `${isMobileFormation ? (_slot$mobileX = slot.mobileX) !== null && _slot$mobileX !== void 0 ? _slot$mobileX : slot.x : slot.x}%`, top: `${isMobileFormation ? (_slot$mobileY = slot.mobileY) !== null && _slot$mobileY !== void 0 ? _slot$mobileY : slot.y : slot.y}%` },
           onClick: () => {
             if (transferMode && player) removePlayerForTransfer(slot.id);else
@@ -2698,9 +2703,11 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         React.createElement("em", null, player.positions.join("/")), /*#__PURE__*/
 
         React.createElement("div", {
-          className: `move-overlay ${movingSlotId === slot.id ? "active" : ""}`,
+          className: `move-overlay pitch-move ${movingSlotId === slot.id ? "active" : ""}`,
+          title: movingSlotId === slot.id ? "Cancel move" : "Move player",
           onClick: e => {
             e.stopPropagation();
+            if (transferMode) return;
             setMovingSlotId(movingSlotId === slot.id ? null : slot.id);
           } },
 

@@ -3071,49 +3071,659 @@ th {
     font-size: 6.8px;
   }
 }
-/* Mobile formation spacing patch */
-@media (max-width: 768px) {
+
+
+/* =========================================================
+   FINAL FIX: player list stacking + mobile formation spacing
+   Reason: .player-card is used for the draft list, while .slot is used on the pitch.
+   Do NOT make .player-card position:absolute; only .slot should be absolute.
+========================================================= */
+
+.player-grid .player-card,
+.club-panel .player-card,
+button.player-card {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  min-height: 58px !important;
+  padding: 9px 12px !important;
+  border-radius: 16px !important;
+  display: grid !important;
+  grid-template-columns: 94px 1fr !important;
+  align-items: center !important;
+  place-items: initial !important;
+  text-align: left !important;
+  gap: 12px !important;
+  cursor: pointer;
+  z-index: auto !important;
+}
+
+.player-grid .player-card:hover:not(:disabled),
+.club-panel .player-card:hover:not(:disabled),
+button.player-card:hover:not(:disabled) {
+  transform: translateY(-2px) !important;
+}
+
+.player-grid .player-card.position-filled:hover,
+.club-panel .player-card.position-filled:hover,
+button.player-card.position-filled:hover {
+  transform: none !important;
+}
+
+.player-grid .player-card .player-name,
+.club-panel .player-card .player-name,
+button.player-card .player-name {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-grid .player-card .player-rating,
+.club-panel .player-card .player-rating,
+button.player-card .player-rating {
+  width: 42px;
+  min-width: 42px;
+  height: 30px;
+  font-size: 13px;
+}
+
+.pitch .slot {
+  position: absolute !important;
+  left: var(--slot-x, auto);
+  top: var(--slot-y, auto);
+  transform: translate(-50%, -50%);
+}
+
+.pitch .slot:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+@media (max-width: 720px) {
+  .player-grid .player-card,
+  .club-panel .player-card,
+  button.player-card {
+    grid-template-columns: 88px 1fr !important;
+    gap: 8px !important;
+    padding: 8px !important;
+    min-height: 58px !important;
+  }
+
+  .player-grid .player-card .player-name,
+  .club-panel .player-card .player-name,
+  button.player-card .player-name {
+    font-size: 14px !important;
+  }
+
   .pitch {
-    min-height: 600px;
-    overflow: visible;
+    min-height: 640px;
   }
 
-  .slot,
-  .player-card {
-    transition: all 0.2s ease;
+  .pitch .slot {
+    width: 86px;
+    min-height: 62px;
+    padding: 7px 5px;
+    border-radius: 14px;
   }
 
-  .player-card {
-    width: 54px;
-    min-height: 46px;
-    padding: 4px 2px;
+  .pitch .slot span {
+    font-size: 10px;
   }
 
-  .player-card .player-name {
-    font-size: 8px;
-    line-height: 1;
+  .pitch .slot strong {
+    max-width: 74px;
+    font-size: 10px;
+    line-height: 1.05;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .player-card .player-rating {
-    font-size: 12px;
+  .pitch .slot small {
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+
+  .pitch .slot em {
+    display: none;
   }
 }
 
 @media (max-width: 420px) {
   .pitch {
-    min-height: 560px;
+    min-height: 590px;
   }
 
+  .pitch .slot {
+    width: 76px;
+    min-height: 56px;
+    padding: 6px 4px;
+  }
+
+  .pitch .slot strong {
+    max-width: 66px;
+    font-size: 9px;
+  }
+
+  .pitch .slot span {
+    font-size: 9px;
+  }
+
+  .pitch .slot small {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+}
+/* UI cleanup patch */
+
+/* Player selector rating alignment */
+.player-bottom-row {
+  align-items: center;
+}
+
+.player-rating,
+.player-card .player-rating {
+  display: inline-grid !important;
+  place-items: center !important;
+  text-align: center !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+}
+
+/* Cleaner player selector cards */
+.player-card {
+  border-radius: 18px;
+}
+
+.player-info {
+  min-width: 0;
+}
+
+.player-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Make position buttons cleaner */
+.inline-position-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.mini-pos-btn {
+  min-height: 30px;
+  padding: 5px 10px;
+  font-size: 11px;
+}
+
+/* Move button no longer blocks card */
+.move-overlay {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: auto;
+  min-height: 22px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 1000;
+  opacity: 0.88;
+  z-index: 4;
+}
+
+.move-overlay.active {
+  opacity: 1;
+  outline: 2px solid #8dffb3;
+}
+
+/* Prevent pitch player text/button clutter */
+.slot {
+  overflow: visible;
+}
+
+.slot strong {
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.slot small {
+  display: inline-grid;
+  place-items: center;
+}
+
+/* Mobile cleanup */
+@media (max-width: 720px) {
   .player-card {
-    width: 48px;
-    min-height: 42px;
+    grid-template-columns: 72px 1fr;
+    gap: 8px;
+    padding: 9px;
   }
 
-  .player-card .player-name {
-    font-size: 7px;
+  .player-pos {
+    min-width: 64px;
+    font-size: 8px;
   }
 
-  .player-card .player-rating {
-    font-size: 11px;
+  .player-bottom-row {
+    justify-content: space-between;
+    gap: 6px;
   }
+
+  .inline-position-buttons {
+    justify-content: flex-start;
+  }
+
+  .mini-pos-btn {
+    min-height: 28px;
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+ /* Hidden by default */
+.move-overlay {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+  z-index: 5;
+}
+
+/* Reveal when hovering over a player slot/card */
+.slot:hover .move-overlay,
+.player-card:hover .move-overlay {
+  opacity: 0.9;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Keep visible while actively moving a player */
+.move-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  outline: 2px solid #8dffb3;
+}
+
+/* Mobile devices don't have hover, so show only for selected cards */
+@media (hover: none) {
+  .slot:hover .move-overlay,
+  .player-card:hover .move-overlay {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .slot.selected .move-overlay,
+  .player-card.selected .move-overlay,
+  .move-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+}
+  /* Pitch-only hover Move button */
+.slot .move-overlay.pitch-only {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+/* Desktop: show only when hovering over pitch player */
+.slot:hover .move-overlay.pitch-only,
+.slot .move-overlay.pitch-only.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Hide while transfer lifeline is active */
+.slot.transfer-remove .move-overlay.pitch-only {
+  display: none;
+}
+
+/* Mobile: no hover, only show when actively moving */
+@media (hover: none) {
+  .slot:hover .move-overlay.pitch-only {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .slot .move-overlay.pitch-only.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+  :root {
+  --bg: #07140d;
+  --panel: rgba(255,255,255,.08);
+  --panel-strong: rgba(255,255,255,.13);
+  --line: rgba(255,255,255,.16);
+  --text: #f3fff6;
+  --muted: rgba(243,255,246,.72);
+  --green: #33d17a;
+  --green-2: #8dffb3;
+  --yellow: #f7d046;
+  --red: #ff6961;
+  --blue: #62c7ff;
+  --shadow: 0 18px 55px rgba(0,0,0,.35);
+  --radius: 22px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(51,209,122,.20), transparent 32rem),
+    radial-gradient(circle at top right, rgba(98,199,255,.12), transparent 30rem),
+    var(--bg);
+  color: var(--text);
+}
+button { font: inherit; cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .45; }
+
+.app { width: min(1180px, 100%); margin: 0 auto; padding: 18px; }
+section, .start-card, .spinner-card, .club-panel, .pitch-wrap, .results, .season-sim,
+.rewards-panel, .player-stats-panel, .history-panel, .collection-panel, .awards-panel,
+.final-table-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+section { margin: 16px 0; padding: 18px; }
+h1, h2, h3, p { margin-top: 0; }
+h1 { font-size: clamp(32px, 7vw, 68px); line-height: .9; letter-spacing: -0.06em; }
+h2 { font-size: clamp(22px, 4vw, 34px); letter-spacing: -0.04em; }
+p, .start-description, .start-subtitle { color: var(--muted); }
+
+.hero, .start-screen { display: grid; gap: 16px; align-items: center; }
+.start-card { padding: 24px; }
+.start-logo { font-size: 54px; }
+.eyebrow { color: var(--green-2); text-transform: uppercase; letter-spacing: .16em; font-size: 12px; font-weight: 900; }
+.controls, .results-actions, .formation-picker { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.start-button, .reroll, .ghost, .play-again, .sound-toggle, .mini-pos-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 15px;
+  background: linear-gradient(135deg, var(--green), var(--green-2));
+  color: #062012;
+  font-weight: 900;
+  box-shadow: 0 10px 22px rgba(51,209,122,.20);
+}
+.ghost { background: rgba(255,255,255,.10); color: var(--text); border: 1px solid var(--line); box-shadow: none; }
+.full-width { width: 100%; justify-content: center; }
+
+.formation-picker button,
+.form-dot {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.08);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 800;
+}
+.formation-picker button.active,
+.form-dot.active { background: var(--green); color: #052111; border-color: transparent; }
+
+.spinner-window { overflow: hidden; border-radius: 18px; border: 1px solid var(--line); background: rgba(0,0,0,.22); padding: 12px; position: relative; }
+.spinner-pointer { text-align: center; color: var(--green-2); font-weight: 1000; margin-bottom: 6px; }
+.reel-spinner { display: flex; gap: 12px; transition: transform 2.1s cubic-bezier(.12,.86,.18,1); }
+.reel-team { min-width: 190px; padding: 14px; border-radius: 16px; background: rgba(255,255,255,.10); border: 1px solid var(--line); }
+.club-header, .season-sim-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+
+.player-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(245px, 1fr)); gap: 12px; }
+.player-card {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  gap: 10px;
+  align-items: center;
+  min-height: 108px;
+  padding: 11px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.08);
+  color: var(--text);
+  text-align: left;
+  transition: transform .16s ease, border-color .16s ease, background .16s ease;
+}
+.player-card:hover { transform: translateY(-2px); border-color: rgba(141,255,179,.55); background: rgba(255,255,255,.12); }
+.player-card.selected { outline: 2px solid var(--green-2); }
+.player-card.unavailable, .player-card.taken { opacity: .48; filter: grayscale(.35); }
+.player-pos {
+  display: grid;
+  place-items: center;
+  min-height: 72px;
+  border-radius: 16px;
+  font-weight: 1000;
+  letter-spacing: .08em;
+  background: rgba(255,255,255,.12);
+}
+.player-info { min-width: 0; }
+.player-name { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; }
+.player-bottom-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+.player-rating,
+.player-card .player-rating,
+.player-card small[class*="rating-"] {
+  display: inline-grid !important;
+  place-items: center !important;
+  text-align: center !important;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  line-height: 1 !important;
+  padding: 0 !important;
+  font-weight: 1000;
+}
+.inline-position-buttons { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.mini-pos-btn { min-height: 30px; padding: 5px 10px; font-size: 11px; }
+.taken-position { color: var(--muted); font-size: 12px; }
+
+.rating-red { background: rgba(255,105,97,.95) !important; color: #260503 !important; }
+.rating-yellow { background: rgba(247,208,70,.95) !important; color: #2a2000 !important; }
+.rating-green { background: rgba(51,209,122,.95) !important; color: #041c0e !important; }
+.rating-blue { background: rgba(98,199,255,.95) !important; color: #001827 !important; }
+
+.pitch-wrap { overflow: hidden; }
+.pitch {
+  position: relative;
+  height: min(680px, calc(var(--vh, 1vh) * 76));
+  min-height: 540px;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,.24);
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.06) 50%, transparent 50%) 0 0 / 80px 80px,
+    radial-gradient(circle at 50% 50%, transparent 0 92px, rgba(255,255,255,.25) 93px 95px, transparent 96px),
+    linear-gradient(180deg, #1f8f4a, #127239);
+}
+.pitch::before {
+  content: "";
+  position: absolute;
+  inset: 20px;
+  border: 2px solid rgba(255,255,255,.28);
+  border-radius: 22px;
+  pointer-events: none;
+}
+.pitch::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 20px; bottom: 20px;
+  border-left: 2px solid rgba(255,255,255,.25);
+  pointer-events: none;
+}
+.slot {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 108px;
+  min-height: 84px;
+  padding: 8px;
+  border-radius: 17px;
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(5,27,14,.82);
+  color: var(--text);
+  text-align: center;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.28);
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+  z-index: 2;
+}
+.slot:hover,
+.slot:focus,
+.slot:focus-within { transform: translate(-50%, -50%) scale(1.04); z-index: 8; border-color: rgba(141,255,179,.65); }
+.slot.can-place { border-color: rgba(141,255,179,.80); background: rgba(9,66,32,.88); }
+.slot.placed { animation: placed-pop .55s ease; }
+.slot.moving-source { outline: 2px solid var(--green-2); z-index: 9; }
+.slot.transfer-remove { outline: 2px dashed var(--red); }
+.slot > span { font-size: 11px; font-weight: 1000; color: var(--green-2); }
+.slot strong { max-width: 96%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+.slot small { display: inline-grid; place-items: center; width: 31px; height: 31px; border-radius: 50%; font-weight: 1000; line-height: 1; }
+.slot em { max-width: 96%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; color: var(--muted); font-style: normal; }
+
+/* Pitch-only Move button: hidden until pitch-card hover/focus */
+.slot .move-overlay.pitch-move,
+.slot .move-overlay {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: auto;
+  min-height: 24px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.28);
+  background: rgba(6,32,18,.96);
+  color: var(--green-2);
+  font-size: 9px;
+  font-weight: 1000;
+  line-height: 1;
+  box-shadow: 0 8px 18px rgba(0,0,0,.35);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(5px) scale(.96);
+  transition: opacity .16s ease, transform .16s ease;
+  z-index: 20;
+}
+.slot:hover .move-overlay.pitch-move,
+.slot:focus .move-overlay.pitch-move,
+.slot:focus-within .move-overlay.pitch-move,
+.slot .move-overlay.pitch-move.active,
+.slot:hover .move-overlay,
+.slot:focus .move-overlay,
+.slot:focus-within .move-overlay,
+.slot .move-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+.slot.transfer-remove .move-overlay,
+.transfer-lifeline .move-overlay,
+.player-card .move-overlay {
+  display: none !important;
+}
+
+.transfer-banner,
+.selected-banner,
+.mobile-flow-hint,
+.scroll-hint {
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(141,255,179,.12);
+  border: 1px solid rgba(141,255,179,.22);
+  color: var(--text);
+}
+.transfer-lifeline { border-color: rgba(247,208,70,.42); }
+.simulation-loader, .sim-progress { height: 10px; border-radius: 999px; background: rgba(255,255,255,.12); overflow: hidden; }
+.sim-progress > div, .sim-progress span { display: block; height: 100%; background: linear-gradient(90deg, var(--green), var(--green-2)); }
+.sim-percent { font-weight: 1000; color: var(--green-2); }
+.result-stats, .awards-grid, .season-form, .reward-list, .history-list, .results-collection { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.result-stats > div, .award-card, .reward-badge, .record-card, .history-card, .live-table-card, .match, .match-detail-card,
+.scorer-team-block, .profile-mini, .league-collection-mini {
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid var(--line);
+}
+.result-stats strong { display: block; font-size: 28px; }
+.result-stats span, .mini-table-row, .player-stats-row { color: var(--muted); }
+.match-list, .scorer-list, .mini-table, .player-stats-table { display: grid; gap: 8px; }
+.match, .scorer-row, .mini-table-row, .player-stats-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.match.W { border-color: rgba(51,209,122,.45); }
+.match.D { border-color: rgba(247,208,70,.45); }
+.match.L { border-color: rgba(255,105,97,.45); }
+.our-goal { color: var(--green-2); }
+.opponent-goal { color: var(--red); }
+.match-detail-overlay { position: fixed; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(0,0,0,.62); z-index: 100; }
+.match-detail-card { width: min(560px, 100%); background: #0d2115; }
+.match-detail-close { float: right; border: 0; border-radius: 999px; padding: 6px 10px; }
+.match-detail-score { font-size: 34px; font-weight: 1000; text-align: center; }
+
+@keyframes placed-pop {
+  0% { transform: translate(-50%, -50%) scale(.9); }
+  55% { transform: translate(-50%, -50%) scale(1.1); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+@media (max-width: 820px) {
+  .app { padding: 10px; }
+  section { padding: 13px; margin: 12px 0; }
+  .controls, .results-actions, .formation-picker { gap: 8px; }
+  .player-grid { grid-template-columns: 1fr; }
+  .player-card { grid-template-columns: 66px 1fr; min-height: 96px; padding: 9px; }
+  .player-pos { min-height: 64px; font-size: 11px; }
+  .player-name { font-size: 14px; }
+  .inline-position-buttons { justify-content: flex-start; }
+  .pitch { min-height: 610px; height: calc(var(--vh, 1vh) * 78); border-radius: 22px; }
+  .pitch::before { inset: 12px; }
+  .slot { width: 82px; min-height: 72px; padding: 6px 5px; border-radius: 14px; }
+  .slot strong { font-size: 10px; }
+  .slot > span { font-size: 10px; }
+  .slot small { width: 27px; height: 27px; font-size: 10px; }
+  .slot em { font-size: 9px; }
+  .slot .move-overlay.pitch-move,
+  .slot .move-overlay { right: 50%; bottom: -16px; transform: translateX(50%) translateY(4px) scale(.96); font-size: 8px; padding: 4px 7px; }
+  .slot:hover .move-overlay.pitch-move,
+  .slot:focus .move-overlay.pitch-move,
+  .slot:focus-within .move-overlay.pitch-move,
+  .slot .move-overlay.pitch-move.active,
+  .slot:hover .move-overlay,
+  .slot:focus .move-overlay,
+  .slot:focus-within .move-overlay,
+  .slot .move-overlay.active { transform: translateX(50%) translateY(0) scale(1); }
+}
+
+@media (hover: none) {
+  .slot:hover .move-overlay.pitch-move,
+  .slot:hover .move-overlay { opacity: 0; pointer-events: none; }
+  .slot:focus .move-overlay.pitch-move,
+  .slot:focus-within .move-overlay.pitch-move,
+  .slot .move-overlay.pitch-move.active,
+  .slot:focus .move-overlay,
+  .slot:focus-within .move-overlay,
+  .slot .move-overlay.active { opacity: 1; pointer-events: auto; }
 }
