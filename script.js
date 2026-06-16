@@ -11,78 +11,77 @@ function setMobileViewportHeight() {
 setMobileViewportHeight();
 window.removeEventListener("resize", setMobileViewportHeight);
 window.addEventListener("resize", setMobileViewportHeight);
-const { useMemo, useState, useRef } = React;
+const { useMemo, useState, useRef, useEffect } = React;
 
 const FORMATIONS = {
   "4-3-3": [
-  { id: "gk", label: "GK", x: 50, y: 86 },
-  { id: "rb", label: "RB", x: 78, y: 68 },
-  { id: "cb1", label: "CB", x: 60, y: 70 },
-  { id: "cb2", label: "CB", x: 40, y: 70 },
-  { id: "lb", label: "LB", x: 22, y: 68 },
-  { id: "cm1", label: "CM", x: 35, y: 48 },
-  { id: "cm2", label: "CM", x: 50, y: 53 },
-  { id: "cm3", label: "CM", x: 65, y: 48 },
-  { id: "rw", label: "RW", x: 76, y: 24 },
-  { id: "st", label: "ST", x: 50, y: 18 },
-  { id: "lw", label: "LW", x: 24, y: 24 }],
+  { id: "gk", label: "GK", x: 50, y: 86, mobileX: 50, mobileY: 90 },
+  { id: "rb", label: "RB", x: 78, y: 68, mobileX: 84, mobileY: 74 },
+  { id: "cb1", label: "CB", x: 60, y: 70, mobileX: 62, mobileY: 77 },
+  { id: "cb2", label: "CB", x: 40, y: 70, mobileX: 38, mobileY: 77 },
+  { id: "lb", label: "LB", x: 22, y: 68, mobileX: 16, mobileY: 74 },
+  { id: "cm1", label: "CM", x: 35, y: 48, mobileX: 30, mobileY: 50 },
+  { id: "cm2", label: "CM", x: 50, y: 53, mobileX: 50, mobileY: 58 },
+  { id: "cm3", label: "CM", x: 65, y: 48, mobileX: 70, mobileY: 50 },
+  { id: "rw", label: "RW", x: 76, y: 24, mobileX: 82, mobileY: 24 },
+  { id: "st", label: "ST", x: 50, y: 18, mobileX: 50, mobileY: 15 },
+  { id: "lw", label: "LW", x: 24, y: 24, mobileX: 18, mobileY: 24 }],
 
 
   "4-4-2": [
-  { id: "gk", label: "GK", x: 50, y: 86 },
-  { id: "rb", label: "RB", x: 78, y: 68 },
-  { id: "cb1", label: "CB", x: 60, y: 70 },
-  { id: "cb2", label: "CB", x: 40, y: 70 },
-  { id: "lb", label: "LB", x: 22, y: 68 },
-  { id: "rm", label: "RM", x: 76, y: 47 },
-  { id: "cm1", label: "CM", x: 58, y: 50 },
-  { id: "cm2", label: "CM", x: 42, y: 50 },
-  { id: "lm", label: "LM", x: 24, y: 47 },
-  { id: "st1", label: "ST", x: 42, y: 20 },
-  { id: "st2", label: "ST", x: 58, y: 20 }],
+  { id: "gk", label: "GK", x: 50, y: 86, mobileX: 50, mobileY: 90 },
+  { id: "rb", label: "RB", x: 78, y: 68, mobileX: 84, mobileY: 74 },
+  { id: "cb1", label: "CB", x: 60, y: 70, mobileX: 62, mobileY: 77 },
+  { id: "cb2", label: "CB", x: 40, y: 70, mobileX: 38, mobileY: 77 },
+  { id: "lb", label: "LB", x: 22, y: 68, mobileX: 16, mobileY: 74 },
+  { id: "rm", label: "RM", x: 76, y: 47, mobileX: 82, mobileY: 49 },
+  { id: "cm1", label: "CM", x: 58, y: 50, mobileX: 61, mobileY: 54 },
+  { id: "cm2", label: "CM", x: 42, y: 50, mobileX: 39, mobileY: 54 },
+  { id: "lm", label: "LM", x: 24, y: 47, mobileX: 18, mobileY: 49 },
+  { id: "st1", label: "ST", x: 42, y: 20, mobileX: 38, mobileY: 18 },
+  { id: "st2", label: "ST", x: 58, y: 20, mobileX: 62, mobileY: 18 }],
 
 
   "3-4-3": [
-  { id: "gk", label: "GK", x: 50, y: 86 },
-  { id: "cb1", label: "CB", x: 65, y: 70 },
-  { id: "cb2", label: "CB", x: 50, y: 73 },
-  { id: "cb3", label: "CB", x: 35, y: 70 },
-  { id: "rm", label: "RM", x: 78, y: 49 },
-  { id: "cm1", label: "CM", x: 58, y: 51 },
-  { id: "cm2", label: "CM", x: 42, y: 51 },
-  { id: "lm", label: "LM", x: 22, y: 49 },
-  { id: "rw", label: "RW", x: 74, y: 23 },
-  { id: "st", label: "ST", x: 50, y: 18 },
-  { id: "lw", label: "LW", x: 26, y: 23 }],
+  { id: "gk", label: "GK", x: 50, y: 86, mobileX: 50, mobileY: 90 },
+  { id: "cb1", label: "CB", x: 65, y: 70, mobileX: 70, mobileY: 77 },
+  { id: "cb2", label: "CB", x: 50, y: 73, mobileX: 50, mobileY: 80 },
+  { id: "cb3", label: "CB", x: 35, y: 70, mobileX: 30, mobileY: 77 },
+  { id: "rm", label: "RM", x: 78, y: 49, mobileX: 84, mobileY: 54 },
+  { id: "cm1", label: "CM", x: 58, y: 51, mobileX: 61, mobileY: 57 },
+  { id: "cm2", label: "CM", x: 42, y: 51, mobileX: 39, mobileY: 57 },
+  { id: "lm", label: "LM", x: 22, y: 49, mobileX: 16, mobileY: 54 },
+  { id: "rw", label: "RW", x: 74, y: 23, mobileX: 82, mobileY: 24 },
+  { id: "st", label: "ST", x: 50, y: 18, mobileX: 50, mobileY: 15 },
+  { id: "lw", label: "LW", x: 26, y: 23, mobileX: 18, mobileY: 24 }],
 
 
   "4-2-3-1": [
-  { id: "gk", label: "GK", x: 50, y: 86 },
-  { id: "rb", label: "RB", x: 78, y: 68 },
-  { id: "cb1", label: "CB", x: 60, y: 70 },
-  { id: "cb2", label: "CB", x: 40, y: 70 },
-  { id: "lb", label: "LB", x: 22, y: 68 },
-  { id: "cm1", label: "CM", x: 42, y: 53 },
-  { id: "cm2", label: "CM", x: 58, y: 53 },
-  { id: "rw", label: "RW", x: 74, y: 35 },
-  { id: "cam", label: "CAM", x: 50, y: 34 },
-  { id: "lw", label: "LW", x: 26, y: 35 },
-  { id: "st", label: "ST", x: 50, y: 17 }],
+  { id: "gk", label: "GK", x: 50, y: 86, mobileX: 50, mobileY: 90 },
+  { id: "rb", label: "RB", x: 78, y: 68, mobileX: 84, mobileY: 74 },
+  { id: "cb1", label: "CB", x: 60, y: 70, mobileX: 62, mobileY: 77 },
+  { id: "cb2", label: "CB", x: 40, y: 70, mobileX: 38, mobileY: 77 },
+  { id: "lb", label: "LB", x: 22, y: 68, mobileX: 16, mobileY: 74 },
+  { id: "cm1", label: "CM", x: 42, y: 53, mobileX: 37, mobileY: 60 },
+  { id: "cm2", label: "CM", x: 58, y: 53, mobileX: 63, mobileY: 60 },
+  { id: "rw", label: "RW", x: 74, y: 35, mobileX: 82, mobileY: 39 },
+  { id: "cam", label: "CAM", x: 50, y: 34, mobileX: 50, mobileY: 36 },
+  { id: "lw", label: "LW", x: 26, y: 35, mobileX: 18, mobileY: 39 },
+  { id: "st", label: "ST", x: 50, y: 17, mobileX: 50, mobileY: 15 }],
 
 
   "3-5-2": [
-  { id: "gk", label: "GK", x: 50, y: 86 },
-  { id: "cb1", label: "CB", x: 65, y: 70 },
-  { id: "cb2", label: "CB", x: 50, y: 73 },
-  { id: "cb3", label: "CB", x: 35, y: 70 },
-  { id: "rm", label: "RM", x: 78, y: 49 },
-  { id: "cm1", label: "CM", x: 61, y: 50 },
-  { id: "cm2", label: "CM", x: 50, y: 55 },
-  { id: "cm3", label: "CM", x: 39, y: 50 },
-  { id: "lm", label: "LM", x: 22, y: 49 },
-  { id: "st1", label: "ST", x: 42, y: 20 },
-  { id: "st2", label: "ST", x: 58, y: 20 }] };
-
+  { id: "gk", label: "GK", x: 50, y: 86, mobileX: 50, mobileY: 90 },
+  { id: "cb1", label: "CB", x: 65, y: 70, mobileX: 70, mobileY: 77 },
+  { id: "cb2", label: "CB", x: 50, y: 73, mobileX: 50, mobileY: 80 },
+  { id: "cb3", label: "CB", x: 35, y: 70, mobileX: 30, mobileY: 77 },
+  { id: "rm", label: "RM", x: 78, y: 49, mobileX: 84, mobileY: 53 },
+  { id: "cm1", label: "CM", x: 61, y: 50, mobileX: 67, mobileY: 54 },
+  { id: "cm2", label: "CM", x: 50, y: 55, mobileX: 50, mobileY: 60 },
+  { id: "cm3", label: "CM", x: 39, y: 50, mobileX: 33, mobileY: 54 },
+  { id: "lm", label: "LM", x: 22, y: 49, mobileX: 16, mobileY: 53 },
+  { id: "st1", label: "ST", x: 42, y: 20, mobileX: 38, mobileY: 18 },
+  { id: "st2", label: "ST", x: 58, y: 20, mobileX: 62, mobileY: 18 }] };
 
 
 const DEFAULT_FORMATION_NAME = "4-3-3";
@@ -1707,6 +1706,18 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   });
   const [movingSlotId, setMovingSlotId] = useState(null);
   const [clubCollection, setClubCollection] = useState(() => getStoredJson("draftXIClubCollection", []));
+  const [isMobileFormation, setIsMobileFormation] = useState(() => window.innerWidth <= 768);
+
+  useEffect(() => {
+    function handleFormationResize() {
+      setIsMobileFormation(window.innerWidth <= 768);
+    }
+
+    handleFormationResize();
+    window.addEventListener("resize", handleFormationResize);
+    return () => window.removeEventListener("resize", handleFormationResize);
+  }, []);
+
 
   const spinnerRef = useRef(null);
   const clubPanelRef = useRef(null);
@@ -2656,7 +2667,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("section", { className: "pitch-wrap auto-focus-section", ref: pitchRef }, /*#__PURE__*/
     React.createElement("h2", null, "Your XI"), /*#__PURE__*/
     React.createElement("div", { className: "pitch" },
-    FORMATION.map(slot => {
+    FORMATION.map(slot => {var _slot$mobileX, _slot$mobileY;
       const player = draft[slot.id];
       return /*#__PURE__*/(
         React.createElement("div", {
@@ -2664,7 +2675,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           role: "button",
           tabIndex: 0,
           className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${transferMode && player ? "transfer-remove" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,
-          style: { left: `${slot.x}%`, top: `${slot.y}%` },
+          style: { left: `${isMobileFormation ? (_slot$mobileX = slot.mobileX) !== null && _slot$mobileX !== void 0 ? _slot$mobileX : slot.x : slot.x}%`, top: `${isMobileFormation ? (_slot$mobileY = slot.mobileY) !== null && _slot$mobileY !== void 0 ? _slot$mobileY : slot.y : slot.y}%` },
           onClick: () => {
             if (transferMode && player) removePlayerForTransfer(slot.id);else
             if (movingSlotId && !player) movePlayerToSlot(slot.id);else

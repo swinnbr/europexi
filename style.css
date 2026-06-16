@@ -2410,3 +2410,710 @@ button:disabled,
     font-size: 11px;
   }
 }
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(45, 212, 191, 0.25), transparent 30%),
+    linear-gradient(135deg, #062816, #0b3d20 45%, #052013);
+  color: #f8fafc;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.app-shell {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.hero-card,
+.controls-card,
+.pitch-card,
+.side-panel > section,
+.table-card {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(7, 31, 19, 0.82);
+  backdrop-filter: blur(16px);
+  border-radius: 28px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
+.hero-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #86efac;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 8px;
+  font-size: clamp(32px, 5vw, 64px);
+  line-height: 0.95;
+}
+
+h2 {
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+.subtitle {
+  max-width: 620px;
+  margin-bottom: 0;
+  color: #bbf7d0;
+  font-size: 16px;
+}
+
+.team-name-box {
+  min-width: 220px;
+}
+
+.team-name-box label {
+  display: block;
+  margin-bottom: 8px;
+  color: #bbf7d0;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.team-name-box input {
+  width: 100%;
+  border: 0;
+  border-radius: 16px;
+  padding: 12px 14px;
+  color: #052e16;
+  background: #f0fdf4;
+  outline: none;
+  font-weight: 900;
+}
+
+.controls-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.controls-card p {
+  margin-bottom: 0;
+  color: #bbf7d0;
+  font-size: 13px;
+}
+
+.formation-tabs,
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.formation-tabs button,
+.primary-btn,
+.secondary-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 16px;
+  font-weight: 900;
+}
+
+.formation-tabs button {
+  color: #dcfce7;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.formation-tabs button.active {
+  color: #052e16;
+  background: #86efac;
+}
+
+.primary-btn {
+  color: #052e16;
+  background: #4ade80;
+}
+
+.secondary-btn {
+  color: #dcfce7;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.pitch-card {
+  padding: 18px;
+}
+
+.pitch-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.pitch-header h2 {
+  margin-bottom: 2px;
+}
+
+.pitch-header p {
+  margin-bottom: 0;
+  color: #bbf7d0;
+}
+
+.rating-pill {
+  display: grid;
+  place-items: center;
+  min-width: 74px;
+  min-height: 74px;
+  border-radius: 22px;
+  color: #052e16;
+  background: #bbf7d0;
+  font-weight: 1000;
+}
+
+.rating-pill span {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.rating-pill small {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+}
+
+.pitch-container {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 8px;
+  overflow: hidden;
+}
+
+.pitch {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 0.68;
+  min-height: 520px;
+  border-radius: 30px;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.035) 0,
+      rgba(255,255,255,0.035) 11%,
+      rgba(255,255,255,0.075) 11%,
+      rgba(255,255,255,0.075) 22%
+    ),
+    linear-gradient(180deg, #15803d, #166534);
+  border: 4px solid rgba(255, 255, 255, 0.7);
+}
+
+.pitch::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 22px;
+  pointer-events: none;
+}
+
+.pitch-line {
+  position: absolute;
+  pointer-events: none;
+}
+
+.halfway {
+  left: 14px;
+  right: 14px;
+  top: 50%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.center-circle {
+  left: 50%;
+  top: 50%;
+  width: 130px;
+  height: 130px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+}
+
+.box {
+  position: absolute;
+  left: 50%;
+  width: 52%;
+  height: 16%;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.box-top {
+  top: 14px;
+  border-top: 0;
+}
+
+.box-bottom {
+  bottom: 14px;
+  border-bottom: 0;
+}
+
+.player-card {
+  position: absolute;
+  left: var(--desktop-x);
+  top: var(--desktop-y);
+  transform: translate(-50%, -50%);
+  width: 78px;
+  min-height: 62px;
+  display: grid;
+  place-items: center;
+  padding: 6px 5px;
+  border-radius: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.86);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  z-index: 2;
+}
+
+.player-card:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.38);
+  z-index: 5;
+}
+
+.player-card.empty {
+  border-style: dashed;
+  color: #f8fafc;
+}
+
+.player-rating {
+  display: block;
+  font-size: 18px;
+  font-weight: 1000;
+  line-height: 1;
+}
+
+.player-name {
+  display: block;
+  width: 100%;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-position {
+  display: block;
+  font-size: 10px;
+  font-weight: 1000;
+  opacity: 0.78;
+}
+
+.side-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.squad-card,
+.results-card {
+  padding: 18px;
+}
+
+.empty-note {
+  color: #bbf7d0;
+  margin-bottom: 0;
+}
+
+.squad-list,
+.results-list {
+  display: grid;
+  gap: 8px;
+}
+
+.squad-row,
+.result-row {
+  display: grid;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.squad-row {
+  grid-template-columns: 42px 1fr 36px;
+}
+
+.squad-row span {
+  color: #86efac;
+  font-weight: 1000;
+}
+
+.squad-row strong,
+.result-row span:last-child {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.squad-row b {
+  text-align: right;
+}
+
+.result-row {
+  grid-template-columns: 36px 44px 1fr;
+}
+
+.badge {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  font-weight: 1000;
+}
+
+.badge.w {
+  color: #052e16;
+  background: #86efac;
+}
+
+.badge.d {
+  color: #422006;
+  background: #fde68a;
+}
+
+.badge.l {
+  color: #450a0a;
+  background: #fca5a5;
+}
+
+.table-card {
+  margin-top: 18px;
+  padding: 18px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+}
+
+th {
+  color: #bbf7d0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.user-row {
+  background: rgba(134, 239, 172, 0.16);
+}
+
+/* Tablet cleanup */
+@media (max-width: 900px) {
+  .app-shell {
+    padding: 16px;
+  }
+
+  .hero-card,
+  .controls-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .game-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-name-box {
+    min-width: 0;
+  }
+}
+
+/* Main mobile formation fix */
+@media (max-width: 768px) {
+  .app-shell {
+    padding: 12px;
+  }
+
+  .hero-card,
+  .controls-card,
+  .pitch-card,
+  .side-panel > section,
+  .table-card {
+    border-radius: 22px;
+  }
+
+  .hero-card {
+    padding: 20px;
+  }
+
+  .controls-card {
+    padding: 14px;
+  }
+
+  .formation-tabs,
+  .button-row {
+    width: 100%;
+  }
+
+  .formation-tabs button,
+  .primary-btn,
+  .secondary-btn {
+    flex: 1 1 auto;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .pitch-card {
+    padding: 12px;
+  }
+
+  .pitch-header {
+    margin-bottom: 10px;
+  }
+
+  .rating-pill {
+    min-width: 58px;
+    min-height: 58px;
+    border-radius: 18px;
+  }
+
+  .rating-pill span {
+    font-size: 22px;
+  }
+
+  .pitch-container {
+    padding: 0 2px;
+  }
+
+  .pitch {
+    min-height: 0;
+    aspect-ratio: 0.58;
+    border-width: 3px;
+    border-radius: 24px;
+  }
+
+  .pitch::before {
+    inset: 10px;
+    border-radius: 18px;
+  }
+
+  .box {
+    width: 58%;
+    height: 14%;
+  }
+
+  .center-circle {
+    width: 92px;
+    height: 92px;
+  }
+
+  .player-card {
+    left: var(--mobile-x);
+    top: var(--mobile-y);
+    width: 54px;
+    min-height: 46px;
+    padding: 3px 2px;
+    border-radius: 10px;
+    border-width: 1.5px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.34);
+  }
+
+  .player-rating {
+    font-size: 13px;
+  }
+
+  .player-name {
+    max-width: 48px;
+    font-size: 8px;
+    line-height: 1;
+  }
+
+  .player-position {
+    display: none;
+  }
+
+  .player-card:hover {
+    transform: translate(-50%, -50%) scale(1.03);
+  }
+
+  .squad-card,
+  .results-card,
+  .table-card {
+    padding: 14px;
+  }
+}
+
+/* Small phone cleanup */
+@media (max-width: 430px) {
+  h1 {
+    font-size: 34px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .pitch {
+    aspect-ratio: 0.54;
+  }
+
+  .player-card {
+    width: 47px;
+    min-height: 41px;
+    border-radius: 9px;
+  }
+
+  .player-rating {
+    font-size: 12px;
+  }
+
+  .player-name {
+    max-width: 42px;
+    font-size: 7.25px;
+  }
+
+  .pitch-header h2 {
+    font-size: 17px;
+  }
+
+  .pitch-header p {
+    font-size: 12px;
+  }
+
+  .squad-row {
+    grid-template-columns: 36px 1fr 32px;
+    font-size: 13px;
+  }
+
+  .result-row {
+    grid-template-columns: 34px 42px 1fr;
+    font-size: 13px;
+  }
+}
+
+/* Very narrow phones */
+@media (max-width: 360px) {
+  .pitch {
+    aspect-ratio: 0.5;
+  }
+
+  .player-card {
+    width: 43px;
+    min-height: 38px;
+    padding: 2px;
+  }
+
+  .player-rating {
+    font-size: 11px;
+  }
+
+  .player-name {
+    max-width: 39px;
+    font-size: 6.8px;
+  }
+}
+/* Mobile formation spacing patch */
+@media (max-width: 768px) {
+  .pitch {
+    min-height: 600px;
+    overflow: visible;
+  }
+
+  .slot,
+  .player-card {
+    transition: all 0.2s ease;
+  }
+
+  .player-card {
+    width: 54px;
+    min-height: 46px;
+    padding: 4px 2px;
+  }
+
+  .player-card .player-name {
+    font-size: 8px;
+    line-height: 1;
+  }
+
+  .player-card .player-rating {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .pitch {
+    min-height: 560px;
+  }
+
+  .player-card {
+    width: 48px;
+    min-height: 42px;
+  }
+
+  .player-card .player-name {
+    font-size: 7px;
+  }
+
+  .player-card .player-rating {
+    font-size: 11px;
+  }
+}
