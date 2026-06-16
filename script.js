@@ -1,4 +1,4 @@
-// Draft XI Europe v3.0 — normalized team stats + formations hotfix
+// Draft XI Europe v4.0 — fresh JSX with 20-team table, expanded variety, no repeats, and no generic players
 // Draft XI: Europe v2.0 — integrated CodePen JSX
 // Includes expanded teams, contextual alternate positions, fair spinner, reroll, locked players, smarter greying, live simulation, and Play Again.
 function setMobileViewportHeight() {
@@ -9,6 +9,7 @@ function setMobileViewportHeight() {
 }
 
 setMobileViewportHeight();
+window.removeEventListener("resize", setMobileViewportHeight);
 window.addEventListener("resize", setMobileViewportHeight);
 const { useMemo, useState, useRef } = React;
 
@@ -713,8 +714,294 @@ const SMALLER_CLUBS = [
 
 
 
-const STANDARD_CLUB_POOL = [...CLUBS, ...SMALLER_CLUBS];
+
+
+const EXTRA_TOP5_CLUBS = [
+{
+  id: "roma0001_extra",
+  name: "Roma",
+  league: "Serie A",
+  season: "2000-01",
+  color: "#8E1F2F",
+  rating: 86,
+  players: [
+  ["Francesco Totti", "CAM", 91], ["Gabriel Batistuta", "ST", 89], ["Cafu", "RB", 88],
+  ["Walter Samuel", "CB", 87], ["Emerson", "CDM", 86], ["Vincenzo Montella", "ST", 86],
+  ["Damiano Tommasi", "CM", 84], ["Aldair", "CB", 84], ["Vincent Candela", "LB", 84],
+  ["Hidetoshi Nakata", "CAM", 83], ["Francesco Antonioli", "GK", 82]] },
+
+
+{
+  id: "lazio1718_extra",
+  name: "Lazio",
+  league: "Serie A",
+  season: "2017-18",
+  color: "#87D8F7",
+  rating: 84,
+  players: [
+  ["Ciro Immobile", "ST", 88], ["Luis Alberto", "CAM", 86], ["Sergej Milinkovic-Savic", "CM", 87],
+  ["Lucas Leiva", "CDM", 84], ["Stefan de Vrij", "CB", 85], ["Thomas Strakosha", "GK", 82],
+  ["Senad Lulic", "LM", 82], ["Adam Marusic", "RM", 81], ["Felipe Anderson", "RW", 84],
+  ["Bastos Quissanga", "CB", 80], ["Jordan Lukaku", "LB", 79]] },
+
+
+{
+  id: "fiorentina9899_extra",
+  name: "Fiorentina",
+  league: "Serie A",
+  season: "1998-99",
+  color: "#5B2C83",
+  rating: 84,
+  players: [
+  ["Gabriel Batistuta", "ST", 91], ["Rui Costa", "CAM", 89], ["Francesco Toldo", "GK", 87],
+  ["Moreno Torricelli", "RB", 82], ["Jorg Heinrich", "LB", 82], ["Luis Oliveira", "ST", 82],
+  ["Angelo Di Livio", "RM", 83], ["Stefan Schwarz", "CDM", 82], ["Aldo Firicano", "CB", 80],
+  ["Emiliano Bigica", "CM", 79], ["Heinrich", "CB", 79]] },
+
+
+{
+  id: "marseille9293_extra",
+  name: "Marseille",
+  league: "Ligue 1",
+  season: "1992-93",
+  color: "#00A3E0",
+  rating: 87,
+  players: [
+  ["Fabien Barthez", "GK", 87], ["Marcel Desailly", "CB", 89], ["Didier Deschamps", "CDM", 88],
+  ["Alen Boksic", "ST", 87], ["Rudi Voller", "ST", 86], ["Abedi Pele", "CAM", 89],
+  ["Basile Boli", "CB", 86], ["Eric Di Meco", "LB", 84], ["Jocelyn Angloma", "RB", 84],
+  ["Franck Sauzee", "CM", 85], ["Jean-Philippe Durand", "CM", 81]] },
+
+
+{
+  id: "nice2223_extra",
+  name: "Nice",
+  league: "Ligue 1",
+  season: "2022-23",
+  color: "#D71920",
+  rating: 80,
+  players: [
+  ["Kasper Schmeichel", "GK", 81], ["Jean-Clair Todibo", "CB", 84], ["Dante", "CB", 82],
+  ["Melvin Bard", "LB", 79], ["Jordan Lotomba", "RB", 78], ["Khephren Thuram", "CM", 83],
+  ["Aaron Ramsey", "CM", 80], ["Sofiane Diop", "CAM", 80], ["Nicolas Pepe", "RW", 81],
+  ["Gaetan Laborde", "ST", 81], ["Terem Moffi", "ST", 82]] },
+
+
+{
+  id: "montpellier1112_extra",
+  name: "Montpellier",
+  league: "Ligue 1",
+  season: "2011-12",
+  color: "#F58220",
+  rating: 81,
+  players: [
+  ["Olivier Giroud", "ST", 85], ["Younes Belhanda", "CAM", 84], ["Mapou Yanga-Mbiwa", "CB", 83],
+  ["Remy Cabella", "CAM", 81], ["Henri Bedimo", "LB", 81], ["Vitorino Hilton", "CB", 80],
+  ["Jamel Saihi", "CDM", 79], ["Marco Estrada", "CM", 79], ["Souleymane Camara", "RW", 79],
+  ["John Utaka", "LW", 80], ["Geoffrey Jourdren", "GK", 78]] },
+
+
+{
+  id: "wolfsburg0809_extra",
+  name: "Wolfsburg",
+  league: "Bundesliga",
+  season: "2008-09",
+  color: "#65B32E",
+  rating: 84,
+  players: [
+  ["Edin Dzeko", "ST", 88], ["Grafite", "ST", 87], ["Zvjezdan Misimovic", "CAM", 86],
+  ["Josue", "CDM", 82], ["Christian Gentner", "CM", 81], ["Makoto Hasebe", "CM", 80],
+  ["Marcel Schafer", "LB", 81], ["Andrea Barzagli", "CB", 83], ["Ricardo Costa", "CB", 81],
+  ["Sascha Riether", "RB", 80], ["Diego Benaglio", "GK", 83]] },
+
+
+{
+  id: "stuttgart0607_extra",
+  name: "Stuttgart",
+  league: "Bundesliga",
+  season: "2006-07",
+  color: "#E32219",
+  rating: 82,
+  players: [
+  ["Mario Gomez", "ST", 86], ["Cacau", "ST", 82], ["Thomas Hitzlsperger", "CM", 83],
+  ["Sami Khedira", "CDM", 82], ["Pavel Pardo", "CDM", 81], ["Roberto Hilbert", "RM", 80],
+  ["Ludovic Magnin", "LB", 79], ["Fernando Meira", "CB", 83], ["Serdar Tasci", "CB", 81],
+  ["Andreas Hinkel", "RB", 80], ["Timo Hildebrand", "GK", 84]] },
+
+
+{
+  id: "schalke1011_extra",
+  name: "Schalke",
+  league: "Bundesliga",
+  season: "2010-11",
+  color: "#004B9B",
+  rating: 82,
+  players: [
+  ["Manuel Neuer", "GK", 89], ["Raul Gonzalez", "ST", 86], ["Klaas-Jan Huntelaar", "ST", 84],
+  ["Jefferson Farfan", "RW", 84], ["Benedikt Howedes", "CB", 83], ["Joel Matip", "CB", 82],
+  ["Atsuto Uchida", "RB", 80], ["Christian Fuchs", "LB", 80], ["Peer Kluge", "CM", 78],
+  ["Ivan Rakitic", "CM", 83], ["Julian Draxler", "LW", 79]] },
+
+
+{
+  id: "betis2122_extra",
+  name: "Real Betis",
+  league: "La Liga",
+  season: "2021-22",
+  color: "#00954C",
+  rating: 82,
+  players: [
+  ["Nabil Fekir", "CAM", 86], ["Sergio Canales", "CM", 84], ["William Carvalho", "CDM", 82],
+  ["Borja Iglesias", "ST", 82], ["Juanmi", "LW", 82], ["Joaquin", "RW", 81],
+  ["Alex Moreno", "LB", 81], ["Hector Bellerin", "RB", 80], ["Marc Bartra", "CB", 81],
+  ["German Pezzella", "CB", 81], ["Claudio Bravo", "GK", 80]] },
+
+
+{
+  id: "athletic1112_extra",
+  name: "Athletic Club",
+  league: "La Liga",
+  season: "2011-12",
+  color: "#EE2523",
+  rating: 82,
+  players: [
+  ["Fernando Llorente", "ST", 86], ["Iker Muniain", "LW", 84], ["Javi Martinez", "CDM", 85],
+  ["Ander Herrera", "CM", 83], ["Markel Susaeta", "RW", 82], ["Oscar de Marcos", "RM", 81],
+  ["Andoni Iraola", "RB", 83], ["Mikel San Jose", "CB", 81], ["Fernando Amorebieta", "CB", 81],
+  ["Jon Aurtenetxe", "LB", 78], ["Gorka Iraizoz", "GK", 80]] },
+
+
+{
+  id: "depor9900_extra",
+  name: "Deportivo La Coruna",
+  league: "La Liga",
+  season: "1999-00",
+  color: "#005BBB",
+  rating: 84,
+  players: [
+  ["Roy Makaay", "ST", 86], ["Djalminha", "CAM", 87], ["Mauro Silva", "CDM", 86],
+  ["Fran Gonzalez", "LW", 84], ["Donato", "CB", 83], ["Naybet", "CB", 83],
+  ["Manuel Pablo", "RB", 82], ["Joan Capdevila", "LB", 82], ["Victor Sanchez", "RW", 82],
+  ["Flavio Conceicao", "CM", 83], ["Jacques Songo'o", "GK", 82]] },
+
+
+{
+  id: "everton0405_extra",
+  name: "Everton",
+  league: "Premier League",
+  season: "2004-05",
+  color: "#003399",
+  rating: 80,
+  players: [
+  ["Tim Cahill", "CAM", 83], ["Mikel Arteta", "CM", 84], ["Thomas Gravesen", "CM", 82],
+  ["Duncan Ferguson", "ST", 80], ["Leon Osman", "RM", 79], ["Kevin Kilbane", "LM", 78],
+  ["Tony Hibbert", "RB", 78], ["David Weir", "CB", 80], ["Joseph Yobo", "CB", 81],
+  ["Alessandro Pistone", "LB", 77], ["Nigel Martyn", "GK", 82]] },
+
+
+{
+  id: "westham1516_extra",
+  name: "West Ham",
+  league: "Premier League",
+  season: "2015-16",
+  color: "#7A263A",
+  rating: 80,
+  players: [
+  ["Dimitri Payet", "CAM", 86], ["Manuel Lanzini", "CAM", 82], ["Mark Noble", "CM", 81],
+  ["Cheikhou Kouyate", "CDM", 81], ["Michail Antonio", "RW", 81], ["Diafra Sakho", "ST", 79],
+  ["Aaron Cresswell", "LB", 81], ["Winston Reid", "CB", 80], ["James Collins", "CB", 79],
+  ["Carl Jenkinson", "RB", 78], ["Adrian San Miguel", "GK", 80]] },
+
+
+{
+  id: "leeds0001_extra",
+  name: "Leeds United",
+  league: "Premier League",
+  season: "2000-01",
+  color: "#FFCD00",
+  rating: 83,
+  players: [
+  ["Rio Ferdinand", "CB", 87], ["Harry Kewell", "LW", 86], ["Mark Viduka", "ST", 85],
+  ["Alan Smith", "ST", 82], ["Lee Bowyer", "CM", 83], ["Olivier Dacourt", "CDM", 82],
+  ["Ian Harte", "LB", 82], ["Jonathan Woodgate", "CB", 84], ["Gary Kelly", "RB", 80],
+  ["Nigel Martyn", "GK", 84], ["Eirik Bakke", "CM", 79]] },
+
+
+{
+  id: "parma9899_extra",
+  name: "Parma",
+  league: "Serie A",
+  season: "1998-99",
+  color: "#FFDD00",
+  rating: 86,
+  players: [
+  ["Gianluigi Buffon", "GK", 90], ["Lilian Thuram", "CB", 90], ["Fabio Cannavaro", "CB", 89],
+  ["Juan Sebastian Veron", "CM", 89], ["Hernan Crespo", "ST", 89], ["Enrico Chiesa", "ST", 86],
+  ["Dino Baggio", "CDM", 84], ["Diego Fuser", "RM", 83], ["Alain Boghossian", "CM", 82],
+  ["Antonio Benarrivo", "LB", 83], ["Paolo Vanoli", "LB", 81]] },
+
+
+{
+  id: "bremen0304_extra",
+  name: "Werder Bremen",
+  league: "Bundesliga",
+  season: "2003-04",
+  color: "#1D9053",
+  rating: 83,
+  players: [
+  ["Ailton", "ST", 86], ["Johan Micoud", "CAM", 86], ["Miroslav Klose", "ST", 85],
+  ["Torsten Frings", "CM", 84], ["Frank Baumann", "CDM", 82], ["Tim Borowski", "CM", 81],
+  ["Valerien Ismael", "CB", 83], ["Mladen Krstajic", "CB", 82], ["Paul Stalteri", "RB", 80],
+  ["Christian Schulz", "LB", 79], ["Andreas Reinke", "GK", 80]] },
+
+
+{
+  id: "mallorca9899_extra",
+  name: "Mallorca",
+  league: "La Liga",
+  season: "1998-99",
+  color: "#E20613",
+  rating: 80,
+  players: [
+  ["Samuel Eto'o", "ST", 84], ["Dani Guiza", "ST", 82], ["Juan Carlos Valeron", "CAM", 83],
+  ["Ariel Ibagaza", "CAM", 82], ["Lauren", "RB", 81], ["Miguel Angel Nadal", "CB", 82],
+  ["Marcelino Elena", "CB", 80], ["Jovan Stankovic", "LW", 79], ["Vicente Engonga", "CDM", 80],
+  ["Miquel Soler", "LB", 78], ["Carlos Roa", "GK", 81]] },
+
+
+{
+  id: "toulouse2223_extra",
+  name: "Toulouse",
+  league: "Ligue 1",
+  season: "2022-23",
+  color: "#6F2DA8",
+  rating: 78,
+  players: [
+  ["Thijs Dallinga", "ST", 80], ["Branco van den Boomen", "CM", 80], ["Zakaria Aboukhlal", "RW", 79],
+  ["Rafael Ratao", "LW", 78], ["Stijn Spierings", "CDM", 79], ["Farès Chaibi", "CAM", 79],
+  ["Mikkel Desler", "RB", 77], ["Rasmus Nicolaisen", "CB", 78], ["Anthony Rouault", "CB", 78],
+  ["Issiaga Sylla", "LB", 77], ["Maxime Dupe", "GK", 78]] },
+
+
+{
+  id: "mainz2223_extra",
+  name: "Mainz",
+  league: "Bundesliga",
+  season: "2022-23",
+  color: "#C3141E",
+  rating: 79,
+  players: [
+  ["Robin Zentner", "GK", 79], ["Silvan Widmer", "RB", 79], ["Stefan Bell", "CB", 79],
+  ["Alexander Hack", "CB", 78], ["Aaron Martin", "LB", 79], ["Anton Stach", "CM", 81],
+  ["Leandro Barreiro", "CM", 79], ["Dominik Kohr", "CDM", 79], ["Jae-sung Lee", "CAM", 80],
+  ["Karim Onisiwo", "ST", 80], ["Jonathan Burkardt", "ST", 79]] }];
+
+
+
+
+const STANDARD_CLUB_POOL = [...CLUBS, ...SMALLER_CLUBS, ...EXTRA_TOP5_CLUBS];
 const ALL_CLUBS = [...STANDARD_CLUB_POOL, ...JACKPOT_CLUBS];
+const TOP_FIVE_LEAGUES = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1"];
 
 function getClubTier(club) {
   if (club.jackpot) return "jackpot";
@@ -759,6 +1046,32 @@ const OPPONENTS = [
 ["Inter Milan", 88], ["AC Milan", 85], ["Juventus", 84], ["Napoli", 85],
 ["Roma", 81], ["PSG", 88], ["Monaco", 81], ["Lyon", 79], ["Marseille", 80]];
 
+
+const CLUB_NAME_SUFFIXES = [
+...ALL_CLUBS.map(club => club.name),
+"Roma", "Lazio", "Fiorentina", "Marseille", "Nice", "Wolfsburg",
+"Stuttgart", "Schalke", "Betis", "Athletic", "Everton", "Leeds",
+"Parma", "Bremen", "Mallorca", "Toulouse"].
+sort((a, b) => b.length - a.length);
+
+function cleanPlayerName(name) {
+  let cleaned = String(name || "").trim();
+
+  cleaned = cleaned.
+  replace(/\s*[-–—|]\s*.+$/, "").
+  replace(/\s*\([^)]*\)\s*$/, "").
+  trim();
+
+  for (const clubName of CLUB_NAME_SUFFIXES) {
+    const suffix = ` ${clubName}`;
+    if (cleaned.toLowerCase().endsWith(suffix.toLowerCase())) {
+      cleaned = cleaned.slice(0, -suffix.length).trim();
+      break;
+    }
+  }
+
+  return cleaned;
+}
 
 function getRatingClass(rating) {
   if (rating >= 90) return "rating-red";
@@ -845,101 +1158,70 @@ function getAltPositions(name, mainPosition) {
 }
 
 
-const POSITION_POOL = {
-  GK: [
-  ["Squad Goalkeeper", "GK", 76]],
-
-  RB: [
-  ["Squad Right Back", "RB", 76]],
-
-  CB: [
-  ["Squad Centre Back", "CB", 76],
-  ["Reserve Centre Back", "CB", 75]],
-
-  LB: [
-  ["Squad Left Back", "LB", 76]],
-
-  CDM: [
-  ["Squad Holding Midfielder", "CDM", 77]],
-
-  CM: [
-  ["Squad Central Midfielder", "CM", 77]],
-
-  CAM: [
-  ["Squad Attacking Midfielder", "CAM", 77]],
-
-  RM: [
-  ["Squad Right Midfielder", "RM", 77]],
-
-  LM: [
-  ["Squad Left Midfielder", "LM", 77]],
-
-  RW: [
-  ["Squad Right Winger", "RW", 77]],
-
-  ST: [
-  ["Squad Striker", "ST", 77]],
-
-  LW: [
-  ["Squad Left Winger", "LW", 77]] };
-
-
-
 function ensureSquadCoverage(club) {
-  const squad = [...club.players];
-
-  const hasPosition = (position) =>
-  squad.some(player => {
-    const natural = player[1];
-    const positions = getAltPositions(player[0], natural);
-    return positions.includes(position);
-  });
-
-  const requiredPositions = ["GK", "RB", "CB", "CB", "LB", "CDM", "CM", "CAM", "RM", "LM", "RW", "ST", "LW"];
-
-  requiredPositions.forEach((position, index) => {
-    const matchingCount = squad.filter(player => {
-      const natural = player[1];
-      const positions = getAltPositions(player[0], natural);
-      return positions.includes(position);
-    }).length;
-
-    const needed = position === "CB" ? 2 : 1;
-
-    if (matchingCount < needed) {var _POSITION_POOL$positi;
-      const fallback = (_POSITION_POOL$positi = POSITION_POOL[position]) === null || _POSITION_POOL$positi === void 0 ? void 0 : _POSITION_POOL$positi[index % POSITION_POOL[position].length];
-
-      if (fallback) {
-        squad.push([
-        `${club.name} ${fallback[0]}`,
-        fallback[1],
-        fallback[2]]);
-
-      }
-    }
-  });
-
-  return squad;
+  // Generic fallback players removed.
+  // Only real database players appear in spins and player selections.
+  return [...club.players];
 }
 
 function makePlayers(club) {
   return ensureSquadCoverage(club).
-  map((p, index) => ({
-    id: `${club.id}_${index}`,
-    name: p[0],
-    position: p[1],
-    positions: getAltPositions(p[0], p[1]),
-    rating: p[2],
-    club: club.name,
-    season: club.season,
-    league: club.league,
-    color: club.color })).
+  map((p, index) => {
+    const name = cleanPlayerName(p[0]);
 
+    return {
+      id: `${club.id}_${index}`,
+      name,
+      rawName: p[0],
+      position: p[1],
+      positions: getAltPositions(name, p[1]),
+      rating: p[2],
+      club: club.name,
+      season: club.season,
+      league: club.league,
+      color: club.color };
+
+  }).
   sort((a, b) => b.rating - a.rating || a.name.localeCompare(b.name));
 }
 
 function shuffleArray(array) {
   return [...array].sort(() => Math.random() - 0.5);
+}
+
+function getStoredJson(key, fallback) {
+  try {
+    return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function saveStoredJson(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // localStorage may be blocked. Ignore safely.
+  }
+}
+
+function getClubCollectionStats(collectionIds) {
+  const uniqueIds = Array.from(new Set(collectionIds || []));
+  const clubs = uniqueIds.
+  map(id => ALL_CLUBS.find(club => club.id === id)).
+  filter(Boolean);
+
+  const byLeague = TOP_FIVE_LEAGUES.map(league => ({
+    league,
+    count: clubs.filter(club => club.league === league).length }));
+
+
+  return {
+    total: uniqueIds.length,
+    percent: Math.round(uniqueIds.length / Math.max(ALL_CLUBS.length, 1) * 100),
+    byLeague,
+    recent: clubs.slice(-8).reverse() };
+
 }
 
 function buildSchedule() {
@@ -1261,7 +1543,132 @@ function createPlayerSeasonStats(players, matches) {
   sort((a, b) => b.averageRating - a.averageRating || b.goals - a.goals);
 }
 
-function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch$allSco;
+
+function clampNumber(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function seededRandom(seed) {
+  const x = Math.sin(seed * 999.91) * 10000;
+  return x - Math.floor(x);
+}
+
+function simulateOpponentSeason(teamName, rating, week, index) {
+  let wins = 0;
+  let draws = 0;
+  let losses = 0;
+
+  // Gives every AI club its own identity so the table does not look copy-pasted.
+  const clubPersonality = (seededRandom(index + 11) - 0.5) * 0.12;
+  const formWave = Math.sin((week + index * 2.7) / 5) * 0.035;
+  const strength = (rating - 82) / 10;
+
+  for (let match = 1; match <= week; match++) {
+    const gameNoise = (seededRandom(index * 73 + match * 19) - 0.5) * 0.12;
+
+    let winChance = 0.36 + strength * 0.06 + clubPersonality + formWave + gameNoise;
+    let drawChance = 0.23 - strength * 0.015 + (seededRandom(index * 31 + match * 7) - 0.5) * 0.05;
+
+    winChance = clampNumber(winChance, 0.16, 0.72);
+    drawChance = clampNumber(drawChance, 0.12, 0.31);
+
+    const roll = seededRandom(index * 997 + match * 101 + Math.round(rating * 13));
+
+    if (roll < winChance) wins += 1;else
+    if (roll < winChance + drawChance) draws += 1;else
+    losses += 1;
+  }
+
+  return {
+    team: teamName,
+    played: week,
+    wins,
+    draws,
+    losses,
+    points: wins * 3 + draws };
+
+}
+
+function buildLiveLeagueTable(matches, yourTeamName = "Draft XI") {
+  const week = Math.min(38, Math.max(matches.length, 1));
+  const yourWins = matches.filter(m => m.result === "W").length;
+  const yourDraws = matches.filter(m => m.result === "D").length;
+  const yourLosses = matches.filter(m => m.result === "L").length;
+  const yourPts = yourWins * 3 + yourDraws;
+
+  const rows = OPPONENTS.slice(0, 19).map(([name, rating], index) =>
+  simulateOpponentSeason(name, rating, week, index));
+
+
+  rows.push({
+    team: yourTeamName,
+    played: week,
+    wins: yourWins,
+    draws: yourDraws,
+    losses: yourLosses,
+    points: yourPts,
+    user: true });
+
+
+  return rows.
+  sort(
+  (a, b) =>
+  b.points - a.points ||
+  b.wins - a.wins ||
+  a.losses - b.losses ||
+  a.team.localeCompare(b.team)).
+
+  map((row, index) => ({ ...row, position: index + 1 }));
+}
+
+function calculateSeasonAwards(summary, playerStats) {
+  if (!playerStats.length) return [];
+
+  const topScorer = [...playerStats].sort((a, b) => b.goals - a.goals || b.averageRating - a.averageRating)[0];
+  const topAssister = [...playerStats].sort((a, b) => b.assists - a.assists || b.averageRating - a.averageRating)[0];
+  const mvp = [...playerStats].sort((a, b) => b.averageRating - a.averageRating || b.goals - a.goals)[0];
+  const goldenGlove = [...playerStats].
+  filter(p => p.position === "GK").
+  sort((a, b) => b.cleanSheets - a.cleanSheets || b.averageRating - a.averageRating)[0];
+  const flop = [...playerStats].sort((a, b) => a.averageRating - b.averageRating)[0];
+
+  const awards = [
+  { icon: "🏆", title: "Player of the Season", value: `${mvp.name} · ${mvp.averageRating} AVG` },
+  { icon: "⚽", title: "Golden Boot", value: `${topScorer.name} · ${topScorer.goals} goals` },
+  { icon: "🎯", title: "Assist King", value: `${topAssister.name} · ${topAssister.assists} assists` }];
+
+
+  if (goldenGlove) {
+    awards.push({ icon: "🧤", title: "Golden Glove", value: `${goldenGlove.name} · ${goldenGlove.cleanSheets} clean sheets` });
+  }
+
+  awards.push({ icon: "😬", title: "Flop Watch", value: `${flop.name} · ${flop.averageRating} AVG` });
+
+  if (summary.wins === 38) {
+    awards.unshift({ icon: "🐐", title: "Perfect Season", value: "38 wins from 38 matches" });
+  }
+
+  return awards;
+}
+
+function makeHistoryEntry(summary, playerStats, formationName, teamRating) {
+  const topScorer = [...playerStats].sort((a, b) => b.goals - a.goals)[0];
+  const mvp = [...playerStats].sort((a, b) => b.averageRating - a.averageRating)[0];
+
+  return {
+    id: `${Date.now()}_${Math.random().toString(16).slice(2)}`,
+    date: new Date().toLocaleDateString(),
+    formation: formationName,
+    teamRating,
+    record: `${summary.wins}-${summary.draws}-${summary.losses}`,
+    points: summary.points,
+    badge: summary.badge,
+    topScorer: topScorer ? `${topScorer.name} (${topScorer.goals})` : "None",
+    mvp: mvp ? `${mvp.name} (${mvp.averageRating})` : "None" };
+
+}
+
+function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch$allSco;
   const [gameStarted, setGameStarted] = useState(false);
   const [selectedFormationName, setSelectedFormationName] = useState(DEFAULT_FORMATION_NAME);
   const [currentClub, setCurrentClub] = useState(null);
@@ -1275,6 +1682,7 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
   const [spinTargetIndex, setSpinTargetIndex] = useState(-1);
   const [lastClubId, setLastClubId] = useState(null);
   const [recentClubIds, setRecentClubIds] = useState([]);
+  const [usedClubIds, setUsedClubIds] = useState([]);
   const [simulating, setSimulating] = useState(false);
   const [liveMatch, setLiveMatch] = useState(null);
   const [liveSeason, setLiveSeason] = useState(null);
@@ -1286,7 +1694,19 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
   const [soundMuted, setSoundMuted] = useState(false);
   const [rewards, setRewards] = useState([]);
   const [playerSeasonStats, setPlayerSeasonStats] = useState([]);
+  const [seasonAwards, setSeasonAwards] = useState([]);
+  const [liveLeagueTable, setLiveLeagueTable] = useState([]);
+  const [transferMode, setTransferMode] = useState(false);
+  const [transferUsed, setTransferUsed] = useState(false);
+  const [draftHistory, setDraftHistory] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("draftXIHistory") || "[]");
+    } catch (error) {
+      return [];
+    }
+  });
   const [movingSlotId, setMovingSlotId] = useState(null);
+  const [clubCollection, setClubCollection] = useState(() => getStoredJson("draftXIClubCollection", []));
 
   const spinnerRef = useRef(null);
   const clubPanelRef = useRef(null);
@@ -1305,6 +1725,7 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
 
   const FORMATION = FORMATIONS[selectedFormationName] || FORMATIONS[DEFAULT_FORMATION_NAME];
   const draftedPlayers = Object.values(draft);
+  const collectionStats = useMemo(() => getClubCollectionStats(clubCollection), [clubCollection]);
 
   const teamRating = useMemo(() => {
     if (!draftedPlayers.length) return 0;
@@ -1324,6 +1745,8 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
     setPickedNames([]);
     setSelectedPlayer(null);
     setCurrentClub(null);
+    setRecentClubIds([]);
+    setUsedClubIds([]);
     setSpinWinner(null);
     setSpinReel([]);
     setSpinOffset(0);
@@ -1331,6 +1754,10 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
     setLastPlacedSlot(null);
     setResults(null);
     setRewards([]);
+    setSeasonAwards([]);
+    setLiveLeagueTable([]);
+    setTransferMode(false);
+    setTransferUsed(false);
     setPlayerSeasonStats([]);
     setSelectedMatch(null);
   }
@@ -1411,32 +1838,68 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
   }
 
   function pickClub(excludeCurrentId = null) {
+    const draftedLeagueCounts = draftedPlayers.reduce((counts, player) => {
+      counts[player.league] = (counts[player.league] || 0) + 1;
+      return counts;
+    }, {});
+
+    const remainingPicks = Math.max(0, 11 - draftedPlayers.length);
+    const missingTopFiveLeagues = TOP_FIVE_LEAGUES.filter(
+    league => !draftedLeagueCounts[league]);
+
+
     let available = ALL_CLUBS.filter(
     (club) =>
     club.id !== excludeCurrentId &&
-    club.id !== lastClubId &&
-    !recentClubIds.includes(club.id));
+    !usedClubIds.includes(club.id));
 
 
-    // If the recent-history filter gets too strict, only avoid the exact previous/current club.
-    if (available.length < 5) {
-      available = ALL_CLUBS.filter(
-      club => club.id !== excludeCurrentId && club.id !== lastClubId);
+    // League representation rule: by the end of the XI, force any missing Top 5 league.
+    // Earlier in the draft, gently prefer missing leagues so runs feel more varied.
+    if (missingTopFiveLeagues.length && available.length) {
+      const forceMissingLeague = remainingPicks <= missingTopFiveLeagues.length;
+      const preferMissingLeague = draftedPlayers.length < TOP_FIVE_LEAGUES.length;
+      const missingLeaguePool = available.filter((club) =>
+      missingTopFiveLeagues.includes(club.league));
 
+
+      if (missingLeaguePool.length && (forceMissingLeague || preferMissingLeague || Math.random() < 0.6)) {
+        available = missingLeaguePool;
+      }
     }
 
-    // Final safety fallback.
+    // If the run-wide no-repeat rule gets exhausted, relax only the older landed clubs.
     if (available.length === 0) {
       available = ALL_CLUBS.filter(club => club.id !== excludeCurrentId);
     }
 
-    return available[Math.floor(Math.random() * available.length)];
+    // Keep the tier weighting, but apply it after no-repeat and league balancing.
+    const weighted = [];
+    available.forEach(club => {
+      const tier = getClubTier(club);
+      let weight = 1;
+      if (tier === "underdog") weight = 7;
+      if (tier === "strong") weight = 5;
+      if (tier === "elite") weight = 3;
+      if (tier === "legendary") weight = 1;
+      if (tier === "jackpot") weight = 1;
+
+      for (let i = 0; i < weight; i++) weighted.push(club);
+    });
+
+    return weighted[Math.floor(Math.random() * weighted.length)] || available[0];
   }
 
   function finishSpin(winner) {
     setCurrentClub(winner);
     setLastClubId(winner.id);
     setRecentClubIds(prev => [...prev, winner.id].slice(-4));
+    setUsedClubIds(prev => Array.from(new Set([...prev, winner.id])));
+    setClubCollection(prev => {
+      const next = Array.from(new Set([...prev, winner.id]));
+      saveStoredJson("draftXIClubCollection", next);
+      return next;
+    });
     setSpinning(false);
 
     setTimeout(() => scrollToSection(clubPanelRef, "start"), 120);
@@ -1597,6 +2060,7 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
     setSpinTargetIndex(-1);
     setLastClubId(null);
     setRecentClubIds([]);
+    setUsedClubIds([]);
     setSimulating(false);
     setLiveMatch(null);
     setLiveSeason(null);
@@ -1606,12 +2070,51 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
     setRerollsLeft(3);
     setSelectedMatch(null);
     setRewards([]);
+    setSeasonAwards([]);
+    setLiveLeagueTable([]);
     setPlayerSeasonStats([]);
+    setTransferMode(false);
+    setTransferUsed(false);
     setMovingSlotId(null);
   }
 
+
+  function removePlayerForTransfer(slotId) {
+    if (!transferMode || transferUsed || simulating || results) return;
+
+    const player = draft[slotId];
+    if (!player) return;
+
+    setDraft(prev => {
+      const next = { ...prev };
+      delete next[slotId];
+      return next;
+    });
+
+    setPickedNames(prev => prev.filter(name => name !== player.name));
+    setSelectedPlayer(null);
+    setMovingSlotId(null);
+    setTransferMode(false);
+    setTransferUsed(true);
+    setCurrentClub(null);
+    setSpinWinner(null);
+    setResults(null);
+    playSound("reroll", soundMuted);
+    setTimeout(() => scrollToSection(pitchRef, "center"), 80);
+  }
+
+  function copyLatestResult() {var _navigator$clipboard;
+    if (!results) return;
+
+    const topScorer = [...playerSeasonStats].sort((a, b) => b.goals - a.goals)[0];
+    const mvp = [...playerSeasonStats].sort((a, b) => b.averageRating - a.averageRating)[0];
+    const text = `⚽ Draft XI: Europe\nFormation: ${selectedFormationName}\nRecord: ${results.wins}-${results.draws}-${results.losses}\nPoints: ${results.points}\nTop Scorer: ${(topScorer === null || topScorer === void 0 ? void 0 : topScorer.name) || "None"} (${(topScorer === null || topScorer === void 0 ? void 0 : topScorer.goals) || 0})\nMVP: ${(mvp === null || mvp === void 0 ? void 0 : mvp.name) || "None"} (${(mvp === null || mvp === void 0 ? void 0 : mvp.averageRating) || "--"})\n${results.badge}`;
+
+    (_navigator$clipboard = navigator.clipboard) === null || _navigator$clipboard === void 0 ? void 0 : _navigator$clipboard.writeText(text);
+  }
+
   function simulateSeason() {
-    if (draftedPlayers.length < 11 || simulating) return;
+    if (draftedPlayers.length < 11 || simulating || results) return;
 
     playSound("season", soundMuted);
     setSimulating(true);
@@ -1629,6 +2132,7 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
       recent: [] });
 
     setSimProgress(0);
+    setLiveLeagueTable(buildLiveLeagueTable([]));
 
     const fullRating =
     draftedPlayers.reduce((sum, player) => sum + player.finalRating, 0) / draftedPlayers.length;
@@ -1804,6 +2308,8 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
         0);
 
 
+        setLiveLeagueTable(buildLiveLeagueTable(gamesSoFar));
+
         setLiveSeason({
           week,
           wins: liveWins,
@@ -1828,10 +2334,35 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
     if (points >= 75) badge = "⭐ UCL Qualified";
 
     setTimeout(() => {
-      const summary = { wins, draws, losses, points, gf, ga, badge, matches };
+      const summary = {
+        wins,
+        draws,
+        losses,
+        points,
+        gf,
+        ga,
+        badge,
+        matches,
+        table: buildLiveLeagueTable(matches) };
+
+      const finalPlayerStats = createPlayerSeasonStats(draftedPlayers, matches);
+      const finalAwards = calculateSeasonAwards(summary, finalPlayerStats);
+      const historyEntry = makeHistoryEntry(summary, finalPlayerStats, selectedFormationName, teamRating);
+
       setResults(summary);
       setRewards(calculateRewards(summary));
-      setPlayerSeasonStats(createPlayerSeasonStats(draftedPlayers, matches));
+      setPlayerSeasonStats(finalPlayerStats);
+      setSeasonAwards(finalAwards);
+      setLiveLeagueTable(summary.table);
+      setDraftHistory(prev => {
+        const next = [historyEntry, ...prev].slice(0, 8);
+        try {
+          localStorage.setItem("draftXIHistory", JSON.stringify(next));
+        } catch {
+          // localStorage may be blocked. Ignore safely.
+        }
+        return next;
+      });
       setSimulating(false);
       setLiveMatch(null);
       setSimProgress(100);
@@ -1847,7 +2378,7 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
       React.createElement("h1", null, "Draft XI: Europe"), /*#__PURE__*/
       React.createElement("p", { className: "start-subtitle" }, "Build the greatest squad in European football history."), /*#__PURE__*/
       React.createElement("div", { className: "start-description" }, /*#__PURE__*/
-      React.createElement("p", null, "\u2022 Spin clubs from Europe's Top 5 leagues."), /*#__PURE__*/
+      React.createElement("p", null, "\u2022 Spin from ", ALL_CLUBS.length, " clubs across Europe's Top 5 leagues and jackpot teams."), /*#__PURE__*/
       React.createElement("p", null, "\u2022 Select any player from the club you land on."), /*#__PURE__*/
       React.createElement("p", null, "\u2022 Place them into the correct position on the pitch."), /*#__PURE__*/
       React.createElement("p", null, "\u2022 Use your 3 rerolls wisely."), /*#__PURE__*/
@@ -1891,6 +2422,21 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
 
 
 
+    React.createElement("section", { className: "collection-panel" }, /*#__PURE__*/
+    React.createElement("div", null, /*#__PURE__*/
+    React.createElement("strong", null, "Club Collection"), /*#__PURE__*/
+    React.createElement("span", null, collectionStats.total, "/", ALL_CLUBS.length, " clubs discovered \xB7 ", collectionStats.percent, "%")), /*#__PURE__*/
+
+    React.createElement("div", { className: "league-collection-mini" },
+    collectionStats.byLeague.map((item) => /*#__PURE__*/
+    React.createElement("span", { key: item.league }, item.league, ": ", item.count))),
+
+
+    usedClubIds.length > 0 && /*#__PURE__*/
+    React.createElement("small", null, "No-repeat active: ", usedClubIds.length, " landed club", usedClubIds.length === 1 ? "" : "s", " locked out this run.")), /*#__PURE__*/
+
+
+
     React.createElement("section", { className: "controls" }, /*#__PURE__*/
     React.createElement("button", { onClick: spinClub, disabled: spinning || !!currentClub || draftedPlayers.length >= 11 },
     spinning ? "Spinning..." : currentClub ? "Pick or Reroll" : "Spin Club"), /*#__PURE__*/
@@ -1898,8 +2444,15 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
     React.createElement("button", { className: "reroll", onClick: rerollClub, disabled: !currentClub || rerollsLeft <= 0 || spinning || draftedPlayers.length >= 11 },
     rerollsLeft > 0 ? `Reroll (${rerollsLeft})` : "No Rerolls"), /*#__PURE__*/
 
-    React.createElement("button", { onClick: simulateSeason, disabled: draftedPlayers.length < 11 || simulating },
-    simulating ? "Simulating..." : "Simulate Season"), /*#__PURE__*/
+    React.createElement("button", {
+      className: "transfer-lifeline",
+      onClick: () => setTransferMode(prev => !prev),
+      disabled: draftedPlayers.length < 11 || transferUsed || simulating || !!results },
+
+    transferUsed ? "Transfer Used" : transferMode ? "Cancel Transfer" : "Transfer Lifeline"), /*#__PURE__*/
+
+    React.createElement("button", { onClick: simulateSeason, disabled: draftedPlayers.length < 11 || simulating || !!results },
+    results ? "Season Complete" : simulating ? "Simulating..." : "Simulate Season"), /*#__PURE__*/
 
     React.createElement("button", { className: "ghost", onClick: resetGame }, "Reset"), /*#__PURE__*/
     React.createElement("button", {
@@ -1983,7 +2536,26 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
 
 
     React.createElement("small", { className: "sim-percent" },
-    simProgress, "% complete \xB7 Goals ", liveSeason.gf, "-", liveSeason.ga)),
+    simProgress, "% complete \xB7 Goals ", liveSeason.gf, "-", liveSeason.ga),
+
+
+    liveLeagueTable.length > 0 && /*#__PURE__*/
+    React.createElement("div", { className: "live-table-card" }, /*#__PURE__*/
+    React.createElement("h3", null, "Live League Table"), /*#__PURE__*/
+    React.createElement("div", { className: "mini-table" }, /*#__PURE__*/
+    React.createElement("div", { className: "mini-table-row head" }, /*#__PURE__*/
+    React.createElement("span", null, "#"), /*#__PURE__*/React.createElement("span", null, "Club"), /*#__PURE__*/React.createElement("span", null, "P"), /*#__PURE__*/React.createElement("span", null, "Pts")),
+
+    liveLeagueTable.slice(0, 20).map((row) => /*#__PURE__*/
+    React.createElement("div", { key: row.team, className: `mini-table-row ${row.user ? "you" : ""}` }, /*#__PURE__*/
+    React.createElement("span", null, row.position), /*#__PURE__*/
+    React.createElement("strong", null, row.team), /*#__PURE__*/
+    React.createElement("span", null, row.played), /*#__PURE__*/
+    React.createElement("b", null, row.points)))))),
+
+
+
+
 
 
 
@@ -1997,6 +2569,12 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
     movingSlotId && draft[movingSlotId] && /*#__PURE__*/
     React.createElement("section", { className: "selected-banner" }, "Moving: ", /*#__PURE__*/
     React.createElement("strong", null, draft[movingSlotId].name), " \u2014 click an open alternate position."),
+
+
+
+    transferMode && /*#__PURE__*/
+    React.createElement("section", { className: "selected-banner transfer-banner" }, "Transfer Lifeline active \u2014 click one drafted player on the pitch to remove them, then spin for a replacement."),
+
 
 
 
@@ -2085,15 +2663,17 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
           key: slot.id,
           role: "button",
           tabIndex: 0,
-          className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,
+          className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${transferMode && player ? "transfer-remove" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,
           style: { left: `${slot.x}%`, top: `${slot.y}%` },
           onClick: () => {
+            if (transferMode && player) removePlayerForTransfer(slot.id);else
             if (movingSlotId && !player) movePlayerToSlot(slot.id);else
             if (!player) placePlayer(slot.id);
           },
           onKeyDown: e => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
+              if (transferMode && player) removePlayerForTransfer(slot.id);else
               if (movingSlotId && !player) movePlayerToSlot(slot.id);else
               if (!player) placePlayer(slot.id);
             }
@@ -2134,6 +2714,44 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.losses), /*#__PURE__*/React.createElement("span", null, "Losses")), /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.points), /*#__PURE__*/React.createElement("span", null, "Points")), /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.gf, "-", results.ga), /*#__PURE__*/React.createElement("span", null, "Goals"))), /*#__PURE__*/
+
+
+    React.createElement("div", { className: "results-actions" }, /*#__PURE__*/
+    React.createElement("button", { type: "button", onClick: copyLatestResult }, "Copy Share Card")),
+
+
+    ((_results$table = results.table) === null || _results$table === void 0 ? void 0 : _results$table.length) > 0 && /*#__PURE__*/
+    React.createElement("div", { className: "final-table-panel" }, /*#__PURE__*/
+    React.createElement("h3", null, "Final League Table"), /*#__PURE__*/
+    React.createElement("div", { className: "mini-table" }, /*#__PURE__*/
+    React.createElement("div", { className: "mini-table-row head" }, /*#__PURE__*/
+    React.createElement("span", null, "#"), /*#__PURE__*/React.createElement("span", null, "Club"), /*#__PURE__*/React.createElement("span", null, "W-D-L"), /*#__PURE__*/React.createElement("span", null, "Pts")),
+
+    results.table.map((row) => /*#__PURE__*/
+    React.createElement("div", { key: row.team, className: `mini-table-row ${row.user ? "you" : ""}` }, /*#__PURE__*/
+    React.createElement("span", null, row.position), /*#__PURE__*/
+    React.createElement("strong", null, row.team), /*#__PURE__*/
+    React.createElement("span", null, row.wins, "-", row.draws, "-", row.losses), /*#__PURE__*/
+    React.createElement("b", null, row.points))))),
+
+
+
+
+
+
+    seasonAwards.length > 0 && /*#__PURE__*/
+    React.createElement("div", { className: "awards-panel" }, /*#__PURE__*/
+    React.createElement("h3", null, "Season Awards"), /*#__PURE__*/
+    React.createElement("div", { className: "awards-grid" },
+    seasonAwards.map((award) => /*#__PURE__*/
+    React.createElement("div", { key: award.title, className: "award-card" }, /*#__PURE__*/
+    React.createElement("span", null, award.icon), /*#__PURE__*/
+    React.createElement("strong", null, award.title), /*#__PURE__*/
+    React.createElement("small", null, award.value))))), /*#__PURE__*/
+
+
+
+
 
     React.createElement("div", { className: "match-list" },
     results.matches.map((match) => /*#__PURE__*/
@@ -2253,9 +2871,35 @@ function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch
     React.createElement("div", { className: "reward-list" },
     rewards.map((reward) => /*#__PURE__*/
     React.createElement("span", { key: reward, className: "reward-badge" },
-    reward)))), /*#__PURE__*/
+    reward)))),
 
 
+
+
+
+
+    draftHistory.length > 0 && /*#__PURE__*/
+    React.createElement("div", { className: "history-panel" }, /*#__PURE__*/
+    React.createElement("h3", null, "Draft History / Trophy Cabinet"), /*#__PURE__*/
+    React.createElement("div", { className: "history-list" },
+    draftHistory.slice(0, 5).map((run) => /*#__PURE__*/
+    React.createElement("div", { key: run.id, className: "history-card" }, /*#__PURE__*/
+    React.createElement("strong", null, run.badge), /*#__PURE__*/
+    React.createElement("span", null, run.record, " \xB7 ", run.points, " pts \xB7 ", run.formation), /*#__PURE__*/
+    React.createElement("small", null, "MVP: ", run.mvp), /*#__PURE__*/
+    React.createElement("small", null, "Top Scorer: ", run.topScorer))))), /*#__PURE__*/
+
+
+
+
+
+
+    React.createElement("div", { className: "collection-panel results-collection" }, /*#__PURE__*/
+    React.createElement("h3", null, "Club Collection Progress"), /*#__PURE__*/
+    React.createElement("p", null, collectionStats.total, "/", ALL_CLUBS.length, " clubs discovered."), /*#__PURE__*/
+    React.createElement("div", { className: "league-collection-mini" },
+    collectionStats.byLeague.map((item) => /*#__PURE__*/
+    React.createElement("span", { key: item.league }, item.league, ": ", item.count)))), /*#__PURE__*/
 
 
 
