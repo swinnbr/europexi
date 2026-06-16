@@ -10,91 +10,77 @@ function setMobileViewportHeight() {
 
 setMobileViewportHeight();
 window.addEventListener("resize", setMobileViewportHeight);
-const { useMemo, useState } = React;
+const { useMemo, useState, useRef } = React;
 
 const FORMATIONS = {
   "4-3-3": [
-  { id: "GK", label: "GK", x: 50, y: 91 },
-  { id: "RB", label: "RB", x: 80, y: 76 },
-  { id: "RCB", label: "CB", x: 60, y: 76 },
-  { id: "LCB", label: "CB", x: 40, y: 76 },
-  { id: "LB", label: "LB", x: 20, y: 76 },
-  { id: "CDM", label: "CDM", x: 50, y: 58 },
-  { id: "RCM", label: "CM", x: 64, y: 45 },
-  { id: "LCM", label: "CM", x: 36, y: 45 },
-  { id: "RW", label: "RW", x: 78, y: 25 },
-  { id: "ST", label: "ST", x: 50, y: 18 },
-  { id: "LW", label: "LW", x: 22, y: 25 }],
-
-
-  "4-2-3-1": [
-  { id: "GK", label: "GK", x: 50, y: 91 },
-  { id: "RB", label: "RB", x: 80, y: 76 },
-  { id: "RCB", label: "CB", x: 60, y: 76 },
-  { id: "LCB", label: "CB", x: 40, y: 76 },
-  { id: "LB", label: "LB", x: 20, y: 76 },
-  { id: "RDM", label: "CDM", x: 58, y: 58 },
-  { id: "LDM", label: "CDM", x: 42, y: 58 },
-  { id: "CAM", label: "CAM", x: 50, y: 40 },
-  { id: "RW", label: "RW", x: 76, y: 29 },
-  { id: "ST", label: "ST", x: 50, y: 17 },
-  { id: "LW", label: "LW", x: 24, y: 29 }],
+  { id: "gk", label: "GK", x: 50, y: 86 },
+  { id: "rb", label: "RB", x: 78, y: 68 },
+  { id: "cb1", label: "CB", x: 60, y: 70 },
+  { id: "cb2", label: "CB", x: 40, y: 70 },
+  { id: "lb", label: "LB", x: 22, y: 68 },
+  { id: "cm1", label: "CM", x: 35, y: 48 },
+  { id: "cm2", label: "CM", x: 50, y: 53 },
+  { id: "cm3", label: "CM", x: 65, y: 48 },
+  { id: "rw", label: "RW", x: 76, y: 24 },
+  { id: "st", label: "ST", x: 50, y: 18 },
+  { id: "lw", label: "LW", x: 24, y: 24 }],
 
 
   "4-4-2": [
-  { id: "GK", label: "GK", x: 50, y: 91 },
-  { id: "RB", label: "RB", x: 80, y: 76 },
-  { id: "RCB", label: "CB", x: 60, y: 76 },
-  { id: "LCB", label: "CB", x: 40, y: 76 },
-  { id: "LB", label: "LB", x: 20, y: 76 },
-  { id: "RM", label: "RW", x: 78, y: 52 },
-  { id: "RCM", label: "CM", x: 58, y: 52 },
-  { id: "LCM", label: "CM", x: 42, y: 52 },
-  { id: "LM", label: "LW", x: 22, y: 52 },
-  { id: "RST", label: "ST", x: 58, y: 22 },
-  { id: "LST", label: "ST", x: 42, y: 22 }],
+  { id: "gk", label: "GK", x: 50, y: 86 },
+  { id: "rb", label: "RB", x: 78, y: 68 },
+  { id: "cb1", label: "CB", x: 60, y: 70 },
+  { id: "cb2", label: "CB", x: 40, y: 70 },
+  { id: "lb", label: "LB", x: 22, y: 68 },
+  { id: "rm", label: "RM", x: 76, y: 47 },
+  { id: "cm1", label: "CM", x: 58, y: 50 },
+  { id: "cm2", label: "CM", x: 42, y: 50 },
+  { id: "lm", label: "LM", x: 24, y: 47 },
+  { id: "st1", label: "ST", x: 42, y: 20 },
+  { id: "st2", label: "ST", x: 58, y: 20 }],
 
 
   "3-4-3": [
-  { id: "GK", label: "GK", x: 50, y: 91 },
-  { id: "RCB", label: "CB", x: 66, y: 76 },
-  { id: "CB", label: "CB", x: 50, y: 76 },
-  { id: "LCB", label: "CB", x: 34, y: 76 },
-  { id: "RM", label: "RW", x: 80, y: 55 },
-  { id: "RCM", label: "CM", x: 58, y: 55 },
-  { id: "LCM", label: "CM", x: 42, y: 55 },
-  { id: "LM", label: "LW", x: 20, y: 55 },
-  { id: "RW", label: "RW", x: 76, y: 25 },
-  { id: "ST", label: "ST", x: 50, y: 17 },
-  { id: "LW", label: "LW", x: 24, y: 25 }],
+  { id: "gk", label: "GK", x: 50, y: 86 },
+  { id: "cb1", label: "CB", x: 65, y: 70 },
+  { id: "cb2", label: "CB", x: 50, y: 73 },
+  { id: "cb3", label: "CB", x: 35, y: 70 },
+  { id: "rm", label: "RM", x: 78, y: 49 },
+  { id: "cm1", label: "CM", x: 58, y: 51 },
+  { id: "cm2", label: "CM", x: 42, y: 51 },
+  { id: "lm", label: "LM", x: 22, y: 49 },
+  { id: "rw", label: "RW", x: 74, y: 23 },
+  { id: "st", label: "ST", x: 50, y: 18 },
+  { id: "lw", label: "LW", x: 26, y: 23 }],
 
 
-  "4-1-2-1-2": [
-  { id: "GK", label: "GK", x: 50, y: 91 },
-  { id: "RB", label: "RB", x: 80, y: 76 },
-  { id: "RCB", label: "CB", x: 60, y: 76 },
-  { id: "LCB", label: "CB", x: 40, y: 76 },
-  { id: "LB", label: "LB", x: 20, y: 76 },
-  { id: "CDM", label: "CDM", x: 50, y: 60 },
-  { id: "RCM", label: "CM", x: 62, y: 45 },
-  { id: "LCM", label: "CM", x: 38, y: 45 },
-  { id: "CAM", label: "CAM", x: 50, y: 31 },
-  { id: "RST", label: "ST", x: 58, y: 17 },
-  { id: "LST", label: "ST", x: 42, y: 17 }],
+  "4-2-3-1": [
+  { id: "gk", label: "GK", x: 50, y: 86 },
+  { id: "rb", label: "RB", x: 78, y: 68 },
+  { id: "cb1", label: "CB", x: 60, y: 70 },
+  { id: "cb2", label: "CB", x: 40, y: 70 },
+  { id: "lb", label: "LB", x: 22, y: 68 },
+  { id: "cm1", label: "CM", x: 42, y: 53 },
+  { id: "cm2", label: "CM", x: 58, y: 53 },
+  { id: "rw", label: "RW", x: 74, y: 35 },
+  { id: "cam", label: "CAM", x: 50, y: 34 },
+  { id: "lw", label: "LW", x: 26, y: 35 },
+  { id: "st", label: "ST", x: 50, y: 17 }],
 
 
-  "5-2-3": [
-  { id: "GK", label: "GK", x: 50, y: 91 },
-  { id: "RWB", label: "RB", x: 84, y: 69 },
-  { id: "RCB", label: "CB", x: 64, y: 76 },
-  { id: "CB", label: "CB", x: 50, y: 76 },
-  { id: "LCB", label: "CB", x: 36, y: 76 },
-  { id: "LWB", label: "LB", x: 16, y: 69 },
-  { id: "RCM", label: "CM", x: 58, y: 50 },
-  { id: "LCM", label: "CM", x: 42, y: 50 },
-  { id: "RW", label: "RW", x: 76, y: 25 },
-  { id: "ST", label: "ST", x: 50, y: 17 },
-  { id: "LW", label: "LW", x: 24, y: 25 }] };
+  "3-5-2": [
+  { id: "gk", label: "GK", x: 50, y: 86 },
+  { id: "cb1", label: "CB", x: 65, y: 70 },
+  { id: "cb2", label: "CB", x: 50, y: 73 },
+  { id: "cb3", label: "CB", x: 35, y: 70 },
+  { id: "rm", label: "RM", x: 78, y: 49 },
+  { id: "cm1", label: "CM", x: 61, y: 50 },
+  { id: "cm2", label: "CM", x: 50, y: 55 },
+  { id: "cm3", label: "CM", x: 39, y: 50 },
+  { id: "lm", label: "LM", x: 22, y: 49 },
+  { id: "st1", label: "ST", x: 42, y: 20 },
+  { id: "st2", label: "ST", x: 58, y: 20 }] };
 
 
 
@@ -102,15 +88,17 @@ const DEFAULT_FORMATION_NAME = "4-3-3";
 
 const COMPATIBLE = {
   GK: ["GK"],
-  RB: ["RB", "LB", "CB", "CDM"],
+  RB: ["RB", "CB", "LB"],
   CB: ["CB", "RB", "LB", "CDM"],
-  LB: ["LB", "RB", "CB", "CDM"],
+  LB: ["LB", "CB", "RB"],
   CDM: ["CDM", "CM", "CB"],
   CM: ["CM", "CDM", "CAM"],
-  CAM: ["CAM", "CM", "RW", "LW", "ST"],
-  RW: ["RW", "LW", "CAM", "ST"],
-  LW: ["LW", "RW", "CAM", "ST"],
-  ST: ["ST", "RW", "LW", "CAM"] };
+  CAM: ["CAM", "CM", "ST", "LW", "RW"],
+  LM: ["LM", "LW", "CM"],
+  RM: ["RM", "RW", "CM"],
+  LW: ["LW", "LM", "RW", "CAM", "ST"],
+  RW: ["RW", "RM", "LW", "CAM", "ST"],
+  ST: ["ST", "CAM", "LW", "RW"] };
 
 
 const CLUBS = [
@@ -880,6 +868,12 @@ const POSITION_POOL = {
   CAM: [
   ["Squad Attacking Midfielder", "CAM", 77]],
 
+  RM: [
+  ["Squad Right Midfielder", "RM", 77]],
+
+  LM: [
+  ["Squad Left Midfielder", "LM", 77]],
+
   RW: [
   ["Squad Right Winger", "RW", 77]],
 
@@ -901,7 +895,7 @@ function ensureSquadCoverage(club) {
     return positions.includes(position);
   });
 
-  const requiredPositions = ["GK", "RB", "CB", "CB", "LB", "CDM", "CM", "CAM", "RW", "ST", "LW"];
+  const requiredPositions = ["GK", "RB", "CB", "CB", "LB", "CDM", "CM", "CAM", "RM", "LM", "RW", "ST", "LW"];
 
   requiredPositions.forEach((position, index) => {
     const matchingCount = squad.filter(player => {
@@ -1086,6 +1080,13 @@ function getPlayerStats(player) {var _player$finalRating;
     base.control += rating * 0.18;
   }
 
+  if (positions.includes("LM") || positions.includes("RM")) {
+    base.midfield += rating * 0.2;
+    base.chance += rating * 0.12;
+    base.control += rating * 0.12;
+    base.defense += rating * 0.08;
+  }
+
   if (positions.includes("RW") || positions.includes("LW")) {
     base.attack += rating * 0.32;
     base.chance += rating * 0.2;
@@ -1122,16 +1123,16 @@ function calculateTeamProfile(players) {
     ["ST", "LW", "RW", "CAM"].includes(p.slotLabel)),
 
     midfield: avg((p) =>
-    ["CDM", "CM", "CAM"].includes(p.slotLabel)),
+    ["CDM", "CM", "CAM", "LM", "RM"].includes(p.slotLabel)),
 
     defense: avg((p) =>
     ["RB", "CB", "LB", "CDM"].includes(p.slotLabel)),
 
     control: avg((p) =>
-    ["CDM", "CM", "CAM"].includes(p.slotLabel)),
+    ["CDM", "CM", "CAM", "LM", "RM"].includes(p.slotLabel)),
 
     chance: avg((p) =>
-    ["CAM", "LW", "RW", "ST"].includes(p.slotLabel)),
+    ["CAM", "LM", "RM", "LW", "RW", "ST"].includes(p.slotLabel)),
 
     keeping: avg(p => p.slotLabel === "GK") };
 
@@ -1173,7 +1174,7 @@ function createPlayerSeasonStats(players, matches) {
 
   const byRole = {
     attackers: stats.filter(p => ["ST", "LW", "RW", "CAM"].includes(p.position)),
-    mids: stats.filter(p => ["CM", "CDM", "CAM"].includes(p.position)),
+    mids: stats.filter(p => ["CM", "CDM", "CAM", "LM", "RM"].includes(p.position)),
     defenders: stats.filter(p => ["RB", "CB", "LB", "CDM"].includes(p.position)),
     keepers: stats.filter(p => p.position === "GK") };
 
@@ -1201,7 +1202,7 @@ function createPlayerSeasonStats(players, matches) {
       if (match.result === "D") base += 0.1;
       if (match.result === "L") base -= 0.35;
 
-      if (ga === 0 && ["GK", "RB", "CB", "LB", "CDM"].includes(player.position)) {
+      if (ga === 0 && ["GK", "RB", "CB", "LB", "CDM", "LM", "RM"].includes(player.position)) {
         base += 0.35;
       }
 
@@ -1260,7 +1261,7 @@ function createPlayerSeasonStats(players, matches) {
   sort((a, b) => b.averageRating - a.averageRating || b.goals - a.goals);
 }
 
-function App() {
+function App() {var _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch$allSco;
   const [gameStarted, setGameStarted] = useState(false);
   const [selectedFormationName, setSelectedFormationName] = useState(DEFAULT_FORMATION_NAME);
   const [currentClub, setCurrentClub] = useState(null);
@@ -1280,11 +1281,27 @@ function App() {
   const [simProgress, setSimProgress] = useState(0);
   const [lastPlacedSlot, setLastPlacedSlot] = useState(null);
   const [results, setResults] = useState(null);
-  const [rerollUsed, setRerollUsed] = useState(false);
+  const [rerollsLeft, setRerollsLeft] = useState(3);
+  const [selectedMatch, setSelectedMatch] = useState(null);
   const [soundMuted, setSoundMuted] = useState(false);
   const [rewards, setRewards] = useState([]);
   const [playerSeasonStats, setPlayerSeasonStats] = useState([]);
   const [movingSlotId, setMovingSlotId] = useState(null);
+
+  const spinnerRef = useRef(null);
+  const clubPanelRef = useRef(null);
+  const pitchRef = useRef(null);
+  const simulationRef = useRef(null);
+  const resultsRef = useRef(null);
+
+  function scrollToSection(ref, block = "center") {
+    window.requestAnimationFrame(() => {var _ref$current;
+      (_ref$current = ref.current) === null || _ref$current === void 0 ? void 0 : _ref$current.scrollIntoView({
+        behavior: "smooth",
+        block });
+
+    });
+  }
 
   const FORMATION = FORMATIONS[selectedFormationName] || FORMATIONS[DEFAULT_FORMATION_NAME];
   const draftedPlayers = Object.values(draft);
@@ -1315,24 +1332,47 @@ function App() {
     setResults(null);
     setRewards([]);
     setPlayerSeasonStats([]);
+    setSelectedMatch(null);
   }
 
   function getSlotLabel(slotId) {var _FORMATION$find;
     return ((_FORMATION$find = FORMATION.find(slot => slot.id === slotId)) === null || _FORMATION$find === void 0 ? void 0 : _FORMATION$find.label) || slotId;
   }
 
-  function getPenalty(player, slotId) {var _player$positions;
+  function canPlaySlot(player, slotLabel) {
+    const possiblePositions = player.positions || [player.position];
+
+    return possiblePositions.some(
+    position => {var _COMPATIBLE$slotLabel;return position === slotLabel || ((_COMPATIBLE$slotLabel = COMPATIBLE[slotLabel]) === null || _COMPATIBLE$slotLabel === void 0 ? void 0 : _COMPATIBLE$slotLabel.includes(position));});
+
+  }
+
+  function getPenalty(player, slotId) {
     const slotPosition = getSlotLabel(slotId);
 
-    if ((_player$positions = player.positions) !== null && _player$positions !== void 0 && _player$positions.includes(slotPosition)) return 0;
+    // If the game lets the player go into that slot, they keep their full rating.
+    // This removes confusing cases like CB -> RB being free but CB -> LB losing rating,
+    // or CM/CDM/CAM and ST/LW/RW switches behaving differently.
+    if (canPlaySlot(player, slotPosition)) return 0;
 
+    // Only apply a penalty if a player is somehow forced into a truly invalid role.
     return 6;
   }
 
   function getPlayableSlotsForPlayer(player) {
-    const possiblePositions = player.positions || [player.position];
+    return FORMATION.filter(slot => canPlaySlot(player, slot.label));
+  }
 
-    return FORMATION.filter(slot => possiblePositions.includes(slot.label));
+  function getEligibleSlotOptions(player) {
+    const labels = [];
+
+    FORMATION.forEach(slot => {
+      if (canPlaySlot(player, slot.label) && !labels.includes(slot.label)) {
+        labels.push(slot.label);
+      }
+    });
+
+    return labels;
   }
 
   function isPlayerPositionUnavailable(player) {
@@ -1398,6 +1438,8 @@ function App() {
     setLastClubId(winner.id);
     setRecentClubIds(prev => [...prev, winner.id].slice(-4));
     setSpinning(false);
+
+    setTimeout(() => scrollToSection(clubPanelRef, "start"), 120);
   }
 
   function spinClub() {
@@ -1408,26 +1450,30 @@ function App() {
     setCurrentClub(null);
     setSelectedPlayer(null);
     setResults(null);
+    setSelectedMatch(null);
     buildSpin(winner);
     playSound("spin", soundMuted);
     setSpinning(true);
 
+    setTimeout(() => scrollToSection(spinnerRef, "center"), 60);
     setTimeout(() => finishSpin(winner), 2100);
   }
 
   function rerollClub() {
-    if (!currentClub || rerollUsed || spinning || draftedPlayers.length >= 11) return;
+    if (!currentClub || rerollsLeft <= 0 || spinning || draftedPlayers.length >= 11) return;
 
     const winner = pickClub(currentClub.id);
 
-    setRerollUsed(true);
+    setRerollsLeft(prev => Math.max(0, prev - 1));
     playSound("reroll", soundMuted);
     setCurrentClub(null);
     setSelectedPlayer(null);
     setResults(null);
+    setSelectedMatch(null);
     buildSpin(winner);
     setSpinning(true);
 
+    setTimeout(() => scrollToSection(spinnerRef, "center"), 60);
     setTimeout(() => finishSpin(winner), 2100);
   }
 
@@ -1459,10 +1505,11 @@ function App() {
     setLastPlacedSlot(slotId);
     setResults(null);
 
+    setTimeout(() => scrollToSection(pitchRef, "center"), 140);
     setTimeout(() => setLastPlacedSlot(null), 700);
   }
 
-  function movePlayerToSlot(targetSlotId) {var _player$positions2;
+  function movePlayerToSlot(targetSlotId) {
     if (!movingSlotId) return;
     if (draft[targetSlotId]) return;
 
@@ -1471,15 +1518,16 @@ function App() {
 
     const targetPosition = getSlotLabel(targetSlotId);
 
-    // Players can only move into their real contextual positions.
-    if (!((_player$positions2 = player.positions) !== null && _player$positions2 !== void 0 && _player$positions2.includes(targetPosition))) return;
+    // Players can only move into realistic positions for the selected formation.
+    if (!canPlaySlot(player, targetPosition)) return;
 
+    const penalty = getPenalty(player, targetSlotId);
     const movedPlayer = {
       ...player,
       slotId: targetSlotId,
       slotLabel: targetPosition,
-      penalty: 0,
-      finalRating: player.rating };
+      penalty,
+      finalRating: Math.max(60, player.rating - penalty) };
 
 
     setDraft(prev => {
@@ -1494,6 +1542,7 @@ function App() {
     setLastPlacedSlot(targetSlotId);
     setResults(null);
 
+    setTimeout(() => scrollToSection(pitchRef, "center"), 100);
     setTimeout(() => setLastPlacedSlot(null), 700);
   }
 
@@ -1554,8 +1603,10 @@ function App() {
     setSimProgress(0);
     setLastPlacedSlot(null);
     setResults(null);
-    setRerollUsed(false);
+    setRerollsLeft(3);
+    setSelectedMatch(null);
     setRewards([]);
+    setPlayerSeasonStats([]);
     setMovingSlotId(null);
   }
 
@@ -1565,6 +1616,7 @@ function App() {
     playSound("season", soundMuted);
     setSimulating(true);
     setResults(null);
+    setTimeout(() => scrollToSection(simulationRef, "center"), 80);
     setLiveSeason({
       week: 0,
       wins: 0,
@@ -1668,7 +1720,70 @@ function App() {
       gf += us;
       ga += them;
 
-      const match = { week, opponent: opponentName, result, score: `${us}-${them}` };
+      const scorerPool = draftedPlayers.filter((player) =>
+      ["ST", "LW", "RW", "CAM", "CM", "LM", "RM"].includes(player.slotLabel));
+
+
+      const weightedScorerPick = () => {
+        const pool = scorerPool.length ? scorerPool : draftedPlayers;
+        const total = pool.reduce(
+        (sum, player) => {var _player$finalRating3;return sum + Math.max(1, ((_player$finalRating3 = player.finalRating) !== null && _player$finalRating3 !== void 0 ? _player$finalRating3 : player.rating) - 65);},
+        0);
+
+
+        let roll = Math.random() * total;
+
+        for (const player of pool) {var _player$finalRating4;
+          roll -= Math.max(1, ((_player$finalRating4 = player.finalRating) !== null && _player$finalRating4 !== void 0 ? _player$finalRating4 : player.rating) - 65);
+          if (roll <= 0) return player;
+        }
+
+        return pool[pool.length - 1];
+      };
+
+      const scorers = [];
+
+      for (let goal = 0; goal < us; goal++) {
+        const scorer = weightedScorerPick();
+        scorers.push({
+          team: "Draft XI",
+          name: scorer.name,
+          position: scorer.slotLabel || scorer.position,
+          minute: Math.floor(Math.random() * 86) + 3 });
+
+      }
+
+      const opponentScorerNames = [
+      "Striker", "Left Winger", "Right Winger", "Attacking Midfielder", "Central Midfielder"];
+
+
+      const opponentScorers = [];
+
+      for (let goal = 0; goal < them; goal++) {
+        const role = opponentScorerNames[Math.floor(Math.random() * opponentScorerNames.length)];
+        opponentScorers.push({
+          team: opponentName,
+          name: `${opponentName} ${role}`,
+          position: role.
+          split(" ").
+          map(word => word[0]).
+          join(""),
+          minute: Math.floor(Math.random() * 86) + 3 });
+
+      }
+
+      scorers.sort((a, b) => a.minute - b.minute);
+      opponentScorers.sort((a, b) => a.minute - b.minute);
+
+      const match = {
+        week,
+        opponent: opponentName,
+        result,
+        score: `${us}-${them}`,
+        scorers,
+        opponentScorers,
+        allScorers: [...scorers, ...opponentScorers].sort((a, b) => a.minute - b.minute) };
+
       matches.push(match);
 
       setTimeout(() => {
@@ -1720,6 +1835,7 @@ function App() {
       setSimulating(false);
       setLiveMatch(null);
       setSimProgress(100);
+      setTimeout(() => scrollToSection(resultsRef, "start"), 80);
     }, 9800);
   }
 
@@ -1734,7 +1850,7 @@ function App() {
       React.createElement("p", null, "\u2022 Spin clubs from Europe's Top 5 leagues."), /*#__PURE__*/
       React.createElement("p", null, "\u2022 Select any player from the club you land on."), /*#__PURE__*/
       React.createElement("p", null, "\u2022 Place them into the correct position on the pitch."), /*#__PURE__*/
-      React.createElement("p", null, "\u2022 Use your one-time reroll wisely."), /*#__PURE__*/
+      React.createElement("p", null, "\u2022 Use your 3 rerolls wisely."), /*#__PURE__*/
       React.createElement("p", null, "\u2022 Complete your XI and simulate a 38-match season."), /*#__PURE__*/
       React.createElement("p", null, "\u2022 Can you go ", /*#__PURE__*/React.createElement("strong", null, "38-0"), "?")), /*#__PURE__*/
 
@@ -1763,7 +1879,8 @@ function App() {
     React.createElement("div", { className: "record-card" }, /*#__PURE__*/
     React.createElement("span", null, "XI Rating"), /*#__PURE__*/
     React.createElement("strong", null, teamRating || "--"), /*#__PURE__*/
-    React.createElement("small", null, draftedPlayers.length, "/11 players"),
+    React.createElement("small", null, draftedPlayers.length, "/11 players"), /*#__PURE__*/
+    React.createElement("small", null, "\uD83D\uDD04 Rerolls: ", rerollsLeft),
     draftedPlayers.length > 0 && /*#__PURE__*/
     React.createElement("div", { className: "profile-mini" }, /*#__PURE__*/
     React.createElement("span", null, "ATK ", calculateTeamProfile(draftedPlayers).attack), /*#__PURE__*/
@@ -1778,8 +1895,8 @@ function App() {
     React.createElement("button", { onClick: spinClub, disabled: spinning || !!currentClub || draftedPlayers.length >= 11 },
     spinning ? "Spinning..." : currentClub ? "Pick or Reroll" : "Spin Club"), /*#__PURE__*/
 
-    React.createElement("button", { className: "reroll", onClick: rerollClub, disabled: !currentClub || rerollUsed || spinning || draftedPlayers.length >= 11 },
-    rerollUsed ? "Reroll Used" : "Reroll"), /*#__PURE__*/
+    React.createElement("button", { className: "reroll", onClick: rerollClub, disabled: !currentClub || rerollsLeft <= 0 || spinning || draftedPlayers.length >= 11 },
+    rerollsLeft > 0 ? `Reroll (${rerollsLeft})` : "No Rerolls"), /*#__PURE__*/
 
     React.createElement("button", { onClick: simulateSeason, disabled: draftedPlayers.length < 11 || simulating },
     simulating ? "Simulating..." : "Simulate Season"), /*#__PURE__*/
@@ -1813,7 +1930,7 @@ function App() {
 
 
     spinning && spinWinner && /*#__PURE__*/
-    React.createElement("section", { className: "spinner-card" }, /*#__PURE__*/
+    React.createElement("section", { className: "spinner-card auto-focus-section", ref: spinnerRef }, /*#__PURE__*/
     React.createElement("div", { className: "spinner-window" }, /*#__PURE__*/
     React.createElement("div", { className: "spinner-pointer" }, "\u25BC"), /*#__PURE__*/
     React.createElement("div", { className: "reel-spinner", style: { "--spinOffset": `-${spinOffset}px` } },
@@ -1829,12 +1946,13 @@ function App() {
 
 
 
-    React.createElement("p", null, "Spinning club...")),
+    React.createElement("p", null, "Spinning club..."), /*#__PURE__*/
+    React.createElement("small", { className: "scroll-hint" }, "Landing team appears here \u2193")),
 
 
 
     simulating && liveSeason && /*#__PURE__*/
-    React.createElement("section", { className: "simulation-loader season-sim" }, /*#__PURE__*/
+    React.createElement("section", { className: "simulation-loader season-sim auto-focus-section", ref: simulationRef }, /*#__PURE__*/
     React.createElement("div", { className: "season-sim-top" }, /*#__PURE__*/
     React.createElement("span", null, "Simulating Season"), /*#__PURE__*/
     React.createElement("strong", null, "GW ", liveSeason.week, "/38")), /*#__PURE__*/
@@ -1883,7 +2001,7 @@ function App() {
 
 
     currentClub && /*#__PURE__*/
-    React.createElement("section", { className: "club-panel", style: { "--club": currentClub.color } }, /*#__PURE__*/
+    React.createElement("section", { className: "club-panel auto-focus-section", ref: clubPanelRef, style: { "--club": currentClub.color } }, /*#__PURE__*/
     React.createElement("div", { className: "club-header" }, /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/
     React.createElement("h2", null, currentClub.name), /*#__PURE__*/
@@ -1891,6 +2009,7 @@ function App() {
 
     React.createElement("strong", null, currentClub.rating)), /*#__PURE__*/
 
+    React.createElement("div", { className: "mobile-flow-hint" }, "Pick a player, then tap their position button."), /*#__PURE__*/
     React.createElement("div", { className: "player-grid" },
     availablePlayers.map(player => {
       const unavailable = pickedNames.includes(player.name) || isPlayerPositionUnavailable(player);
@@ -1923,7 +2042,7 @@ function App() {
 
         isSelected && /*#__PURE__*/
         React.createElement("div", { className: "inline-position-buttons" },
-        player.positions.map(pos => {
+        getEligibleSlotOptions(player).map(pos => {
           const openSlot = FORMATION.find(
           slot => slot.label === pos && !draft[slot.id]);
 
@@ -1956,7 +2075,7 @@ function App() {
 
 
 
-    React.createElement("section", { className: "pitch-wrap" }, /*#__PURE__*/
+    React.createElement("section", { className: "pitch-wrap auto-focus-section", ref: pitchRef }, /*#__PURE__*/
     React.createElement("h2", null, "Your XI"), /*#__PURE__*/
     React.createElement("div", { className: "pitch" },
     FORMATION.map(slot => {
@@ -2007,7 +2126,7 @@ function App() {
 
 
     results && /*#__PURE__*/
-    React.createElement("section", { className: "results" }, /*#__PURE__*/
+    React.createElement("section", { className: "results auto-focus-section", ref: resultsRef }, /*#__PURE__*/
     React.createElement("h2", null, results.badge), /*#__PURE__*/
     React.createElement("div", { className: "result-stats" }, /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.wins), /*#__PURE__*/React.createElement("span", null, "Wins")), /*#__PURE__*/
@@ -2018,10 +2137,79 @@ function App() {
 
     React.createElement("div", { className: "match-list" },
     results.matches.map((match) => /*#__PURE__*/
-    React.createElement("div", { key: match.week, className: `match ${match.result}`, style: { animationDelay: `${match.week * 0.035}s` } }, /*#__PURE__*/
+    React.createElement("div", {
+      key: match.week,
+      className: `match ${match.result}`,
+      style: { animationDelay: `${match.week * 0.035}s` },
+      onClick: () => setSelectedMatch(match) }, /*#__PURE__*/
+
     React.createElement("span", null, "GW ", match.week), /*#__PURE__*/
     React.createElement("strong", null, match.result), /*#__PURE__*/
     React.createElement("p", null, match.score, " vs ", match.opponent)))),
+
+
+
+
+    selectedMatch && /*#__PURE__*/
+    React.createElement("div", { className: "match-detail-overlay", onClick: () => setSelectedMatch(null) }, /*#__PURE__*/
+    React.createElement("div", { className: "match-detail-card", onClick: e => e.stopPropagation() }, /*#__PURE__*/
+    React.createElement("button", { className: "match-detail-close", onClick: () => setSelectedMatch(null) }, "\xD7"), /*#__PURE__*/
+
+
+
+    React.createElement("h3", null, "GW ", selectedMatch.week, " vs ", selectedMatch.opponent), /*#__PURE__*/
+    React.createElement("strong", { className: `match-detail-score ${selectedMatch.result}` },
+    selectedMatch.result, " \xB7 ", selectedMatch.score), /*#__PURE__*/
+
+
+    React.createElement("div", { className: "scorer-breakdown" }, /*#__PURE__*/
+    React.createElement("div", { className: "scorer-team-block" }, /*#__PURE__*/
+    React.createElement("h4", null, "Your Goals"), /*#__PURE__*/
+    React.createElement("div", { className: "scorer-list" },
+    ((_selectedMatch$scorer = selectedMatch.scorers) === null || _selectedMatch$scorer === void 0 ? void 0 : _selectedMatch$scorer.length) > 0 ?
+    selectedMatch.scorers.map((scorer, index) => /*#__PURE__*/
+    React.createElement("div", { key: `our_${scorer.name}_${index}`, className: "scorer-row our-goal" }, /*#__PURE__*/
+    React.createElement("span", null, "\u26BD ", scorer.minute, "'"), /*#__PURE__*/
+    React.createElement("strong", null, scorer.name), /*#__PURE__*/
+    React.createElement("em", null, scorer.position))) : /*#__PURE__*/
+
+
+
+    React.createElement("p", null, "No Draft XI goals."))), /*#__PURE__*/
+
+
+
+
+    React.createElement("div", { className: "scorer-team-block" }, /*#__PURE__*/
+    React.createElement("h4", null, selectedMatch.opponent, " Goals"), /*#__PURE__*/
+    React.createElement("div", { className: "scorer-list" },
+    ((_selectedMatch$oppone = selectedMatch.opponentScorers) === null || _selectedMatch$oppone === void 0 ? void 0 : _selectedMatch$oppone.length) > 0 ?
+    selectedMatch.opponentScorers.map((scorer, index) => /*#__PURE__*/
+    React.createElement("div", { key: `opp_${scorer.name}_${index}`, className: "scorer-row opponent-goal" }, /*#__PURE__*/
+    React.createElement("span", null, "\u26BD ", scorer.minute, "'"), /*#__PURE__*/
+    React.createElement("strong", null, scorer.name), /*#__PURE__*/
+    React.createElement("em", null, scorer.position))) : /*#__PURE__*/
+
+
+
+    React.createElement("p", null, "No opponent goals."))),
+
+
+
+
+    ((_selectedMatch$allSco = selectedMatch.allScorers) === null || _selectedMatch$allSco === void 0 ? void 0 : _selectedMatch$allSco.length) > 0 && /*#__PURE__*/
+    React.createElement("div", { className: "scorer-team-block full-width" }, /*#__PURE__*/
+    React.createElement("h4", null, "Goal Timeline"), /*#__PURE__*/
+    React.createElement("div", { className: "scorer-list" },
+    selectedMatch.allScorers.map((scorer, index) => /*#__PURE__*/
+    React.createElement("div", { key: `timeline_${scorer.name}_${index}`, className: "scorer-row timeline-goal" }, /*#__PURE__*/
+    React.createElement("span", null, "\u26BD ", scorer.minute, "'"), /*#__PURE__*/
+    React.createElement("strong", null, scorer.name), /*#__PURE__*/
+    React.createElement("em", null, scorer.team)))))))),
+
+
+
+
 
 
 
