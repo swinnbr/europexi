@@ -1865,12 +1865,12 @@ function getRandomClub() {
 
 
 const OPPONENTS = [
-["Manchester United", 86], ["Chelsea", 85], ["Arsenal", 86], ["Tottenham", 82],
-["Newcastle", 81], ["Aston Villa", 80], ["Barcelona", 90], ["Real Madrid", 91],
-["Atletico Madrid", 85], ["Sevilla", 79], ["Valencia", 80], ["Bayern Munich", 90],
-["Borussia Dortmund", 84], ["RB Leipzig", 82], ["Bayer Leverkusen", 84],
-["Inter Milan", 88], ["AC Milan", 85], ["Juventus", 84], ["Napoli", 85],
-["Roma", 81], ["PSG", 88], ["Monaco", 81], ["Lyon", 79], ["Marseille", 80]];
+["Manchester City", 91], ["Real Madrid", 91], ["Bayern Munich", 90], ["Liverpool", 89],
+["Barcelona", 89], ["Arsenal", 88], ["Inter Milan", 88], ["PSG", 88],
+["Manchester United", 87], ["Chelsea", 86], ["Atletico Madrid", 86], ["AC Milan", 86],
+["Napoli", 86], ["Borussia Dortmund", 85], ["Bayer Leverkusen", 85], ["Juventus", 85],
+["Tottenham", 84], ["RB Leipzig", 84], ["Newcastle", 83], ["Aston Villa", 83],
+["Roma", 82], ["Monaco", 82], ["Marseille", 82], ["Lyon", 81]];
 
 
 const CLUB_NAME_SUFFIXES = [
@@ -2078,7 +2078,8 @@ function saveStoredJson(key, value) {
 }
 
 function getClubCollectionStats(collectionIds) {
-  const uniqueIds = Array.from(new Set(collectionIds || []));
+  const validClubIds = new Set(ALL_CLUBS.map(club => club.id));
+  const uniqueIds = Array.from(new Set(collectionIds || [])).filter(id => validClubIds.has(id));
   const clubs = uniqueIds.
   map(id => ALL_CLUBS.find(club => club.id === id)).
   filter(Boolean);
@@ -2088,9 +2089,12 @@ function getClubCollectionStats(collectionIds) {
     count: clubs.filter(club => club.league === league).length }));
 
 
+  const total = Math.min(uniqueIds.length, ALL_CLUBS.length);
+  const percent = Math.min(100, Math.round(total / Math.max(ALL_CLUBS.length, 1) * 100));
+
   return {
-    total: uniqueIds.length,
-    percent: Math.round(uniqueIds.length / Math.max(ALL_CLUBS.length, 1) * 100),
+    total,
+    percent,
     byLeague,
     recent: clubs.slice(-8).reverse() };
 
@@ -2561,22 +2565,36 @@ function simulateOpponentSeason(teamName, rating, week, index, seasonSeed = 1) {
   let draws = 0;
   let losses = 0;
 
-  // Each season now gets a fresh seed.
-  // This keeps the live table stable during one run, but stops AI clubs
-  // from finishing in the exact same order every new simulation.
-  const clubPersonality = (seededRandom(seasonSeed + index * 47 + 11) - 0.5) * 0.18;
-  const seasonForm = (seededRandom(seasonSeed + index * 131 + 29) - 0.5) * 0.14;
-  const strength = (rating - 82) / 10;
+  // Calibrated AI title-race model.
+  // Elite AI teams can still win 90+ points, but the table no longer buries
+  // a solid 86-88 user XI into mid-table every time.
+  const clubPersonality = (seededRandom(seasonSeed + index * 47 + 11) - 0.5) * 0.08;
+  const seasonForm = (seededRandom(seasonSeed + index * 131 + 29) - 0.5) * 0.09;
+  const titleRaceBoost =
+  rating >= 90 ? 0.026 + seededRandom(seasonSeed + index * 211 + 7) * 0.032 :
+  rating >= 88 ? 0.01 + seededRandom(seasonSeed + index * 211 + 7) * 0.018 :
+  0;
 
   for (let match = 1; match <= week; match++) {
-    const formWave = Math.sin((match + index * 2.7 + seasonSeed % 17) / 5) * 0.045;
-    const gameNoise = (seededRandom(seasonSeed + index * 73 + match * 19) - 0.5) * 0.22;
+    const formWave = Math.sin((match + index * 2.7 + seasonSeed % 17) / 5) * 0.035;
+    const gameNoise = (seededRandom(seasonSeed + index * 73 + match * 19) - 0.5) * 0.13;
 
-    let winChance = 0.36 + strength * 0.055 + clubPersonality + seasonForm + formWave + gameNoise;
-    let drawChance = 0.23 - strength * 0.012 + (seededRandom(seasonSeed + index * 31 + match * 7) - 0.5) * 0.08;
+    let winChance =
+    0.392 +
+    (rating - 82) * 0.022 +
+    clubPersonality +
+    seasonForm +
+    titleRaceBoost +
+    formWave +
+    gameNoise;
 
-    winChance = clampNumber(winChance, 0.13, 0.76);
-    drawChance = clampNumber(drawChance, 0.10, 0.33);
+    let drawChance =
+    0.23 -
+    (rating - 82) * 0.006 +
+    (seededRandom(seasonSeed + index * 31 + match * 7) - 0.5) * 0.045;
+
+    winChance = clampNumber(winChance, 0.18, rating >= 90 ? 0.76 : rating >= 88 ? 0.71 : 0.65);
+    drawChance = clampNumber(drawChance, 0.08, 0.28);
 
     const roll = seededRandom(seasonSeed + index * 997 + match * 101 + Math.round(rating * 13));
 
@@ -2683,6 +2701,16 @@ function getProjectedLevel(teamRating) {
   return "Work in Progress";
 }
 
+function getPointsPrediction(teamRating) {
+  if (!teamRating) return "Projected points: --";
+
+  const midpoint = Math.round(45 + (teamRating - 78) * 3.15);
+  const low = Math.max(38, midpoint - 7);
+  const high = Math.min(112, midpoint + 7);
+
+  return `Projected points: ${low}-${high}`;
+}
+
 function makeShareCardText(results, playerSeasonStats, formationName, teamRating) {var _results$table$find;
   if (!results) return "";
   const topScorer = [...playerSeasonStats].sort((a, b) => b.goals - a.goals || b.averageRating - a.averageRating)[0];
@@ -2767,16 +2795,19 @@ function getExpectedGoals(attackingProfile, defendingProfile, attackingRating, d
   const controlEdge = attackingProfile.control - defendingProfile.control;
   const ratingEdge = attackingRating - defendingRating;
 
+  // Fairer xG curve for the 100-club database.
+  // The average draft is usually 85-89, so the engine should not require
+  // a 92+ superteam just to have a strong season.
   const rawXg =
-  1.32 +
-  ratingEdge * 0.055 +
-  attackEdge * 0.026 +
-  midfieldEdge * 0.018 +
-  chanceEdge * 0.022 +
-  controlEdge * 0.012 +
-  (attackingProfile.balanceBonus || 0) * 0.035;
+  1.38 +
+  ratingEdge * 0.05 +
+  attackEdge * 0.024 +
+  midfieldEdge * 0.016 +
+  chanceEdge * 0.02 +
+  controlEdge * 0.01 +
+  (attackingProfile.balanceBonus || 0) * 0.04;
 
-  return clamp(rawXg, 0.25, 4.65);
+  return clamp(rawXg, 0.32, 4.45);
 }
 
 function rollGoalsFromXg(xg) {
@@ -2935,6 +2966,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const clubPanelRef = useRef(null);
   const pitchRef = useRef(null);
   const simulationRef = useRef(null);
+  const simulationRecordRef = useRef(null);
   const resultsRef = useRef(null);
 
   function scrollToSection(ref, block = "center") {
@@ -3298,15 +3330,19 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
 
-  function calculateRewards(summary) {
+  function calculateRewards(summary) {var _summary$table$find;
     const earned = [];
+    const finishPosition = summary.finishPosition || (
+    Array.isArray(summary.table) ? (_summary$table$find = summary.table.find(row => row.user)) === null || _summary$table$find === void 0 ? void 0 : _summary$table$find.position : null) ||
+    20;
+    const wonLeague = summary.wonLeague || finishPosition === 1;
 
-    if (summary.points >= 75) {
-      earned.push("⭐ European Qualification");
-    }
-
-    if (summary.points >= 88) {
+    if (wonLeague) {
       earned.push("👑 League Champions");
+    } else if (finishPosition <= 4) {
+      earned.push("⭐ UCL Qualified");
+    } else if (finishPosition <= 7) {
+      earned.push("🌍 European Qualification");
     }
 
     if (summary.points >= 100) {
@@ -3402,12 +3438,14 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
   function simulateSeason() {
-    if (draftedPlayers.length < 11 || simulating || results) return;
+    // Allow simulation to start even if a stale saved result exists.
+    // This fixes cases where localStorage restores "Season Complete" and the sim button appears dead.
+    if (draftedPlayers.length < 11 || simulating) return;
 
     playSound("season", soundMuted);
     setSimulating(true);
     setResults(null);
-    setTimeout(() => scrollToSection(simulationRef, "center"), 80);
+    setTimeout(() => scrollToSection(simulationRecordRef, "center"), 120);
     setLiveSeason({
       week: 0,
       wins: 0,
@@ -3442,27 +3480,57 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       const userXg = getExpectedGoals(teamProfile, opponentProfile, fullRating, opponentRating);
       const opponentXg = getExpectedGoals(opponentProfile, teamProfile, opponentRating, fullRating);
 
-      // Rebalanced for the 100-club database.
-      // A 90-92 rated XI should feel elite now; 94+ is special, not required.
-      const eliteControlBonus =
-      fullRating >= 94 ? 0.8 :
-      fullRating >= 92 ? 0.62 :
-      fullRating >= 90 ? 0.34 :
-      fullRating >= 88 ? 0.12 :
-      0;
+      // Calibrated 100-club balance.
+      // With the bigger database, an 87-rated XI should be a European/top-4 level team,
+      // not a mid-table/relegation-risk team. These boosts smooth the curve instead of
+      // making only 90+ teams useful.
+      const draftDifficultyBonus =
+      fullRating >= 93 ? 1.08 :
+      fullRating >= 91 ? 0.96 :
+      fullRating >= 90 ? 0.88 :
+      fullRating >= 89 ? 0.82 :
+      fullRating >= 88 ? 0.74 :
+      fullRating >= 87 ? 0.66 :
+      fullRating >= 86 ? 0.52 :
+      fullRating >= 85 ? 0.38 :
+      fullRating >= 84 ? 0.24 :
+      0.1;
 
-      const upsetProtection =
-      fullRating >= 94 ? 0.78 :
-      fullRating >= 92 ? 0.82 :
-      fullRating >= 90 ? 0.86 :
-      0.9;
+      const opponentXgMultiplier =
+      fullRating >= 93 ? 0.76 :
+      fullRating >= 91 ? 0.78 :
+      fullRating >= 90 ? 0.8 :
+      fullRating >= 89 ? 0.82 :
+      fullRating >= 88 ? 0.84 :
+      fullRating >= 87 ? 0.86 :
+      fullRating >= 86 ? 0.89 :
+      fullRating >= 85 ? 0.92 :
+      0.96;
 
-      let us = rollGoalsFromXg(userXg + eliteControlBonus);
-      let them = rollGoalsFromXg(opponentXg * upsetProtection);
+      const adjustedUserXg = userXg + draftDifficultyBonus;
+      const adjustedOpponentXg = opponentXg * opponentXgMultiplier;
 
-      // If a truly elite XI dominates xG but rolls a dead game, give it a small late-goal rescue chance.
-      // This keeps elite teams fun without making perfect seasons automatic.
-      if (us <= them && fullRating >= 90 && userXg - opponentXg >= 0.85 && Math.random() < 0.32) {
+      let us = rollGoalsFromXg(adjustedUserXg);
+      let them = rollGoalsFromXg(adjustedOpponentXg);
+
+      // Rating floor protection: an 87+ XI can still lose, but should not spiral
+      // into 12th-16th because of random Poisson swings. Close losses are sometimes
+      // converted into draws/wins when the team is clearly good enough.
+      if (us < them && fullRating >= 87) {
+        const closeLoss = them - us === 1;
+        const xgEdge = adjustedUserXg - adjustedOpponentXg;
+        const rescueChance =
+        fullRating >= 91 ? 0.48 :
+        fullRating >= 89 ? 0.40 :
+        fullRating >= 88 ? 0.34 :
+        0.28;
+
+        if (closeLoss && (xgEdge >= -0.15 || Math.random() < rescueChance)) {
+          us += 1;
+        }
+      }
+
+      if (us === them && fullRating >= 87 && adjustedUserXg - adjustedOpponentXg >= 0.45 && Math.random() < 0.28) {
         us += 1;
       }
 
@@ -3516,7 +3584,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         opponent: opponentName,
         result,
         score: `${us}-${them}`,
-        xg: `${userXg.toFixed(1)}-${opponentXg.toFixed(1)}`,
+        xg: `${adjustedUserXg.toFixed(1)}-${adjustedOpponentXg.toFixed(1)}`,
         scorers,
         opponentScorers,
         allScorers: [...scorers, ...opponentScorers].sort((a, b) => a.minute - b.minute) };
@@ -3557,14 +3625,23 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     }
 
     const points = wins * 3 + draws;
-    let badge = "Mid Table";
-    if (wins === 38) badge = "🐐 38-0 GOAT";else
-    if (losses === 0) badge = "🛡️ Invincibles";else
-    if (points >= 100) badge = "💯 Centurions";else
-    if (points >= 88) badge = "👑 Champions";else
-    if (points >= 75) badge = "⭐ UCL Qualified";
 
     setTimeout(() => {
+      const finalTable = buildLiveLeagueTable(matches, "Draft XI", aiSeasonSeed);
+      const userTableRow = finalTable.find(row => row.user);
+      const finishPosition = (userTableRow === null || userTableRow === void 0 ? void 0 : userTableRow.position) || 20;
+      const wonLeague = finishPosition === 1;
+
+      let finalBadge = "Mid Table";
+      if (wins === 38 && wonLeague) finalBadge = "🐐 38-0 GOAT";else
+      if (losses === 0 && wonLeague) finalBadge = "🛡️ Invincibles Champions";else
+      if (points >= 100 && wonLeague) finalBadge = "💯 Centurions Champions";else
+      if (wonLeague) finalBadge = "👑 League Champions";else
+      if (finishPosition <= 4) finalBadge = "⭐ UCL Qualified";else
+      if (finishPosition <= 7) finalBadge = "🌍 European Race";else
+      if (finishPosition <= 12) finalBadge = "📊 Mid Table";else
+      finalBadge = "⚠️ Rebuild Needed";
+
       const summary = {
         wins,
         draws,
@@ -3572,9 +3649,11 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         points,
         gf,
         ga,
-        badge,
+        badge: finalBadge,
+        finishPosition,
+        wonLeague,
         matches,
-        table: buildLiveLeagueTable(matches, "Draft XI", aiSeasonSeed) };
+        table: finalTable };
 
       const finalPlayerStats = createPlayerSeasonStats(draftedPlayers, matches);
       const finalAwards = calculateSeasonAwards(summary, finalPlayerStats);
@@ -3725,8 +3804,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     transferUsed ? "Transfer Used" : transferMode ? "Cancel Transfer" : "Transfer Lifeline"), /*#__PURE__*/
 
-    React.createElement("button", { className: guideStep === "simulate" && !results ? "guide-pulse" : "", onClick: simulateSeason, disabled: draftedPlayers.length < 11 || simulating || !!results },
-    results ? "Season Complete" : simulating ? "Simulating..." : "Simulate Season"), /*#__PURE__*/
+    !results && /*#__PURE__*/React.createElement("button", { className: guideStep === "simulate" ? "guide-pulse" : "", onClick: simulateSeason, disabled: draftedPlayers.length < 11 || simulating },
+    simulating ? "Simulating..." : "Simulate Season"), /*#__PURE__*/
 
     React.createElement("button", { className: "ghost", onClick: resetGame }, "Reset"), /*#__PURE__*/
     React.createElement("button", {
@@ -3790,7 +3869,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("strong", null, "GW ", liveSeason.week, "/38")), /*#__PURE__*/
 
 
-    React.createElement("div", { className: "season-record-card" }, /*#__PURE__*/
+    React.createElement("div", { className: "season-record-card", ref: simulationRecordRef }, /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, liveSeason.wins), /*#__PURE__*/React.createElement("span", null, "W")), /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, liveSeason.draws), /*#__PURE__*/React.createElement("span", null, "D")), /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, liveSeason.losses), /*#__PURE__*/React.createElement("span", null, "L")), /*#__PURE__*/
@@ -3933,31 +4012,52 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
     React.createElement("section", { className: "pitch-wrap auto-focus-section", ref: pitchRef }, /*#__PURE__*/
-    React.createElement("h2", null, "Your XI"), /*#__PURE__*/
+    React.createElement("div", { className: "pitch-toolbar" }, /*#__PURE__*/
+    React.createElement("div", null, /*#__PURE__*/
+    React.createElement("span", { className: "pitch-formation-pill" }, selectedFormationName), /*#__PURE__*/
+    React.createElement("h2", null, "Your XI")), /*#__PURE__*/
+    React.createElement("div", { className: "pitch-rating-strip" }, /*#__PURE__*/
+    React.createElement("span", null, "XI Rating"), /*#__PURE__*/
+    React.createElement("strong", null, teamRating || "--"), /*#__PURE__*/
+    React.createElement("small", null, draftedPlayers.length, "/11 · 🔄 ", rerollsLeft), /*#__PURE__*/
+    React.createElement("small", { className: "points-prediction" }, getPointsPrediction(teamRating)),
+    draftedPlayers.length > 0 && /*#__PURE__*/React.createElement("small", { className: "projected-level" }, getProjectedLevel(teamRating)))), /*#__PURE__*/
     React.createElement("div", { className: "pitch" },
     FORMATION.map(slot => {var _slot$mobileX, _slot$mobileY;
       const player = draft[slot.id];
       const slotPlayable = selectedPlayer && !player && canPlaySlot(selectedPlayer, slot.label);
       const slotBest = slotPlayable && bestSelectedSlot && bestSelectedSlot.id === slot.id;
       const slotInvalid = selectedPlayer && !player && !slotPlayable;
+      const movingPlayer = movingSlotId ? draft[movingSlotId] : null;
+      const moveTarget = movingPlayer && !player && canPlaySlot(movingPlayer, slot.label);
+      const moveBlocked = movingPlayer && !player && !moveTarget;
+      const moveSource = movingSlotId === slot.id;
       return /*#__PURE__*/(
         React.createElement("div", {
           key: slot.id,
           role: "button",
           tabIndex: 0,
-          className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${slotPlayable ? "valid-slot" : ""} ${slotBest ? "best-slot" : ""} ${slotInvalid ? "invalid-slot" : ""} ${transferMode && player ? "transfer-remove" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,
+          className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${slotPlayable ? "valid-slot" : ""} ${slotBest ? "best-slot" : ""} ${slotInvalid ? "invalid-slot" : ""} ${moveTarget ? "move-target" : ""} ${moveBlocked ? "move-blocked" : ""} ${moveSource ? "moving-source" : ""} ${transferMode && player ? "transfer-remove" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,
           style: { left: `${isMobileFormation ? (_slot$mobileX = slot.mobileX) !== null && _slot$mobileX !== void 0 ? _slot$mobileX : slot.x : slot.x}%`, top: `${isMobileFormation ? (_slot$mobileY = slot.mobileY) !== null && _slot$mobileY !== void 0 ? _slot$mobileY : slot.y : slot.y}%` },
           onClick: () => {
             if (transferMode && player) removePlayerForTransfer(slot.id);else
-            if (movingSlotId && !player) movePlayerToSlot(slot.id);else
-            if (!player) placePlayer(slot.id);
+            if (movingSlotId && player && movingSlotId === slot.id) setMovingSlotId(null);else
+            if (movingSlotId && !player && moveTarget) movePlayerToSlot(slot.id);else
+            if (player && !results && !simulating) {
+              setSelectedPlayer(null);
+              setMovingSlotId(slot.id);
+            } else if (!player) placePlayer(slot.id);
           },
           onKeyDown: e => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
               if (transferMode && player) removePlayerForTransfer(slot.id);else
-              if (movingSlotId && !player) movePlayerToSlot(slot.id);else
-              if (!player) placePlayer(slot.id);
+              if (movingSlotId && player && movingSlotId === slot.id) setMovingSlotId(null);else
+              if (movingSlotId && !player && moveTarget) movePlayerToSlot(slot.id);else
+              if (player && !results && !simulating) {
+                setSelectedPlayer(null);
+                setMovingSlotId(slot.id);
+              } else if (!player) placePlayer(slot.id);
             }
           } }, /*#__PURE__*/
 
@@ -3966,20 +4066,11 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         React.createElement(React.Fragment, null, /*#__PURE__*/
         React.createElement("strong", null, player.name), /*#__PURE__*/
         React.createElement("small", { className: getRatingClass(player.finalRating) }, player.finalRating), /*#__PURE__*/
-        React.createElement("em", null, player.positions.join("/")), /*#__PURE__*/
-
-        React.createElement("div", {
-          className: `move-overlay pitch-only ${movingSlotId === slot.id ? "active" : ""}`,
-          onClick: e => {
-            e.stopPropagation();
-            setMovingSlotId(movingSlotId === slot.id ? null : slot.id);
-          } },
-
-        movingSlotId === slot.id ? "Cancel ↺" : "Move ↔")) : /*#__PURE__*/
+        React.createElement("em", null, moveSource ? "Tap again to cancel" : player.positions.join("/"))) : /*#__PURE__*/
 
 
 
-        React.createElement("em", null, movingSlotId ? "Move Here" : slotBest ? "Best Fit" : slotPlayable ? "Place Here" : selectedPlayer ? "Not Fit" : "Empty")));
+        React.createElement("em", null, movingSlotId ? moveTarget ? "Move Here" : "Not Eligible" : slotBest ? "Best Fit" : slotPlayable ? "Place Here" : selectedPlayer ? "Not Fit" : "Empty")));
 
 
 
