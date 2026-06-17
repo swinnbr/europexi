@@ -2420,3 +2420,85 @@ h1 {
     min-height: 190px;
   }
 }
+
+/* Expanded database polish: keeps larger club/player lists easy to scan */
+.database-expanded-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(141, 255, 179, 0.14);
+  color: #dfffea;
+  font-size: 12px;
+  font-weight: 1000;
+}
+
+.club-panel .player-grid {
+  max-height: min(720px, 72vh);
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(141, 255, 179, 0.55) rgba(255,255,255,0.08);
+}
+
+.club-panel .player-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.club-panel .player-grid::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+}
+
+.club-panel .player-grid::-webkit-scrollbar-thumb {
+  background: rgba(141, 255, 179, 0.55);
+  border-radius: 999px;
+}
+
+.club-header p::after {
+  content: " · expanded pool";
+  color: rgba(141, 255, 179, 0.9);
+  font-weight: 900;
+}
+
+@media (max-width: 720px) {
+  .club-panel .player-grid {
+    max-height: 58vh;
+    padding-right: 2px;
+  }
+
+  .club-header p::after {
+    content: "";
+  }
+}
+
+/* xG simulation rework details */
+.xg-pill {
+  display: inline-flex;
+  width: fit-content;
+  margin: -8px 0 16px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(22, 63, 36, 0.08);
+  color: #17351f;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+
+/* 100 Big 5 Clubs database build: no required layout changes. */
+
+/* 100-club balanced sim patch */
+.projected-level {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(141, 255, 179, 0.14);
+  color: #8dffb3 !important;
+  border: 1px solid rgba(141, 255, 179, 0.24);
+  font-weight: 1000;
+}

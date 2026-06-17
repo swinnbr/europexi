@@ -1001,9 +1001,833 @@ const EXTRA_TOP5_CLUBS = [
 
 
 
-const STANDARD_CLUB_POOL = [...CLUBS, ...SMALLER_CLUBS, ...EXTRA_TOP5_CLUBS];
-const ALL_CLUBS = [...STANDARD_CLUB_POOL, ...JACKPOT_CLUBS];
-const TOP_FIVE_LEAGUES = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1"];
+const EXPANDED_DRAFT_CLUBS = [
+{
+  id: "tot1819_expanded",
+  name: "Tottenham",
+  league: "Premier League",
+  season: "2018-19",
+  color: "#132257",
+  rating: 86,
+  players: [
+  ["Harry Kane", "ST", 91], ["Son Heung-min", "LW", 89], ["Christian Eriksen", "CAM", 88],
+  ["Hugo Lloris", "GK", 86], ["Jan Vertonghen", "CB", 86], ["Toby Alderweireld", "CB", 86],
+  ["Dele Alli", "CAM", 85], ["Mousa Dembele", "CM", 85], ["Kieran Trippier", "RB", 84],
+  ["Danny Rose", "LB", 83], ["Eric Dier", "CDM", 82], ["Lucas Moura", "RW", 82],
+  ["Moussa Sissoko", "CM", 81], ["Erik Lamela", "RW", 81], ["Davinson Sanchez", "CB", 81]] },
+
+
+{
+  id: "newcastle2223_expanded",
+  name: "Newcastle United",
+  league: "Premier League",
+  season: "2022-23",
+  color: "#241F20",
+  rating: 82,
+  players: [
+  ["Bruno Guimaraes", "CM", 86], ["Kieran Trippier", "RB", 85], ["Alexander Isak", "ST", 84],
+  ["Nick Pope", "GK", 84], ["Sven Botman", "CB", 83], ["Joelinton", "CM", 83],
+  ["Miguel Almiron", "RW", 82], ["Callum Wilson", "ST", 82], ["Fabian Schar", "CB", 82],
+  ["Dan Burn", "LB", 80], ["Joe Willock", "CM", 80], ["Allan Saint-Maximin", "LW", 81],
+  ["Sean Longstaff", "CM", 78], ["Jacob Murphy", "RM", 78], ["Anthony Gordon", "LW", 78]] },
+
+
+{
+  id: "astonvilla2324_expanded",
+  name: "Aston Villa",
+  league: "Premier League",
+  season: "2023-24",
+  color: "#670E36",
+  rating: 83,
+  players: [
+  ["Ollie Watkins", "ST", 86], ["Emiliano Martinez", "GK", 86], ["Douglas Luiz", "CM", 85],
+  ["John McGinn", "CM", 84], ["Moussa Diaby", "RW", 84], ["Leon Bailey", "RW", 83],
+  ["Pau Torres", "CB", 83], ["Ezri Konsa", "CB", 82], ["Lucas Digne", "LB", 82],
+  ["Matty Cash", "RB", 81], ["Youri Tielemans", "CM", 81], ["Jacob Ramsey", "CM", 80],
+  ["Boubacar Kamara", "CDM", 82], ["Nicolo Zaniolo", "LW", 80], ["Diego Carlos", "CB", 81]] },
+
+
+{
+  id: "porto1011_expanded",
+  name: "Porto",
+  league: "Primeira Liga",
+  season: "2010-11",
+  color: "#0057B8",
+  rating: 87,
+  players: [
+  ["Radamel Falcao", "ST", 90], ["Hulk", "RW", 88], ["Joao Moutinho", "CM", 86],
+  ["Fernando", "CDM", 85], ["James Rodriguez", "LW", 85], ["Nicolas Otamendi", "CB", 84],
+  ["Rolando", "CB", 83], ["Helton", "GK", 83], ["Alvaro Pereira", "LB", 83],
+  ["Fredy Guarin", "CM", 84], ["Silvestre Varela", "RW", 82], ["Cristian Rodriguez", "LW", 82],
+  ["Maicon", "CB", 81], ["Cristian Sapunaru", "RB", 80], ["Ruben Micael", "CM", 80]] },
+
+
+{
+  id: "benfica1314_expanded",
+  name: "Benfica",
+  league: "Primeira Liga",
+  season: "2013-14",
+  color: "#E83030",
+  rating: 85,
+  players: [
+  ["Jan Oblak", "GK", 87], ["Nicolas Gaitan", "LW", 86], ["Enzo Perez", "CM", 86],
+  ["Lima", "ST", 84], ["Ezequiel Garay", "CB", 85], ["Nemanja Matic", "CDM", 87],
+  ["Rodrigo Moreno", "ST", 83], ["Eduardo Salvio", "RW", 83], ["Maxi Pereira", "RB", 83],
+  ["Luisao", "CB", 83], ["Andre Gomes", "CM", 82], ["Ruben Amorim", "CM", 80],
+  ["Lazar Markovic", "RW", 82], ["Miralem Sulejmani", "LW", 80], ["Silvio", "LB", 79]] },
+
+
+{
+  id: "sporting2021_expanded",
+  name: "Sporting CP",
+  league: "Primeira Liga",
+  season: "2020-21",
+  color: "#008057",
+  rating: 82,
+  players: [
+  ["Pedro Goncalves", "CAM", 85], ["Joao Palhinha", "CDM", 84], ["Nuno Mendes", "LB", 83],
+  ["Sebastian Coates", "CB", 83], ["Pedro Porro", "RB", 82], ["Antonio Adan", "GK", 81],
+  ["Matheus Nunes", "CM", 82], ["Goncalo Inacio", "CB", 81], ["Nuno Santos", "LW", 80],
+  ["Paulinho", "ST", 80], ["Daniel Braganca", "CM", 79], ["Tiago Tomas", "ST", 78],
+  ["Zouhair Feddal", "CB", 79], ["Jovane Cabral", "LW", 79], ["Ricardo Esgaio", "RM", 78]] },
+
+
+{
+  id: "ajax1819_expanded",
+  name: "Ajax",
+  league: "Eredivisie",
+  season: "2018-19",
+  color: "#D2122E",
+  rating: 88,
+  players: [
+  ["Frenkie de Jong", "CM", 90], ["Matthijs de Ligt", "CB", 90], ["Hakim Ziyech", "RW", 88],
+  ["Dusan Tadic", "LW", 88], ["Donny van de Beek", "CAM", 86], ["Andre Onana", "GK", 85],
+  ["Daley Blind", "CB", 85], ["Nicolas Tagliafico", "LB", 84], ["David Neres", "RW", 84],
+  ["Noussair Mazraoui", "RB", 82], ["Lasse Schone", "CDM", 82], ["Kaspar Dolberg", "ST", 81],
+  ["Klaas-Jan Huntelaar", "ST", 80], ["Joel Veltman", "CB", 80], ["Carel Eiting", "CM", 77]] },
+
+
+{
+  id: "psv1718_expanded",
+  name: "PSV",
+  league: "Eredivisie",
+  season: "2017-18",
+  color: "#E60012",
+  rating: 81,
+  players: [
+  ["Hirving Lozano", "LW", 84], ["Luuk de Jong", "ST", 83], ["Marco van Ginkel", "CM", 82],
+  ["Steven Bergwijn", "RW", 82], ["Jeroen Zoet", "GK", 81], ["Arias", "RB", 81],
+  ["Daniel Schwaab", "CB", 79], ["Nick Viergever", "CB", 79], ["Jorrit Hendrix", "CDM", 80],
+  ["Gastón Pereiro", "CAM", 81], ["Davy Propper", "CM", 81], ["Angelino", "LB", 80],
+  ["Pablo Rosario", "CDM", 78], ["Donyell Malen", "ST", 79], ["Mauro Junior", "LW", 77]] },
+
+
+{
+  id: "galatasaray9900_expanded",
+  name: "Galatasaray",
+  league: "Super Lig",
+  season: "1999-00",
+  color: "#A32638",
+  rating: 85,
+  players: [
+  ["Gheorghe Hagi", "CAM", 90], ["Claudio Taffarel", "GK", 86], ["Hakan Sukur", "ST", 86],
+  ["Gheorghe Popescu", "CB", 86], ["Emre Belozoglu", "CM", 84], ["Okan Buruk", "RM", 83],
+  ["Hasan Sas", "LW", 83], ["Bulent Korkmaz", "CB", 84], ["Umit Davala", "RB", 82],
+  ["Suat Kaya", "CDM", 82], ["Arif Erdem", "ST", 81], ["Hakan Unsal", "LB", 82],
+  ["Capone", "CB", 80], ["Marcio Mixirica", "ST", 78], ["Ergun Penbe", "LB", 80]] },
+
+
+{
+  id: "fenerbahce0708_expanded",
+  name: "Fenerbahce",
+  league: "Super Lig",
+  season: "2007-08",
+  color: "#003B7A",
+  rating: 82,
+  players: [
+  ["Roberto Carlos", "LB", 87], ["Alex de Souza", "CAM", 88], ["Volkan Demirel", "GK", 82],
+  ["Mateja Kezman", "ST", 82], ["Deivid", "RW", 82], ["Stephen Appiah", "CM", 83],
+  ["Mehmet Aurelio", "CDM", 82], ["Gokhan Gonul", "RB", 82], ["Diego Lugano", "CB", 83],
+  ["Edu Dracena", "CB", 82], ["Colin Kazim-Richards", "RW", 79], ["Semih Senturk", "ST", 80],
+  ["Ugur Boral", "LM", 79], ["Selcuk Sahin", "CDM", 78], ["Maldonado", "CDM", 77]] },
+
+
+{
+  id: "zenit0708_expanded",
+  name: "Zenit",
+  league: "Russian Premier League",
+  season: "2007-08",
+  color: "#009FE3",
+  rating: 84,
+  players: [
+  ["Andrey Arshavin", "CAM", 88], ["Anatoliy Tymoshchuk", "CDM", 86], ["Pavel Pogrebnyak", "ST", 84],
+  ["Vyacheslav Malafeev", "GK", 83], ["Aleksandr Anyukov", "RB", 83], ["Martin Skrtel", "CB", 83],
+  ["Nicolas Lombaerts", "CB", 82], ["Kim Dong-jin", "LB", 80], ["Konstantin Zyryanov", "CM", 84],
+  ["Igor Denisov", "CM", 82], ["Viktor Fayzulin", "RM", 80], ["Alejandro Dominguez", "RW", 82],
+  ["Fatih Tekke", "ST", 81], ["Roman Shirokov", "CB", 80], ["Radek Sirl", "LM", 79]] },
+
+
+{
+  id: "shakhtar0809_expanded",
+  name: "Shakhtar Donetsk",
+  league: "Ukrainian Premier League",
+  season: "2008-09",
+  color: "#F36C21",
+  rating: 84,
+  players: [
+  ["Darijo Srna", "RB", 87], ["Fernandinho", "CM", 86], ["Willian", "LW", 85],
+  ["Luiz Adriano", "ST", 83], ["Jadson", "CAM", 84], ["Dmytro Chygrynskiy", "CB", 83],
+  ["Razvan Rat", "LB", 82], ["Andriy Pyatov", "GK", 82], ["Tomas Hubschman", "CDM", 82],
+  ["Ilsinho", "RW", 82], ["Mariusz Lewandowski", "CDM", 81], ["Olexandr Kucher", "CB", 80],
+  ["Brandao", "ST", 80], ["Douglas Costa", "RW", 79], ["Henrikh Mkhitaryan", "CAM", 79]] },
+
+
+{
+  id: "rangers0708_expanded",
+  name: "Rangers",
+  league: "Scottish Premiership",
+  season: "2007-08",
+  color: "#0033A0",
+  rating: 81,
+  players: [
+  ["Allan McGregor", "GK", 82], ["Carlos Cuellar", "CB", 84], ["David Weir", "CB", 82],
+  ["Sasa Papac", "LB", 80], ["Alan Hutton", "RB", 82], ["Barry Ferguson", "CM", 84],
+  ["Brahim Hemdani", "CDM", 80], ["Steven Davis", "CM", 82], ["DaMarcus Beasley", "LW", 80],
+  ["Nacho Novo", "RW", 79], ["Jean-Claude Darcheville", "ST", 80], ["Kris Boyd", "ST", 81],
+  ["Kevin Thomson", "CM", 79], ["Lee McCulloch", "LM", 78], ["Kenny Miller", "ST", 79]] },
+
+
+{
+  id: "celtic2223_expanded",
+  name: "Celtic",
+  league: "Scottish Premiership",
+  season: "2022-23",
+  color: "#018749",
+  rating: 80,
+  players: [
+  ["Kyogo Furuhashi", "ST", 83], ["Jota", "LW", 82], ["Callum McGregor", "CM", 82],
+  ["Reo Hatate", "CM", 81], ["Cameron Carter-Vickers", "CB", 81], ["Joe Hart", "GK", 80],
+  ["Alistair Johnston", "RB", 80], ["Greg Taylor", "LB", 80], ["Daizen Maeda", "LW", 80],
+  ["Liel Abada", "RW", 79], ["Matt O'Riley", "CM", 80], ["Aaron Mooy", "CDM", 79],
+  ["Carl Starfelt", "CB", 79], ["Sead Haksabanovic", "CAM", 78], ["Oh Hyeon-gyu", "ST", 77]] },
+
+
+{
+  id: "leverkusen0102_expanded",
+  name: "Bayer Leverkusen",
+  league: "Bundesliga",
+  season: "2001-02",
+  color: "#E32221",
+  rating: 88,
+  players: [
+  ["Michael Ballack", "CM", 91], ["Lucio", "CB", 89], ["Bernd Schneider", "RM", 86],
+  ["Ze Roberto", "LM", 86], ["Dimitar Berbatov", "ST", 86], ["Hans-Jorg Butt", "GK", 84],
+  ["Yildiray Basturk", "CAM", 85], ["Carsten Ramelow", "CDM", 84], ["Diego Placente", "LB", 82],
+  ["Jens Nowotny", "CB", 84], ["Oliver Neuville", "ST", 83], ["Thomas Brdaric", "ST", 80],
+  ["Zoltan Sebescen", "RB", 79], ["Boris Zivkovic", "CB", 80], ["Marko Babic", "LM", 78]] },
+
+
+{
+  id: "real_sociedad0203_expanded",
+  name: "Real Sociedad",
+  league: "La Liga",
+  season: "2002-03",
+  color: "#0067B1",
+  rating: 84,
+  players: [
+  ["Xabi Alonso", "CM", 88], ["Nihat Kahveci", "ST", 86], ["Darko Kovacevic", "ST", 85],
+  ["Sander Westerveld", "GK", 82], ["Valery Karpin", "RM", 84], ["Javier de Pedro", "LM", 83],
+  ["Aitor Lopez Rekarte", "RB", 81], ["Agustin Aranzabal", "LB", 81], ["Igor Jauregi", "CB", 80],
+  ["Bjorn Tore Kvarme", "CB", 80], ["Mikel Aranburu", "CM", 82], ["Gabi Schurrer", "CB", 79],
+  ["Tayfun Korkut", "CM", 79], ["Igor Gabilondo", "LW", 78], ["Oscar De Paula", "ST", 78]] },
+
+
+{
+  id: "celta0203_expanded",
+  name: "Celta Vigo",
+  league: "La Liga",
+  season: "2002-03",
+  color: "#87CEEB",
+  rating: 82,
+  players: [
+  ["Alexander Mostovoi", "CAM", 87], ["Valeri Karpin", "RM", 84], ["Claude Makelele", "CDM", 86],
+  ["Edu", "ST", 83], ["Gustavo Lopez", "LW", 82], ["Pablo Cavallero", "GK", 81],
+  ["Juanfran", "LB", 81], ["Sergio Fernandez", "CB", 80], ["Fernando Caceres", "CB", 80],
+  ["Michel Salgado", "RB", 83], ["Jesuli", "RW", 79], ["Vagner", "CM", 79],
+  ["Jose Ignacio", "CM", 78], ["Catanha", "ST", 80], ["Berizzo", "CB", 80]] },
+
+
+{
+  id: "sampdoria9091_expanded",
+  name: "Sampdoria",
+  league: "Serie A",
+  season: "1990-91",
+  color: "#1B75BB",
+  rating: 86,
+  players: [
+  ["Roberto Mancini", "ST", 89], ["Gianluca Vialli", "ST", 89], ["Pietro Vierchowod", "CB", 87],
+  ["Attilio Lombardo", "RM", 85], ["Toninho Cerezo", "CM", 85], ["Gianluca Pagliuca", "GK", 85],
+  ["Amedeo Carboni", "LB", 83], ["Moreno Mannini", "RB", 83], ["Luca Pellegrini", "CB", 82],
+  ["Giuseppe Dossena", "CM", 82], ["Srecko Katanec", "CDM", 82], ["Ivano Bonetti", "CM", 80],
+  ["Marco Lanna", "LB", 80], ["Victor Munoz", "CM", 80], ["Fausto Pari", "CDM", 80]] },
+
+
+{
+  id: "torino9293_expanded",
+  name: "Torino",
+  league: "Serie A",
+  season: "1992-93",
+  color: "#7C1C2B",
+  rating: 82,
+  players: [
+  ["Enzo Scifo", "CAM", 86], ["Rafael Martin Vazquez", "CM", 84], ["Gianluigi Lentini", "LW", 86],
+  ["Roberto Mussi", "RB", 82], ["Luca Fusi", "CDM", 82], ["Andrea Silenzi", "ST", 81],
+  ["Enrico Annoni", "CB", 81], ["Pasquale Bruno", "CB", 80], ["Angelo Gregucci", "CB", 80],
+  ["Raffaele Sergio", "LB", 79], ["Luca Marchegiani", "GK", 84], ["Walter Casagrande", "ST", 80],
+  ["Carlos Aguilera", "RW", 80], ["Benedetti", "CM", 78], ["Poggi", "ST", 78]] },
+
+
+{
+  id: "bordeaux0809_expanded",
+  name: "Bordeaux",
+  league: "Ligue 1",
+  season: "2008-09",
+  color: "#001B50",
+  rating: 83,
+  players: [
+  ["Yoann Gourcuff", "CAM", 87], ["Marouane Chamakh", "ST", 84], ["Alou Diarra", "CDM", 84],
+  ["Wendel", "LM", 83], ["Fernando Menegazzo", "CM", 82], ["Souleymane Diawara", "CB", 82],
+  ["Marc Planus", "CB", 81], ["Ulrich Rame", "GK", 81], ["Matthieu Chalme", "RB", 80],
+  ["Benoit Tremoulinas", "LB", 80], ["Fernando Cavenaghi", "ST", 82], ["David Bellion", "RW", 79],
+  ["Jaroslav Plasil", "CM", 81], ["Jussie", "CAM", 80], ["Henrique", "CB", 79]] },
+
+
+{
+  id: "saintetienne1314_expanded",
+  name: "Saint-Etienne",
+  league: "Ligue 1",
+  season: "2013-14",
+  color: "#00843D",
+  rating: 80,
+  players: [
+  ["Pierre-Emerick Aubameyang", "ST", 85], ["Stephane Ruffier", "GK", 83], ["Kurt Zouma", "CB", 82],
+  ["Loic Perrin", "CB", 82], ["Romain Hamouma", "RW", 81], ["Max Gradel", "LW", 81],
+  ["Josuha Guilavogui", "CDM", 81], ["Fabien Lemoine", "CM", 80], ["Franck Tabanou", "LM", 80],
+  ["Brandao", "ST", 79], ["Renaud Cohade", "CM", 79], ["Francois Clerc", "RB", 79],
+  ["Faouzi Ghoulam", "LB", 80], ["Jeremy Clement", "CDM", 78], ["Yohan Mollo", "LW", 78]] },
+
+
+{
+  id: "hamburg8384_expanded",
+  name: "Hamburg",
+  league: "Bundesliga",
+  season: "1982-83",
+  color: "#003F7D",
+  rating: 87,
+  players: [
+  ["Felix Magath", "CAM", 88], ["Horst Hrubesch", "ST", 87], ["Manfred Kaltz", "RB", 87],
+  ["Uli Stein", "GK", 85], ["Ditmar Jakobs", "CB", 84], ["Holger Hieronymus", "CB", 83],
+  ["Wolfgang Rolff", "CM", 83], ["Bernd Wehmeyer", "LB", 82], ["Jimmy Hartwig", "CDM", 82],
+  ["Lars Bastrup", "LW", 81], ["Thomas von Heesen", "CM", 82], ["Jürgen Milewski", "RW", 80],
+  ["Michael Schröder", "CB", 79], ["Wolfram Wuttke", "CAM", 80], ["Gerard Plessers", "LB", 79]] },
+
+
+{
+  id: "monchengladbach1516_expanded",
+  name: "Monchengladbach",
+  league: "Bundesliga",
+  season: "2015-16",
+  color: "#000000",
+  rating: 82,
+  players: [
+  ["Granit Xhaka", "CDM", 85], ["Thorgan Hazard", "LW", 83], ["Raffael", "ST", 83],
+  ["Lars Stindl", "CAM", 82], ["Yann Sommer", "GK", 84], ["Oscar Wendt", "LB", 80],
+  ["Tony Jantschke", "RB", 80], ["Andreas Christensen", "CB", 82], ["Martin Stranzl", "CB", 81],
+  ["Mahmoud Dahoud", "CM", 82], ["Ibrahima Traore", "RW", 80], ["Patrick Herrmann", "RM", 80],
+  ["Christoph Kramer", "CM", 82], ["Josip Drmic", "ST", 79], ["Andre Hahn", "RW", 79]] },
+
+
+{
+  id: "hoffenheim1819_expanded",
+  name: "Hoffenheim",
+  league: "Bundesliga",
+  season: "2018-19",
+  color: "#005CA9",
+  rating: 81,
+  players: [
+  ["Andrej Kramaric", "ST", 85], ["Kerem Demirbay", "CM", 83], ["Nico Schulz", "LB", 82],
+  ["Joelinton", "ST", 81], ["Florian Grillitsch", "CDM", 82], ["Kevin Vogt", "CB", 81],
+  ["Oliver Baumann", "GK", 82], ["Pavel Kaderabek", "RB", 81], ["Benjamin Hubner", "CB", 80],
+  ["Nadiem Amiri", "CAM", 81], ["Leonardo Bittencourt", "LM", 80], ["Ishak Belfodil", "ST", 80],
+  ["Dennis Geiger", "CM", 79], ["Reiss Nelson", "RW", 79], ["Ermin Bicakcic", "CB", 79]] },
+
+
+{
+  id: "palermo0506_expanded",
+  name: "Palermo",
+  league: "Serie A",
+  season: "2005-06",
+  color: "#F2A7C8",
+  rating: 81,
+  players: [
+  ["Andrea Barzagli", "CB", 84], ["Fabio Grosso", "LB", 84], ["Simone Barone", "CM", 82],
+  ["Eugenio Corini", "CM", 83], ["Amauri", "ST", 83], ["David Di Michele", "ST", 82],
+  ["Cristian Zaccardo", "RB", 82], ["Mariano Gonzalez", "RW", 80], ["Franco Brienza", "CAM", 80],
+  ["Aimo Diana", "RM", 80], ["Giuseppe Biava", "CB", 80], ["Federico Agliardi", "GK", 78],
+  ["Mark Bresciano", "LM", 81], ["Paul Codrea", "CDM", 78], ["Mattia Cassani", "RB", 78]] }];
+
+
+
+
+
+
+
+const BALANCED_100_EXTRA_CLUBS = [
+{
+  id: "tot1617_balanced",
+  name: "Tottenham",
+  league: "Premier League",
+  season: "2016-17",
+  color: "#132257",
+  rating: 86,
+  players: [
+  ["Harry Kane", "ST", 90], ["Dele Alli", "CAM", 86], ["Christian Eriksen", "CM", 88],
+  ["Heung-min Son", "LW", 86], ["Mousa Dembele", "CM", 85], ["Victor Wanyama", "CDM", 83],
+  ["Kyle Walker", "RB", 85], ["Toby Alderweireld", "CB", 87], ["Jan Vertonghen", "CB", 86],
+  ["Danny Rose", "LB", 84], ["Hugo Lloris", "GK", 88]] },
+
+
+{
+  id: "blackburn9495_balanced",
+  name: "Blackburn Rovers",
+  league: "Premier League",
+  season: "1994-95",
+  color: "#0057B8",
+  rating: 84,
+  players: [
+  ["Alan Shearer", "ST", 91], ["Chris Sutton", "ST", 86], ["Tim Sherwood", "CM", 83],
+  ["Stuart Ripley", "RM", 81], ["Jason Wilcox", "LM", 81], ["Robbie Slater", "CM", 80],
+  ["Graeme Le Saux", "LB", 84], ["Colin Hendry", "CB", 85], ["Henning Berg", "CB", 83],
+  ["Jeff Kenna", "RB", 80], ["Tim Flowers", "GK", 84]] },
+
+
+{
+  id: "chel1617_balanced",
+  name: "Chelsea",
+  league: "Premier League",
+  season: "2016-17",
+  color: "#034694",
+  rating: 89,
+  players: [
+  ["Eden Hazard", "LW", 91], ["Diego Costa", "ST", 89], ["Pedro", "RW", 84],
+  ["Cesc Fabregas", "CM", 86], ["N'Golo Kante", "CDM", 90], ["Nemanja Matic", "CDM", 85],
+  ["Marcos Alonso", "LM", 84], ["Cesar Azpilicueta", "CB", 87], ["David Luiz", "CB", 85],
+  ["Victor Moses", "RM", 82], ["Thibaut Courtois", "GK", 88]] },
+
+
+{
+  id: "manutd9899_balanced",
+  name: "Manchester United",
+  league: "Premier League",
+  season: "1998-99",
+  color: "#DA291C",
+  rating: 91,
+  players: [
+  ["Peter Schmeichel", "GK", 91], ["Gary Neville", "RB", 85], ["Jaap Stam", "CB", 91],
+  ["Ronny Johnsen", "CB", 84], ["Denis Irwin", "LB", 86], ["David Beckham", "RM", 90],
+  ["Roy Keane", "CM", 91], ["Paul Scholes", "CM", 88], ["Ryan Giggs", "LM", 89],
+  ["Dwight Yorke", "ST", 88], ["Andy Cole", "ST", 87]] },
+
+
+{
+  id: "ars1516_balanced",
+  name: "Arsenal",
+  league: "Premier League",
+  season: "2015-16",
+  color: "#EF0107",
+  rating: 85,
+  players: [
+  ["Petr Cech", "GK", 86], ["Hector Bellerin", "RB", 82], ["Laurent Koscielny", "CB", 86],
+  ["Per Mertesacker", "CB", 82], ["Nacho Monreal", "LB", 83], ["Francis Coquelin", "CDM", 81],
+  ["Santi Cazorla", "CM", 86], ["Mesut Ozil", "CAM", 90], ["Alexis Sanchez", "LW", 89],
+  ["Theo Walcott", "RW", 82], ["Olivier Giroud", "ST", 84]] },
+
+
+{
+  id: "liverpool0809_balanced",
+  name: "Liverpool",
+  league: "Premier League",
+  season: "2008-09",
+  color: "#C8102E",
+  rating: 88,
+  players: [
+  ["Pepe Reina", "GK", 86], ["Alvaro Arbeloa", "RB", 82], ["Jamie Carragher", "CB", 86],
+  ["Martin Skrtel", "CB", 83], ["Fabio Aurelio", "LB", 82], ["Javier Mascherano", "CDM", 88],
+  ["Xabi Alonso", "CM", 90], ["Steven Gerrard", "CAM", 92], ["Dirk Kuyt", "RW", 84],
+  ["Albert Riera", "LW", 81], ["Fernando Torres", "ST", 91]] },
+
+
+
+{
+  id: "bar0809_balanced",
+  name: "Barcelona",
+  league: "La Liga",
+  season: "2008-09",
+  color: "#A50044",
+  rating: 93,
+  players: [
+  ["Victor Valdes", "GK", 87], ["Dani Alves", "RB", 91], ["Carles Puyol", "CB", 90],
+  ["Gerard Pique", "CB", 88], ["Eric Abidal", "LB", 86], ["Sergio Busquets", "CDM", 88],
+  ["Xavi", "CM", 94], ["Andres Iniesta", "CM", 93], ["Lionel Messi", "RW", 96],
+  ["Samuel Eto'o", "ST", 92], ["Thierry Henry", "LW", 91]] },
+
+
+{
+  id: "rm1112_balanced",
+  name: "Real Madrid",
+  league: "La Liga",
+  season: "2011-12",
+  color: "#FEBE10",
+  rating: 92,
+  players: [
+  ["Iker Casillas", "GK", 91], ["Sergio Ramos", "CB", 91], ["Pepe", "CB", 88],
+  ["Marcelo", "LB", 89], ["Alvaro Arbeloa", "RB", 82], ["Xabi Alonso", "CDM", 90],
+  ["Mesut Ozil", "CAM", 90], ["Angel Di Maria", "RW", 89], ["Cristiano Ronaldo", "LW", 96],
+  ["Karim Benzema", "ST", 89], ["Gonzalo Higuain", "ST", 88]] },
+
+
+{
+  id: "atm1516_balanced",
+  name: "Atletico Madrid",
+  league: "La Liga",
+  season: "2015-16",
+  color: "#CB3524",
+  rating: 88,
+  players: [
+  ["Jan Oblak", "GK", 89], ["Juanfran", "RB", 85], ["Diego Godin", "CB", 90],
+  ["Jose Gimenez", "CB", 85], ["Filipe Luis", "LB", 86], ["Gabi", "CDM", 86],
+  ["Koke", "CM", 88], ["Saul Niguez", "CM", 85], ["Yannick Carrasco", "LW", 84],
+  ["Antoine Griezmann", "ST", 91], ["Fernando Torres", "ST", 82]] },
+
+
+{
+  id: "sev0607_balanced",
+  name: "Sevilla",
+  league: "La Liga",
+  season: "2006-07",
+  color: "#D71920",
+  rating: 85,
+  players: [
+  ["Andres Palop", "GK", 84], ["Dani Alves", "RB", 89], ["Javi Navarro", "CB", 84],
+  ["Julien Escude", "CB", 83], ["David Castedo", "LB", 80], ["Christian Poulsen", "CDM", 83],
+  ["Renato", "CM", 83], ["Jesus Navas", "RW", 85], ["Adriano", "LW", 83],
+  ["Frederic Kanoute", "ST", 87], ["Luis Fabiano", "ST", 86]] },
+
+
+{
+  id: "val9900_balanced",
+  name: "Valencia",
+  league: "La Liga",
+  season: "1999-00",
+  color: "#F18F01",
+  rating: 86,
+  players: [
+  ["Santiago Canizares", "GK", 88], ["Jocelyn Angloma", "RB", 83], ["Mauricio Pellegrino", "CB", 84],
+  ["Miroslav Djukic", "CB", 84], ["Amedeo Carboni", "LB", 84], ["David Albelda", "CDM", 85],
+  ["Gaizka Mendieta", "CM", 90], ["Kily Gonzalez", "LW", 86], ["Pablo Aimar", "CAM", 88],
+  ["Claudio Lopez", "ST", 87], ["John Carew", "ST", 83]] },
+
+
+{
+  id: "osasuna0506_balanced",
+  name: "Osasuna",
+  league: "La Liga",
+  season: "2005-06",
+  color: "#C8102E",
+  rating: 79,
+  players: [
+  ["Ricardo Lopez", "GK", 80], ["Cesar Cruchaga", "CB", 80], ["Josetxo", "CB", 78],
+  ["Enrique Corrales", "LB", 78], ["Javier Flano", "RB", 77], ["Patxi Punal", "CDM", 80],
+  ["Raul Garcia", "CM", 82], ["Ludovic Delporte", "LM", 79], ["Valdo", "RM", 78],
+  ["Savo Milosevic", "ST", 81], ["Pierre Webo", "ST", 79]] },
+
+
+{
+  id: "espanyol0607_balanced",
+  name: "Espanyol",
+  league: "La Liga",
+  season: "2006-07",
+  color: "#0070B8",
+  rating: 80,
+  players: [
+  ["Carlos Kameni", "GK", 82], ["Pablo Zabaleta", "RB", 82], ["Daniel Jarque", "CB", 82],
+  ["Albert Riera", "LM", 81], ["David Garcia", "LB", 78], ["Moises Hurtado", "CDM", 78],
+  ["Ivan de la Pena", "CM", 83], ["Luis Garcia", "CAM", 82], ["Rufete", "RM", 80],
+  ["Raul Tamudo", "ST", 84], ["Walter Pandiani", "ST", 80]] },
+
+
+
+{
+  id: "bay1213_balanced",
+  name: "Bayern Munich",
+  league: "Bundesliga",
+  season: "2012-13",
+  color: "#DC052D",
+  rating: 93,
+  players: [
+  ["Manuel Neuer", "GK", 91], ["Philipp Lahm", "RB", 91], ["Jerome Boateng", "CB", 87],
+  ["Dante", "CB", 86], ["David Alaba", "LB", 88], ["Bastian Schweinsteiger", "CM", 91],
+  ["Javi Martinez", "CDM", 88], ["Thomas Muller", "CAM", 89], ["Arjen Robben", "RW", 90],
+  ["Franck Ribery", "LW", 92], ["Mario Mandzukic", "ST", 88]] },
+
+
+{
+  id: "bvb1011_balanced",
+  name: "Borussia Dortmund",
+  league: "Bundesliga",
+  season: "2010-11",
+  color: "#FDE100",
+  rating: 86,
+  players: [
+  ["Roman Weidenfeller", "GK", 84], ["Lukasz Piszczek", "RB", 84], ["Mats Hummels", "CB", 88],
+  ["Neven Subotic", "CB", 85], ["Marcel Schmelzer", "LB", 82], ["Sven Bender", "CDM", 84],
+  ["Nuri Sahin", "CM", 87], ["Mario Gotze", "CAM", 86], ["Jakub Blaszczykowski", "RW", 84],
+  ["Kevin Grosskreutz", "LW", 81], ["Lucas Barrios", "ST", 85]] },
+
+
+{
+  id: "kaiserslautern9798_balanced",
+  name: "Kaiserslautern",
+  league: "Bundesliga",
+  season: "1997-98",
+  color: "#D5001C",
+  rating: 82,
+  players: [
+  ["Andreas Reinke", "GK", 81], ["Michael Schjonberg", "CB", 82], ["Harry Koch", "CB", 81],
+  ["Martin Wagner", "LB", 80], ["Marco Reich", "RM", 79], ["Ciriaco Sforza", "CM", 86],
+  ["Andreas Buck", "CM", 80], ["Olaf Marschall", "ST", 85], ["Ratinho", "CAM", 80],
+  ["Pavel Kuka", "ST", 82], ["Michael Ballack", "CM", 81]] },
+
+
+{
+  id: "frankfurt1819_balanced",
+  name: "Eintracht Frankfurt",
+  league: "Bundesliga",
+  season: "2018-19",
+  color: "#E1000F",
+  rating: 83,
+  players: [
+  ["Kevin Trapp", "GK", 83], ["Danny da Costa", "RM", 81], ["Martin Hinteregger", "CB", 82],
+  ["Makoto Hasebe", "CB", 82], ["Filip Kostic", "LM", 85], ["Sebastian Rode", "CM", 81],
+  ["Gelson Fernandes", "CDM", 79], ["Mijat Gacinovic", "CAM", 80], ["Ante Rebic", "LW", 84],
+  ["Luka Jovic", "ST", 86], ["Sebastien Haller", "ST", 85]] },
+
+
+{
+  id: "hertha1819_balanced",
+  name: "Hertha Berlin",
+  league: "Bundesliga",
+  season: "2018-19",
+  color: "#004D9E",
+  rating: 78,
+  players: [
+  ["Rune Jarstein", "GK", 80], ["Valentino Lazaro", "RM", 81], ["Niklas Stark", "CB", 81],
+  ["Karim Rekik", "CB", 79], ["Marvin Plattenhardt", "LB", 80], ["Marko Grujic", "CM", 80],
+  ["Arne Maier", "CM", 78], ["Ondrej Duda", "CAM", 81], ["Salomon Kalou", "LW", 80],
+  ["Javairo Dilrosun", "RW", 78], ["Vedad Ibisevic", "ST", 81]] },
+
+
+
+{
+  id: "inter9798_balanced",
+  name: "Inter Milan",
+  league: "Serie A",
+  season: "1997-98",
+  color: "#010E80",
+  rating: 89,
+  players: [
+  ["Gianluca Pagliuca", "GK", 88], ["Javier Zanetti", "RB", 89], ["Giuseppe Bergomi", "CB", 87],
+  ["Taribo West", "CB", 83], ["Francesco Moriero", "RM", 84], ["Diego Simeone", "CM", 87],
+  ["Aron Winter", "CM", 84], ["Youri Djorkaeff", "CAM", 88], ["Alvaro Recoba", "LW", 84],
+  ["Ivan Zamorano", "ST", 86], ["Ronaldo Nazario", "ST", 96]] },
+
+
+{
+  id: "juv9596_balanced",
+  name: "Juventus",
+  league: "Serie A",
+  season: "1995-96",
+  color: "#111111",
+  rating: 91,
+  players: [
+  ["Angelo Peruzzi", "GK", 89], ["Ciro Ferrara", "CB", 89], ["Pietro Vierchowod", "CB", 86],
+  ["Gianluca Pessotto", "LB", 84], ["Antonio Conte", "CM", 86], ["Didier Deschamps", "CDM", 88],
+  ["Paulo Sousa", "CM", 87], ["Fabrizio Ravanelli", "ST", 88], ["Gianluca Vialli", "ST", 90],
+  ["Alessandro Del Piero", "LW", 91], ["Michele Padovano", "ST", 83]] },
+
+
+{
+  id: "roma1617_balanced",
+  name: "Roma",
+  league: "Serie A",
+  season: "2016-17",
+  color: "#8E1F2F",
+  rating: 86,
+  players: [
+  ["Wojciech Szczesny", "GK", 84], ["Antonio Rudiger", "CB", 84], ["Federico Fazio", "CB", 83],
+  ["Kostas Manolas", "CB", 86], ["Emerson Palmieri", "LB", 82], ["Daniele De Rossi", "CDM", 86],
+  ["Kevin Strootman", "CM", 85], ["Radja Nainggolan", "CAM", 88], ["Mohamed Salah", "RW", 87],
+  ["Stephan El Shaarawy", "LW", 82], ["Edin Dzeko", "ST", 88]] },
+
+
+{
+  id: "udinese1011_balanced",
+  name: "Udinese",
+  league: "Serie A",
+  season: "2010-11",
+  color: "#111111",
+  rating: 83,
+  players: [
+  ["Samir Handanovic", "GK", 86], ["Medhi Benatia", "CB", 84], ["Cristian Zapata", "CB", 82],
+  ["Mauricio Isla", "RM", 82], ["Kwadwo Asamoah", "CM", 83], ["Gokhan Inler", "CM", 84],
+  ["Pablo Armero", "LM", 82], ["Alexis Sanchez", "RW", 88], ["Antonio Di Natale", "ST", 90],
+  ["German Denis", "ST", 80], ["Giampiero Pinzi", "CM", 80]] },
+
+
+{
+  id: "cagliari1819_balanced",
+  name: "Cagliari",
+  league: "Serie A",
+  season: "2018-19",
+  color: "#A10E2F",
+  rating: 78,
+  players: [
+  ["Alessio Cragno", "GK", 81], ["Darijo Srna", "RB", 80], ["Fabio Pisacane", "CB", 78],
+  ["Luca Ceppitelli", "CB", 79], ["Charalampos Lykogiannis", "LB", 77], ["Luca Cigarini", "CDM", 80],
+  ["Nicolo Barella", "CM", 84], ["Artur Ionita", "CM", 78], ["Joao Pedro", "CAM", 82],
+  ["Leonardo Pavoletti", "ST", 81], ["Diego Farias", "LW", 78]] },
+
+
+
+{
+  id: "psg1920_balanced",
+  name: "Paris Saint-Germain",
+  league: "Ligue 1",
+  season: "2019-20",
+  color: "#004170",
+  rating: 91,
+  players: [
+  ["Keylor Navas", "GK", 88], ["Thomas Meunier", "RB", 83], ["Marquinhos", "CB", 89],
+  ["Thiago Silva", "CB", 88], ["Juan Bernat", "LB", 84], ["Idrissa Gueye", "CDM", 84],
+  ["Marco Verratti", "CM", 88], ["Angel Di Maria", "RW", 88], ["Neymar", "LW", 94],
+  ["Kylian Mbappe", "ST", 94], ["Mauro Icardi", "ST", 86]] },
+
+
+{
+  id: "mon0304_balanced",
+  name: "Monaco",
+  league: "Ligue 1",
+  season: "2003-04",
+  color: "#E51B23",
+  rating: 86,
+  players: [
+  ["Flavio Roma", "GK", 83], ["Patrice Evra", "LB", 85], ["Sebastien Squillaci", "CB", 84],
+  ["Gael Givet", "CB", 82], ["Hugo Ibarra", "RB", 82], ["Lucas Bernardi", "CDM", 83],
+  ["Ludovic Giuly", "RW", 88], ["Jerome Rothen", "LM", 86], ["Dado Prso", "ST", 85],
+  ["Fernando Morientes", "ST", 88], ["Emmanuel Adebayor", "ST", 80]] },
+
+
+{
+  id: "lyon0708_balanced",
+  name: "Lyon",
+  league: "Ligue 1",
+  season: "2007-08",
+  color: "#0055A4",
+  rating: 88,
+  players: [
+  ["Hugo Lloris", "GK", 86], ["Anthony Reveillere", "RB", 83], ["Cris", "CB", 86],
+  ["Sebastien Squillaci", "CB", 84], ["Fabio Grosso", "LB", 84], ["Jeremy Toulalan", "CDM", 86],
+  ["Kim Kallstrom", "CM", 84], ["Juninho Pernambucano", "CAM", 90], ["Sidney Govou", "RW", 84],
+  ["Hatem Ben Arfa", "LW", 84], ["Karim Benzema", "ST", 90]] },
+
+
+{
+  id: "lille1011_balanced",
+  name: "Lille",
+  league: "Ligue 1",
+  season: "2010-11",
+  color: "#E01E13",
+  rating: 84,
+  players: [
+  ["Mickael Landreau", "GK", 82], ["Mathieu Debuchy", "RB", 83], ["Adil Rami", "CB", 84],
+  ["Aurelien Chedjou", "CB", 82], ["Franck Beria", "LB", 80], ["Rio Mavuba", "CDM", 83],
+  ["Yohan Cabaye", "CM", 85], ["Florent Balmont", "CM", 82], ["Gervinho", "RW", 85],
+  ["Eden Hazard", "LW", 88], ["Moussa Sow", "ST", 85]] },
+
+
+{
+  id: "nantes9495_balanced",
+  name: "Nantes",
+  league: "Ligue 1",
+  season: "1994-95",
+  color: "#FFDD00",
+  rating: 84,
+  players: [
+  ["Dominique Casagrande", "GK", 81], ["Christian Karembeu", "CM", 86], ["Marcel Desailly", "CB", 88],
+  ["Nicolas Ouédec", "ST", 84], ["Japhet N'Doram", "CAM", 86], ["Claude Makelele", "CDM", 84],
+  ["Reynald Pedros", "LW", 84], ["Patrice Loko", "ST", 85], ["Jean-Michel Ferri", "CM", 82],
+  ["Serge Le Dizet", "RB", 80], ["Bruno Carotti", "LB", 79]] },
+
+
+{
+  id: "auxerre9596_balanced",
+  name: "Auxerre",
+  league: "Ligue 1",
+  season: "1995-96",
+  color: "#0050A4",
+  rating: 83,
+  players: [
+  ["Lionel Charbonnier", "GK", 81], ["Laurent Blanc", "CB", 88], ["Frank Verlaat", "CB", 82],
+  ["Taribo West", "LB", 82], ["Sabri Lamouchi", "CM", 84], ["Corentin Martins", "CAM", 84],
+  ["Lilian Laslandes", "ST", 83], ["Bernard Diomede", "LW", 82], ["Moussa Saib", "CDM", 83],
+  ["Philippe Violeau", "CM", 80], ["Stephane Mahé", "RB", 79]] },
+
+
+{
+  id: "guingamp1819_balanced",
+  name: "Guingamp",
+  league: "Ligue 1",
+  season: "2018-19",
+  color: "#E30613",
+  rating: 76,
+  players: [
+  ["Karl-Johan Johnsson", "GK", 78], ["Felix Eboa Eboa", "CB", 77], ["Christophe Kerbrat", "CB", 76],
+  ["Pedro Rebocho", "LB", 78], ["Jordan Ikoko", "RB", 76], ["Etienne Didot", "CM", 77],
+  ["Lebogang Phiri", "CDM", 76], ["Marcus Thuram", "LW", 81], ["Nolan Roux", "ST", 77],
+  ["Nicolas Benezet", "RW", 78], ["Yeni Ngbakoto", "CAM", 77]] },
+
+
+{
+  id: "strasbourg1819_balanced",
+  name: "Strasbourg",
+  league: "Ligue 1",
+  season: "2018-19",
+  color: "#009FE3",
+  rating: 78,
+  players: [
+  ["Matz Sels", "GK", 80], ["Kenny Lala", "RB", 82], ["Pablo Martinez", "CB", 78],
+  ["Lamine Kone", "CB", 79], ["Lionel Carole", "LB", 77], ["Jonas Martin", "CM", 80],
+  ["Ibrahima Sissoko", "CDM", 78], ["Adrien Thomasson", "CAM", 79], ["Dimitri Lienard", "LM", 79],
+  ["Nuno Da Costa", "ST", 78], ["Ludovic Ajorque", "ST", 79]] }];
+
+
+
+
+const BALANCED_BIG_FIVE_LEAGUES = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1"];
+
+const STANDARD_CLUB_POOL = [...CLUBS, ...JACKPOT_CLUBS, ...SMALLER_CLUBS, ...EXTRA_TOP5_CLUBS, ...EXPANDED_DRAFT_CLUBS, ...BALANCED_100_EXTRA_CLUBS].filter(club => BALANCED_BIG_FIVE_LEAGUES.includes(club.league));
+const ALL_CLUBS = STANDARD_CLUB_POOL;
+const TOP_FIVE_LEAGUES = BALANCED_BIG_FIVE_LEAGUES;
 
 function getClubTier(club) {
   if (club.jackpot) return "jackpot";
@@ -1053,7 +1877,7 @@ const CLUB_NAME_SUFFIXES = [
 ...ALL_CLUBS.map(club => club.name),
 "Roma", "Lazio", "Fiorentina", "Marseille", "Nice", "Wolfsburg",
 "Stuttgart", "Schalke", "Betis", "Athletic", "Everton", "Leeds",
-"Parma", "Bremen", "Mallorca", "Toulouse"].
+"Parma", "Bremen", "Mallorca", "Toulouse", "Porto", "Benfica", "Sporting CP", "Ajax", "PSV", "Galatasaray", "Fenerbahce", "Zenit", "Shakhtar Donetsk", "Rangers", "Celtic", "Sampdoria", "Torino", "Bordeaux", "Saint-Etienne", "Hamburg", "Monchengladbach", "Hoffenheim", "Palermo"].
 sort((a, b) => b.length - a.length);
 
 function cleanPlayerName(name) {
@@ -1153,7 +1977,53 @@ function getAltPositions(name, mainPosition) {
     "Renato Sanches": ["CM", "CDM"],
     "Jonathan Ikone": ["CAM", "RW"],
     "Yusuf Yazici": ["CAM", "CM"],
-    "Luiz Araujo": ["RW", "LW"] };
+    "Luiz Araujo": ["RW", "LW"],
+    "Harry Kane": ["ST", "CAM"],
+    "Son Heung-min": ["LW", "ST", "RW"],
+    "Christian Eriksen": ["CAM", "CM", "RW"],
+    "Bruno Guimaraes": ["CM", "CDM"],
+    "John McGinn": ["CM", "RM"],
+    "Moussa Diaby": ["RW", "LW"],
+    "Leon Bailey": ["RW", "LW"],
+    "Hulk": ["RW", "ST"],
+    "James Rodriguez": ["LW", "CAM", "RW"],
+    "Nicolas Gaitan": ["LW", "CAM", "RW"],
+    "Enzo Perez": ["CM", "CDM"],
+    "Nemanja Matic": ["CDM", "CM"],
+    "Pedro Goncalves": ["CAM", "RW", "ST"],
+    "Nuno Mendes": ["LB", "LM"],
+    "Frenkie de Jong": ["CM", "CDM"],
+    "Hakim Ziyech": ["RW", "CAM"],
+    "Dusan Tadic": ["LW", "CAM", "ST"],
+    "Donny van de Beek": ["CAM", "CM"],
+    "Daley Blind": ["CB", "LB", "CDM"],
+    "Hirving Lozano": ["LW", "RW"],
+    "Steven Bergwijn": ["RW", "LW"],
+    "Gheorghe Hagi": ["CAM", "RW"],
+    "Alex de Souza": ["CAM", "CM"],
+    "Roberto Carlos": ["LB", "LM"],
+    "Andrey Arshavin": ["CAM", "LW", "ST"],
+    "Fernandinho": ["CM", "CDM"],
+    "Willian": ["LW", "RW", "CAM"],
+    "Darijo Srna": ["RB", "RM"],
+    "Henrikh Mkhitaryan": ["CAM", "RW", "LW"],
+    "Michael Ballack": ["CM", "CAM", "CDM"],
+    "Ze Roberto": ["LM", "CM", "LB"],
+    "Dimitar Berbatov": ["ST", "CAM"],
+    "Xabi Alonso": ["CM", "CDM"],
+    "Nihat Kahveci": ["ST", "RW"],
+    "Alexander Mostovoi": ["CAM", "CM"],
+    "Roberto Mancini": ["ST", "CAM"],
+    "Attilio Lombardo": ["RM", "RW"],
+    "Yoann Gourcuff": ["CAM", "CM"],
+    "Pierre-Emerick Aubameyang": ["ST", "LW", "RW"],
+    "Granit Xhaka": ["CDM", "CM"],
+    "Thorgan Hazard": ["LW", "CAM", "RW"],
+    "Lars Stindl": ["CAM", "ST", "CM"],
+    "Andrej Kramaric": ["ST", "CAM"],
+    "Fabio Grosso": ["LB", "LM"],
+    "Mark Bresciano": ["LM", "CM", "CAM"] };
+
 
 
   return playerPositions[name] || [mainPosition];
@@ -1803,6 +2673,16 @@ function makeHistoryEntry(summary, playerStats, formationName, teamRating) {
 }
 
 
+
+function getProjectedLevel(teamRating) {
+  if (teamRating >= 94) return "Superteam";
+  if (teamRating >= 92) return "38-0 Threat";
+  if (teamRating >= 90) return "Title Contender";
+  if (teamRating >= 87) return "Top Four Quality";
+  if (teamRating >= 84) return "Competitive XI";
+  return "Work in Progress";
+}
+
 function makeShareCardText(results, playerSeasonStats, formationName, teamRating) {var _results$table$find;
   if (!results) return "";
   const topScorer = [...playerSeasonStats].sort((a, b) => b.goals - a.goals || b.averageRating - a.averageRating)[0];
@@ -1825,6 +2705,134 @@ function makeShareCardText(results, playerSeasonStats, formationName, teamRating
   "━━━━━━━━━━━━━━━━",
   "Can you beat my XI?"].
   join("\n");
+}
+
+
+
+// v5 Simulation Rework — xG first, result second.
+// Goals now create the result instead of W/D/L being decided before scorelines.
+function getFormationModifier(formationName) {
+  const modifiers = {
+    "4-3-3": { attack: 1.08, defense: 0.96, midfield: 1.03, control: 1.02, chance: 1.08 },
+    "4-4-2": { attack: 1.01, defense: 1.04, midfield: 1.00, control: 0.98, chance: 1.00 },
+    "3-4-3": { attack: 1.12, defense: 0.9, midfield: 1.02, control: 1.00, chance: 1.1 },
+    "4-2-3-1": { attack: 1.05, defense: 1.02, midfield: 1.04, control: 1.06, chance: 1.06 },
+    "3-5-2": { attack: 1.03, defense: 0.96, midfield: 1.1, control: 1.12, chance: 1.02 } };
+
+
+  return modifiers[formationName] || { attack: 1, defense: 1, midfield: 1, control: 1, chance: 1 };
+}
+
+function applyFormationModifier(profile, formationName) {
+  const mod = getFormationModifier(formationName);
+
+  return {
+    ...profile,
+    attack: profile.attack * mod.attack,
+    defense: profile.defense * mod.defense,
+    midfield: profile.midfield * mod.midfield,
+    control: profile.control * mod.control,
+    chance: profile.chance * mod.chance };
+
+}
+
+function makeOpponentProfile(opponentName, opponentRating) {
+  const lower = String(opponentName || "").toLowerCase();
+  const eliteAttack = ["real madrid", "barcelona", "bayern", "psg", "manchester city", "liverpool"];
+  const defensiveTeams = ["atletico", "juventus", "inter", "chelsea"];
+  const midfieldTeams = ["arsenal", "leverkusen", "dortmund", "napoli", "milan"];
+
+  const isEliteAttack = eliteAttack.some(name => lower.includes(name));
+  const isDefensive = defensiveTeams.some(name => lower.includes(name));
+  const isMidfield = midfieldTeams.some(name => lower.includes(name));
+
+  return {
+    attack: opponentRating + (isEliteAttack ? 3 : 0) + Math.floor(Math.random() * 5) - 2,
+    midfield: opponentRating + (isMidfield ? 3 : 0) + Math.floor(Math.random() * 5) - 2,
+    defense: opponentRating + (isDefensive ? 3 : 0) + Math.floor(Math.random() * 5) - 2,
+    control: opponentRating + (isMidfield ? 2 : 0) + Math.floor(Math.random() * 5) - 2,
+    chance: opponentRating + (isEliteAttack ? 2 : 0) + Math.floor(Math.random() * 5) - 2,
+    keeping: opponentRating + (isDefensive ? 2 : 0) + Math.floor(Math.random() * 5) - 2 };
+
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function getExpectedGoals(attackingProfile, defendingProfile, attackingRating, defendingRating) {
+  const attackEdge = attackingProfile.attack - defendingProfile.defense;
+  const midfieldEdge = attackingProfile.midfield - defendingProfile.midfield;
+  const chanceEdge = attackingProfile.chance - defendingProfile.keeping;
+  const controlEdge = attackingProfile.control - defendingProfile.control;
+  const ratingEdge = attackingRating - defendingRating;
+
+  const rawXg =
+  1.32 +
+  ratingEdge * 0.055 +
+  attackEdge * 0.026 +
+  midfieldEdge * 0.018 +
+  chanceEdge * 0.022 +
+  controlEdge * 0.012 +
+  (attackingProfile.balanceBonus || 0) * 0.035;
+
+  return clamp(rawXg, 0.25, 4.65);
+}
+
+function rollGoalsFromXg(xg) {
+  // Poisson-style goal generator. This keeps 0-0, 1-0, 2-1, and 4-2 type results natural.
+  const limit = Math.exp(-xg);
+  let goals = 0;
+  let product = 1;
+
+  do {
+    goals += 1;
+    product *= Math.random();
+  } while (product > limit && goals < 8);
+
+  return Math.max(0, goals - 1);
+}
+
+function getWeightedScorer(players, preferredRoles) {
+  const preferred = players.filter(player => preferredRoles.includes(player.slotLabel || player.position));
+  const source = preferred.length ? preferred : players;
+  const total = source.reduce((sum, player) => {var _player$finalRating3;
+    const rating = (_player$finalRating3 = player.finalRating) !== null && _player$finalRating3 !== void 0 ? _player$finalRating3 : player.rating;
+    const role = player.slotLabel || player.position;
+    const roleBoost = ["ST", "LW", "RW"].includes(role) ? 1.35 : ["CAM", "LM", "RM"].includes(role) ? 1.15 : 1;
+    return sum + Math.max(1, rating - 62) * roleBoost;
+  }, 0);
+
+  let roll = Math.random() * total;
+
+  for (const player of source) {var _player$finalRating4;
+    const rating = (_player$finalRating4 = player.finalRating) !== null && _player$finalRating4 !== void 0 ? _player$finalRating4 : player.rating;
+    const role = player.slotLabel || player.position;
+    const roleBoost = ["ST", "LW", "RW"].includes(role) ? 1.35 : ["CAM", "LM", "RM"].includes(role) ? 1.15 : 1;
+    roll -= Math.max(1, rating - 62) * roleBoost;
+    if (roll <= 0) return player;
+  }
+
+  return source[source.length - 1];
+}
+
+function getOpponentScorerRole(xg) {
+  const attackingRoles = ["Striker", "Left Winger", "Right Winger", "Attacking Midfielder", "Central Midfielder"];
+  const defensiveRoles = ["Centre Back", "Defensive Midfielder"];
+
+  if (Math.random() < Math.min(0.16, 0.05 + xg * 0.025)) {
+    return defensiveRoles[Math.floor(Math.random() * defensiveRoles.length)];
+  }
+
+  return attackingRoles[Math.floor(Math.random() * attackingRoles.length)];
+}
+
+function getGoalMinute() {
+  // Slightly favors middle/late goals without making injury-time goals too common.
+  const roll = Math.random();
+  if (roll < 0.18) return Math.floor(Math.random() * 20) + 3;
+  if (roll < 0.72) return Math.floor(Math.random() * 45) + 21;
+  return Math.floor(Math.random() * 24) + 66;
 }
 
 function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch$allSco;
@@ -2418,7 +3426,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     const fullRating =
     draftedPlayers.reduce((sum, player) => sum + player.finalRating, 0) / draftedPlayers.length;
 
-    const teamProfile = calculateTeamProfile(draftedPlayers);
+    const rawTeamProfile = calculateTeamProfile(draftedPlayers);
+    const teamProfile = applyFormationModifier(rawTeamProfile, selectedFormationName);
 
     let wins = 0,draws = 0,losses = 0,gf = 0,ga = 0;
     const matches = [];
@@ -2428,124 +3437,67 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       const opponent = schedule[week - 1];
       const opponentName = opponent[0];
       const opponentRating = opponent[1] + Math.floor(Math.random() * 5) - 2;
+      const opponentProfile = makeOpponentProfile(opponentName, opponentRating);
 
-      const opponentProfile = {
-        attack: opponentRating + Math.floor(Math.random() * 5) - 2,
-        midfield: opponentRating + Math.floor(Math.random() * 5) - 2,
-        defense: opponentRating + Math.floor(Math.random() * 5) - 2,
-        control: opponentRating + Math.floor(Math.random() * 5) - 2,
-        chance: opponentRating + Math.floor(Math.random() * 5) - 2,
-        keeping: opponentRating + Math.floor(Math.random() * 5) - 2 };
+      const userXg = getExpectedGoals(teamProfile, opponentProfile, fullRating, opponentRating);
+      const opponentXg = getExpectedGoals(opponentProfile, teamProfile, opponentRating, fullRating);
 
+      // Rebalanced for the 100-club database.
+      // A 90-92 rated XI should feel elite now; 94+ is special, not required.
+      const eliteControlBonus =
+      fullRating >= 94 ? 0.8 :
+      fullRating >= 92 ? 0.62 :
+      fullRating >= 90 ? 0.34 :
+      fullRating >= 88 ? 0.12 :
+      0;
 
-      const attackEdge = teamProfile.attack - opponentProfile.defense;
-      const midfieldEdge = teamProfile.midfield - opponentProfile.midfield;
-      const defenseEdge = teamProfile.defense - opponentProfile.attack;
-      const chanceEdge = teamProfile.chance - opponentProfile.keeping;
-      const controlEdge = teamProfile.control - opponentProfile.control;
+      const upsetProtection =
+      fullRating >= 94 ? 0.78 :
+      fullRating >= 92 ? 0.82 :
+      fullRating >= 90 ? 0.86 :
+      0.9;
 
-      const advantage =
-      fullRating - opponentRating +
-      attackEdge * 0.012 +
-      midfieldEdge * 0.014 +
-      defenseEdge * 0.011 +
-      chanceEdge * 0.01 +
-      controlEdge * 0.008 +
-      teamProfile.balanceBonus * 0.18;
+      let us = rollGoalsFromXg(userXg + eliteControlBonus);
+      let them = rollGoalsFromXg(opponentXg * upsetProtection);
 
-      let winChance = 0.68 + advantage * 0.052;
-      let drawChance = 0.13 - advantage * 0.013;
-
-      if (fullRating >= 88) {
-        winChance += 0.025;
+      // If a truly elite XI dominates xG but rolls a dead game, give it a small late-goal rescue chance.
+      // This keeps elite teams fun without making perfect seasons automatic.
+      if (us <= them && fullRating >= 90 && userXg - opponentXg >= 0.85 && Math.random() < 0.32) {
+        us += 1;
       }
 
-      if (fullRating >= 90) {
-        winChance += 0.045;
-        drawChance -= 0.015;
-      }
+      // Avoid too many absurd 7-5 arcade scores while still allowing occasional blowouts.
+      us = clamp(us, 0, fullRating >= 94 ? 7 : 6);
+      them = clamp(them, 0, opponentRating >= 88 ? 5 : 4);
 
-      if (fullRating >= 93) {
-        winChance += 0.05;
-        drawChance -= 0.02;
-      }
-
-      if (fullRating >= 95) {
-        winChance += 0.04;
-        drawChance -= 0.02;
-      }
-
-      if (teamProfile.balanceBonus >= 5) {
-        winChance += 0.015;
-      }
-
-      winChance = Math.min(0.998, Math.max(0.44, winChance));
-      drawChance = Math.min(0.13, Math.max(0.006, drawChance));
-      const roll = Math.random();
-
-      let result, us, them;
-
-      if (roll < winChance) {
+      let result;
+      if (us > them) {
         result = "W";
         wins++;
-        us = Math.max(1, Math.floor(Math.random() * 4)) + Math.floor(Math.max(0, advantage) / 8);
-        them = Math.floor(Math.random() * Math.min(3, us));
-      } else if (roll < winChance + drawChance) {
+      } else if (us === them) {
         result = "D";
         draws++;
-        us = Math.floor(Math.random() * 3);
-        them = us;
       } else {
         result = "L";
         losses++;
-        them = Math.max(1, Math.floor(Math.random() * 3));
-        us = Math.floor(Math.random() * them);
       }
 
       gf += us;
       ga += them;
 
-      const scorerPool = draftedPlayers.filter((player) =>
-      ["ST", "LW", "RW", "CAM", "CM", "LM", "RM"].includes(player.slotLabel));
-
-
-      const weightedScorerPick = () => {
-        const pool = scorerPool.length ? scorerPool : draftedPlayers;
-        const total = pool.reduce(
-        (sum, player) => {var _player$finalRating3;return sum + Math.max(1, ((_player$finalRating3 = player.finalRating) !== null && _player$finalRating3 !== void 0 ? _player$finalRating3 : player.rating) - 65);},
-        0);
-
-
-        let roll = Math.random() * total;
-
-        for (const player of pool) {var _player$finalRating4;
-          roll -= Math.max(1, ((_player$finalRating4 = player.finalRating) !== null && _player$finalRating4 !== void 0 ? _player$finalRating4 : player.rating) - 65);
-          if (roll <= 0) return player;
-        }
-
-        return pool[pool.length - 1];
-      };
-
       const scorers = [];
-
       for (let goal = 0; goal < us; goal++) {
-        const scorer = weightedScorerPick();
+        const scorer = getWeightedScorer(draftedPlayers, ["ST", "LW", "RW", "CAM", "LM", "RM", "CM"]);
         scorers.push({
           team: "Draft XI",
           name: scorer.name,
           position: scorer.slotLabel || scorer.position,
-          minute: Math.floor(Math.random() * 86) + 3 });
-
+          minute: getGoalMinute() });
       }
 
-      const opponentScorerNames = [
-      "Striker", "Left Winger", "Right Winger", "Attacking Midfielder", "Central Midfielder"];
-
-
       const opponentScorers = [];
-
       for (let goal = 0; goal < them; goal++) {
-        const role = opponentScorerNames[Math.floor(Math.random() * opponentScorerNames.length)];
+        const role = getOpponentScorerRole(opponentXg);
         opponentScorers.push({
           team: opponentName,
           name: `${opponentName} ${role}`,
@@ -2553,8 +3505,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           split(" ").
           map(word => word[0]).
           join(""),
-          minute: Math.floor(Math.random() * 86) + 3 });
-
+          minute: getGoalMinute() });
       }
 
       scorers.sort((a, b) => a.minute - b.minute);
@@ -2565,6 +3516,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         opponent: opponentName,
         result,
         score: `${us}-${them}`,
+        xg: `${userXg.toFixed(1)}-${opponentXg.toFixed(1)}`,
         scorers,
         opponentScorers,
         allScorers: [...scorers, ...opponentScorers].sort((a, b) => a.minute - b.minute) };
@@ -2583,11 +3535,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         (sum, m) => sum + Number(m.score.split("-")[0]),
         0);
 
-
         const liveGa = gamesSoFar.reduce(
         (sum, m) => sum + Number(m.score.split("-")[1]),
         0);
-
 
         setLiveLeagueTable(buildLiveLeagueTable(gamesSoFar, "Draft XI", aiSeasonSeed));
 
@@ -2599,7 +3549,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           points: livePoints,
           gf: liveGf,
           ga: liveGa,
-          latest: `GW ${week}: ${match.score} vs ${match.opponent}`,
+          latest: `GW ${week}: ${match.score} vs ${match.opponent} · xG ${match.xg}`,
           recent: gamesSoFar.slice(-5) });
 
         setSimProgress(Math.round(week / 38 * 100));
@@ -2728,6 +3678,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("strong", null, teamRating || "--"), /*#__PURE__*/
     React.createElement("small", null, draftedPlayers.length, "/11 players"), /*#__PURE__*/
     React.createElement("small", null, "\uD83D\uDD04 Rerolls: ", rerollsLeft),
+    draftedPlayers.length > 0 && /*#__PURE__*/React.createElement("small", { className: "projected-level" }, getProjectedLevel(teamRating)),
     draftedPlayers.length > 0 && /*#__PURE__*/
     React.createElement("div", { className: "profile-mini" }, /*#__PURE__*/
     React.createElement("span", null, "ATK ", calculateTeamProfile(draftedPlayers).attack), /*#__PURE__*/
@@ -3117,6 +4068,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("h3", null, "GW ", selectedMatch.week, " vs ", selectedMatch.opponent), /*#__PURE__*/
     React.createElement("strong", { className: `match-detail-score ${selectedMatch.result}` },
     selectedMatch.result, " \xB7 ", selectedMatch.score), /*#__PURE__*/
+    selectedMatch.xg && /*#__PURE__*/React.createElement("small", { className: "xg-pill" }, "xG ", selectedMatch.xg), /*#__PURE__*/
 
 
     React.createElement("div", { className: "scorer-breakdown" }, /*#__PURE__*/
