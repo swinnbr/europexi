@@ -65,8 +65,8 @@ const FORMATIONS = {
   { id: "cb1", label: "CB", x: 60, y: 70, mobileX: 62, mobileY: 77 },
   { id: "cb2", label: "CB", x: 40, y: 70, mobileX: 38, mobileY: 77 },
   { id: "lb", label: "LB", x: 22, y: 68, mobileX: 16, mobileY: 74 },
-  { id: "cm1", label: "CM", x: 42, y: 53, mobileX: 37, mobileY: 60 },
-  { id: "cm2", label: "CM", x: 58, y: 53, mobileX: 63, mobileY: 60 },
+  { id: "cdm1", label: "CDM", x: 42, y: 53, mobileX: 37, mobileY: 60 },
+  { id: "cdm2", label: "CDM", x: 58, y: 53, mobileX: 63, mobileY: 60 },
   { id: "rw", label: "RW", x: 74, y: 35, mobileX: 82, mobileY: 39 },
   { id: "cam", label: "CAM", x: 50, y: 34, mobileX: 50, mobileY: 36 },
   { id: "lw", label: "LW", x: 26, y: 35, mobileX: 18, mobileY: 39 },
@@ -84,7 +84,21 @@ const FORMATIONS = {
   { id: "cm3", label: "CM", x: 39, y: 50, mobileX: 33, mobileY: 54 },
   { id: "lm", label: "LM", x: 22, y: 49, mobileX: 16, mobileY: 53 },
   { id: "st1", label: "ST", x: 42, y: 20, mobileX: 38, mobileY: 18 },
-  { id: "st2", label: "ST", x: 58, y: 20, mobileX: 62, mobileY: 18 }] };
+  { id: "st2", label: "ST", x: 58, y: 20, mobileX: 62, mobileY: 18 }],
+
+
+  "4-1-2-1-2": [
+  { id: "gk", label: "GK", x: 50, y: 86, mobileX: 50, mobileY: 90 },
+  { id: "rb", label: "RB", x: 78, y: 68, mobileX: 84, mobileY: 74 },
+  { id: "cb1", label: "CB", x: 60, y: 70, mobileX: 62, mobileY: 77 },
+  { id: "cb2", label: "CB", x: 40, y: 70, mobileX: 38, mobileY: 77 },
+  { id: "lb", label: "LB", x: 22, y: 68, mobileX: 16, mobileY: 74 },
+  { id: "cdm", label: "CDM", x: 50, y: 56, mobileX: 50, mobileY: 62 },
+  { id: "cm1", label: "CM", x: 36, y: 46, mobileX: 34, mobileY: 50 },
+  { id: "cm2", label: "CM", x: 64, y: 46, mobileX: 66, mobileY: 50 },
+  { id: "cam", label: "CAM", x: 50, y: 34, mobileX: 50, mobileY: 36 },
+  { id: "st1", label: "ST", x: 42, y: 18, mobileX: 38, mobileY: 17 },
+  { id: "st2", label: "ST", x: 58, y: 18, mobileX: 62, mobileY: 17 }] };
 
 
 const DEFAULT_FORMATION_NAME = "4-3-3";
@@ -102,6 +116,11 @@ const COMPATIBLE = {
   LW: ["LW", "LM", "RW", "CAM", "ST"],
   RW: ["RW", "RM", "LW", "CAM", "ST"],
   ST: ["ST", "CAM", "LW", "RW"] };
+
+function isNoPenaltyMidfieldSwap(playerPosition, slotPosition) {
+  return playerPosition === "CDM" && slotPosition === "CM" ||
+  playerPosition === "CM" && slotPosition === "CDM";
+}
 
 
 const CLUBS = [
@@ -2702,6 +2721,34 @@ function saveStoredJson(key, value) {
   }
 }
 
+
+const PLAYER_COLLECTION_KEY = "draftXIPlayerCollectionV1";
+
+function getPlayerCollectionId(player) {
+  return `${player.clubId || player.club || player.nation || "unknown"}_${player.name}_${player.position}`.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+}
+
+function getAllCollectiblePlayers(clubPool) {
+  const seen = new Set();
+  return (clubPool || []).flatMap(club => makePlayers(club)).filter(player => {
+    const id = getPlayerCollectionId(player);
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  }).sort((a, b) => b.rating - a.rating || a.name.localeCompare(b.name));
+}
+
+function getCollectionStats(collectionIds, allPlayers) {
+  const validIds = new Set((allPlayers || []).map(getPlayerCollectionId));
+  const uniqueIds = Array.from(new Set(collectionIds || [])).filter(id => validIds.has(id));
+  const total = Math.max(1, validIds.size);
+  return {
+    found: uniqueIds.length,
+    total: validIds.size,
+    percent: Math.min(100, Math.round(uniqueIds.length / total * 100)) };
+
+}
+
 function getClubCollectionStats(collectionIds, clubPool = ALL_CLUBS, leagueList = TOP_FIVE_LEAGUES, restLabel = "Rest of Europe") {
   const validClubIds = new Set(clubPool.map(club => club.id));
   const uniqueIds = Array.from(new Set(collectionIds || [])).filter(id => validClubIds.has(id));
@@ -3372,8 +3419,9 @@ function getFormationModifier(formationName) {
     "4-3-3": { attack: 1.08, defense: 0.96, midfield: 1.03, control: 1.02, chance: 1.08 },
     "4-4-2": { attack: 1.01, defense: 1.04, midfield: 1.00, control: 0.98, chance: 1.00 },
     "3-4-3": { attack: 1.12, defense: 0.9, midfield: 1.02, control: 1.00, chance: 1.1 },
-    "4-2-3-1": { attack: 1.05, defense: 1.02, midfield: 1.04, control: 1.06, chance: 1.06 },
-    "3-5-2": { attack: 1.03, defense: 0.96, midfield: 1.1, control: 1.12, chance: 1.02 } };
+    "4-2-3-1": { attack: 1.05, defense: 1.06, midfield: 1.05, control: 1.07, chance: 1.05 },
+    "3-5-2": { attack: 1.03, defense: 0.96, midfield: 1.1, control: 1.12, chance: 1.02 },
+    "4-1-2-1-2": { attack: 1.04, defense: 1.04, midfield: 1.08, control: 1.08, chance: 1.03 } };
 
 
   return modifiers[formationName] || { attack: 1, defense: 1, midfield: 1, control: 1, chance: 1 };
@@ -3688,6 +3736,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   });
   const [movingSlotId, setMovingSlotId] = useState(null);
   const [clubCollection, setClubCollection] = useState(() => savedProgress.clubCollection || getStoredJson("draftXIClubCollection", []));
+  const [playerCollection, setPlayerCollection] = useState(() => getStoredJson(PLAYER_COLLECTION_KEY, []));
+  const [showPlayerCollection, setShowPlayerCollection] = useState(false);
   const [isMobileFormation, setIsMobileFormation] = useState(() => window.innerWidth <= 768);
   const [showTutorial, setShowTutorial] = useState(() => !getStoredJson("draftXITutorialSeen", false));
   const [saveNotice, setSaveNotice] = useState(false);
@@ -3697,6 +3747,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const activeClubs = gameMode === "worldcup" ? WORLD_CUP_CLUBS : ALL_CLUBS;
   const activeLeagues = gameMode === "worldcup" ? WORLD_CUP_GROUPS : TOP_FIVE_LEAGUES;
   const activeRestLabel = gameMode === "worldcup" ? "Other Groups" : "Rest of Europe";
+  const allCollectiblePlayers = useMemo(() => getAllCollectiblePlayers([...ALL_CLUBS, ...WORLD_CUP_CLUBS]), []);
+  const playerCollectionStats = useMemo(() => getCollectionStats(playerCollection, allCollectiblePlayers), [playerCollection, allCollectiblePlayers]);
+  const discoveredPlayerIds = useMemo(() => new Set(playerCollection || []), [playerCollection]);
   const modeTitle = gameMode === "worldcup" ? "World Cup Draft" : "Draft XI";
   const modeSubtitle = "Build the greatest football squad ever assembled.";
 
@@ -3746,6 +3799,19 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     const timeout = window.setTimeout(() => setSaveNotice(false), 2600);
     return () => window.clearTimeout(timeout);
   }, [saveNotice]);
+
+  useEffect(() => {
+    saveStoredJson(PLAYER_COLLECTION_KEY, playerCollection);
+  }, [playerCollection]);
+
+  function addPlayerToCollection(player) {
+    if (!player) return;
+    const id = getPlayerCollectionId(player);
+    setPlayerCollection(prev => {
+      if ((prev || []).includes(id)) return prev;
+      return [...(prev || []), id];
+    });
+  }
 
 
   const controlsRef = useRef(null);
@@ -3880,6 +3946,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     if (player.position === slotPosition) return 0;
     if (listedPositions.includes(slotPosition)) return 0;
+    if (listedPositions.some(position => isNoPenaltyMidfieldSwap(position, slotPosition))) return 0;
     if (canPlaySlot(player, slotPosition)) return 2;
 
     return 5;
@@ -3897,9 +3964,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       remainingPlayers.forEach((player, index) => {
         const possiblePositions = player.positions || [player.position];
         const exact = possiblePositions.includes(slot.label) || player.position === slot.label;
+        const noPenaltyMidfieldFit = possiblePositions.some(position => isNoPenaltyMidfieldSwap(position, slot.label));
         const compatible = canPlaySlot(player, slot.label);
-        const penalty = exact ? 0 : compatible ? 2 : 5;
-        const score = player.rating * 10 - penalty * 25 + (exact ? 80 : compatible ? 25 : 0);
+        const penalty = exact || noPenaltyMidfieldFit ? 0 : compatible ? 2 : 5;
+        const score = player.rating * 10 - penalty * 25 + (exact || noPenaltyMidfieldFit ? 80 : compatible ? 25 : 0);
 
         if (score > bestScore) {
           bestScore = score;
@@ -3979,6 +4047,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     if (player.position === slotPosition) return 0;
     if (listedPositions.includes(slotPosition)) return 0;
+    if (listedPositions.some(position => isNoPenaltyMidfieldSwap(position, slotPosition))) return 0;
     if (canPlaySlot(player, slotPosition)) return 2;
 
     return 5;
@@ -4209,6 +4278,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       slotLabel: "BENCH" };
 
     playSound("place", soundMuted);
+    addPlayerToCollection(benchPlayer);
     setBench(prev => [...prev, benchPlayer].slice(0, BENCH_LIMIT));
     setPickedNames(prev => [...prev, player.name]);
     if (player.clubId) {
@@ -4238,6 +4308,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
     playSound("place", soundMuted);
+    addPlayerToCollection(placedPlayer);
     setDraft(prev => ({ ...prev, [slotId]: placedPlayer }));
     setPickedNames(prev => [...prev, selectedPlayer.name]);
     if (selectedPlayer.clubId) {
@@ -4909,16 +4980,16 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       // Calibrated for arcade-draft fun.
       // A normal good draft should feel powerful; only messy/low-rated XIs should struggle.
       const draftDifficultyBonus =
-      fullRating >= 94 ? 1.95 :
-      fullRating >= 93 ? 1.82 :
-      fullRating >= 92 ? 1.68 :
-      fullRating >= 91 ? 1.56 :
-      fullRating >= 90 ? 1.44 :
-      fullRating >= 89 ? 1.26 :
-      fullRating >= 88 ? 1.08 :
-      fullRating >= 87 ? 0.94 :
-      fullRating >= 86 ? 0.82 :
-      fullRating >= 85 ? 0.7 :
+      fullRating >= 94 ? 1.82 :
+      fullRating >= 93 ? 1.70 :
+      fullRating >= 92 ? 1.56 :
+      fullRating >= 91 ? 1.44 :
+      fullRating >= 90 ? 1.32 :
+      fullRating >= 89 ? 1.16 :
+      fullRating >= 88 ? 1.00 :
+      fullRating >= 87 ? 0.90 :
+      fullRating >= 86 ? 0.80 :
+      fullRating >= 85 ? 0.68 :
       fullRating >= 84 ? 0.54 :
       0.32;
 
@@ -4942,8 +5013,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       fullRating >= 85 ? 0.14 :
       0.08;
 
-      const adjustedUserXg = (userXg + draftDifficultyBonus + draftAgencyBonus) * 1.025;
-      const adjustedOpponentXg = opponentXg * opponentXgMultiplier * 0.96;
+      const adjustedUserXg = (userXg + draftDifficultyBonus + draftAgencyBonus) * 1.005;
+      const adjustedOpponentXg = opponentXg * opponentXgMultiplier * 0.985;
 
       let us = rollGoalsFromWeightedXg(adjustedUserXg, fullRating, opponentRating);
       let them = rollGoalsFromWeightedXg(adjustedOpponentXg, opponentRating, fullRating);
@@ -4951,17 +5022,17 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       // Arcade composure: strong XIs are allowed to feel clutch in close games.
       if (us + 1 === them && fullRating >= 85 && adjustedUserXg >= adjustedOpponentXg - 0.2) {
         const drawSaveChance =
-        fullRating >= 91 ? 0.42 :
-        fullRating >= 89 ? 0.36 :
-        fullRating >= 87 ? 0.3 :
-        0.24;
+        fullRating >= 91 ? 0.36 :
+        fullRating >= 89 ? 0.31 :
+        fullRating >= 87 ? 0.27 :
+        0.23;
         const earlySeasonDrawDampener = week <= 5 ? 0.62 : 1;
 
         if (Math.random() < drawSaveChance * earlySeasonDrawDampener) us += 1;
       }
 
       if (us === them && fullRating >= 88 && adjustedUserXg >= adjustedOpponentXg + 0.35) {
-        const winnerChance = fullRating >= 91 ? 0.26 : fullRating >= 90 ? 0.22 : 0.18;
+        const winnerChance = fullRating >= 91 ? 0.20 : fullRating >= 90 ? 0.17 : 0.14;
         if (Math.random() < winnerChance) us += 1;
       }
 
@@ -4980,7 +5051,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           us = them;
 
           if (fullRating >= 88 && xgEdge >= 0.8) {
-            const turnDrawToWinChance = fullRating >= 91 ? 0.24 : fullRating >= 89 ? 0.18 : 0.12;
+            const turnDrawToWinChance = fullRating >= 91 ? 0.18 : fullRating >= 89 ? 0.13 : 0.10;
             if (Math.random() < turnDrawToWinChance) us += 1;
           }
         }
@@ -4997,23 +5068,40 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       us = xgWeightedScore.us;
       them = xgWeightedScore.them;
 
+      // 38-0 rarity check:
+      // Elite teams still dominate, but a few controlled wins can become draws.
+      // This makes perfect seasons rarer without making the game feel unfair.
+      if (us > them && fullRating >= 88) {
+        const narrowLead = us - them === 1;
+        const opponentIsStrong = opponentRating >= 86;
+        const lateEqualizerChance =
+        fullRating >= 94 ? 0.018 :
+        fullRating >= 92 ? 0.026 :
+        fullRating >= 90 ? 0.034 :
+        0.042;
+
+        if ((narrowLead || opponentIsStrong) && Math.random() < lateEqualizerChance) {
+          them = us;
+        }
+      }
+
       // Perfect-season assist: 90+ squads should be capable of 38-0.
       // This does not force wins, but it heavily rewards clear xG control from elite drafts.
       if (fullRating >= 90 && us <= them) {
         const xgEdge = adjustedUserXg - adjustedOpponentXg;
-        const eliteRatingBoost = clamp((fullRating - 90) * 0.075, 0, 0.28);
-        const xgControlBoost = clamp(xgEdge * 0.16, -0.06, 0.34);
+        const eliteRatingBoost = clamp((fullRating - 90) * 0.055, 0, 0.22);
+        const xgControlBoost = clamp(xgEdge * 0.13, -0.06, 0.28);
         const opponentPenalty = clamp((opponentRating - 86) * 0.025, 0, 0.12);
 
         if (us < them) {
-          const rescueLossChance = clamp(0.62 + eliteRatingBoost + xgControlBoost - opponentPenalty, 0.42, 0.9);
+          const rescueLossChance = clamp(0.56 + eliteRatingBoost + xgControlBoost - opponentPenalty, 0.36, 0.82);
           if (Math.random() < rescueLossChance) {
             us = them;
           }
         }
 
         if (us === them) {
-          const convertDrawChance = clamp(0.38 + eliteRatingBoost + xgControlBoost - opponentPenalty, 0.2, 0.78);
+          const convertDrawChance = clamp(0.27 + eliteRatingBoost + xgControlBoost - opponentPenalty, 0.14, 0.58);
           if (Math.random() < convertDrawChance) {
             us += 1;
           }
@@ -5021,7 +5109,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       }
 
       // Superteam finishing floor: if an elite team creates 2.0+ xG, blanking should be rare.
-      if (fullRating >= 90 && us === 0 && adjustedUserXg >= 2.0 && Math.random() < 0.88) {
+      if (fullRating >= 90 && us === 0 && adjustedUserXg >= 2.0 && Math.random() < 0.78) {
         us = 1;
       }
 
@@ -5168,6 +5256,90 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     }, 9800);
   }
 
+  if (showPlayerCollection) {
+    return /*#__PURE__*/(
+      React.createElement("section", { className: "collection-screen player-collection-screen" }, /*#__PURE__*/
+      React.createElement("div", { className: "player-collection-shell" }, /*#__PURE__*/
+      React.createElement("button", {
+        className: "mode-pill-button collection-back-mode-button collection-back-detailed",
+        type: "button",
+        onClick: () => setShowPlayerCollection(false),
+        "aria-label": "Back to Draft XI menu",
+        style: {
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "10px",
+          width: "min(380px, 100%)",
+          minHeight: "64px",
+          margin: "0 auto 18px",
+          padding: "0 26px",
+          border: "1px solid rgba(141, 255, 179, 0.45)",
+          borderRadius: "999px",
+          background: "linear-gradient(135deg, #86f7a8, #22c55e)",
+          color: "#06180d",
+          boxShadow: "0 14px 30px rgba(57, 255, 136, 0.18), inset 0 -3px 0 rgba(0, 0, 0, 0.12)",
+          fontSize: "16px",
+          fontWeight: 1000,
+          lineHeight: 1,
+          appearance: "none",
+          WebkitAppearance: "none" } },
+
+      /*#__PURE__*/React.createElement("span", {
+        className: "collection-back-icon",
+        "aria-hidden": "true",
+        style: {
+          width: "32px",
+          height: "32px",
+          minWidth: "32px",
+          display: "inline-grid",
+          placeItems: "center",
+          borderRadius: "999px",
+          background: "rgba(6, 24, 13, 0.12)",
+          lineHeight: 1 } },
+
+      "⚽"), /*#__PURE__*/React.createElement("span", {
+        className: "collection-back-text",
+        style: { whiteSpace: "nowrap", lineHeight: 1 } },
+      "Back to Draft XI"), /*#__PURE__*/React.createElement("span", {
+        className: "collection-back-arrow",
+        "aria-hidden": "true",
+        style: {
+          width: "32px",
+          height: "32px",
+          minWidth: "32px",
+          display: "inline-grid",
+          placeItems: "center",
+          borderRadius: "999px",
+          background: "rgba(6, 24, 13, 0.12)",
+          fontWeight: 1000,
+          lineHeight: 1 } },
+
+      "↩")), /*#__PURE__*/
+      React.createElement("div", { className: "player-collection-hero" }, /*#__PURE__*/
+      React.createElement("div", null, /*#__PURE__*/
+      React.createElement("p", { className: "eyebrow" }, "Permanent Progress"), /*#__PURE__*/
+      React.createElement("h1", null, "Player Collection"), /*#__PURE__*/
+      React.createElement("p", null, "Every drafted starter and bench player is saved here.")), /*#__PURE__*/
+      React.createElement("div", { className: "collection-stat-card" }, /*#__PURE__*/
+      React.createElement("strong", null, playerCollectionStats.found), /*#__PURE__*/
+      React.createElement("span", null, "/", playerCollectionStats.total), /*#__PURE__*/
+      React.createElement("small", null, "Players Found"))), /*#__PURE__*/
+      React.createElement("div", { className: "collection-bar player-collection-bar" }, /*#__PURE__*/
+      React.createElement("div", { className: "collection-fill", style: { width: `${playerCollectionStats.percent}%` } })), /*#__PURE__*/
+      React.createElement("p", { className: "collection-percent-label" }, playerCollectionStats.percent, "% complete"), /*#__PURE__*/
+      React.createElement("div", { className: "player-collection-grid" },
+      allCollectiblePlayers.map(player => {
+        const id = getPlayerCollectionId(player);
+        const unlocked = discoveredPlayerIds.has(id);
+        return /*#__PURE__*/React.createElement("div", { key: id, className: `player-collection-card ${unlocked ? "unlocked" : "locked"}` }, /*#__PURE__*/
+        React.createElement("span", { className: "collection-card-club" }, unlocked ? player.club : "???"), /*#__PURE__*/
+        React.createElement("strong", { title: unlocked ? player.name : "Locked Player" }, unlocked ? getPitchDisplayName(player.name) : "Locked"), /*#__PURE__*/
+        React.createElement("small", { className: unlocked ? getRatingClass(player.rating) : "" }, unlocked ? player.rating : "?"), /*#__PURE__*/
+        React.createElement("em", null, unlocked ? player.position : "Draft to unlock"));
+      })))));
+  }
+
   if (!gameStarted) {
     return /*#__PURE__*/(
       React.createElement("section", { className: "start-screen" }, /*#__PURE__*/
@@ -5216,7 +5388,22 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           selectGameMode("worldcup");
           playSound("start", soundMuted);
           setGameStarted(true);
-        } }, "Start World Cup Mode")))));
+        } }, "Start World Cup Mode"), /*#__PURE__*/
+      React.createElement("button", {
+        className: "mode-pill-button",
+        type: "button",
+        style: {
+          width: "100%",
+          minHeight: "56px",
+          border: "0",
+          borderRadius: "999px",
+          background: "#86f7a8",
+          color: "#06180d",
+          fontSize: "16px",
+          fontWeight: 900,
+          textAlign: "center",
+          cursor: "pointer" },
+        onClick: () => setShowPlayerCollection(true) }, "Player Collection ", playerCollectionStats.found, "/", playerCollectionStats.total)))));
 
 
 
@@ -5293,39 +5480,12 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
     React.createElement("section", { className: "controls sticky-draft-controls", ref: controlsRef }, /*#__PURE__*/
-    React.createElement("button", { className: (guideStep === "spin" || guideStep === "bench") && !spinning ? "guide-pulse" : "", onClick: spinClub, disabled: spinning || !!currentClub || fullSquadReady || substituteMode },
-    spinning ? "Spinning..." : currentClub ? "Pick or Reroll" : benchDraftActive ? `Spin Bench (${BENCH_LIMIT - bench.length})` : gameMode === "worldcup" ? "Spin Nation" : "Spin Club"), /*#__PURE__*/
-
-    React.createElement("button", { className: "reroll", onClick: rerollClub, disabled: !currentClub || rerollsLeft <= 0 || spinning || fullSquadReady || substituteMode },
-    rerollsLeft > 0 ? `Reroll (${rerollsLeft})` : "No Rerolls"), /*#__PURE__*/
-
     currentClub && !currentClubHasPlayablePick && !spinning && !fullSquadReady && /*#__PURE__*/React.createElement("button", { className: "rescue-spin", onClick: rescueSpinClub }, "Rescue Spin"), /*#__PURE__*/
-
-    React.createElement("button", {
-      className: "transfer-lifeline",
-      onClick: () => setTransferMode(prev => !prev),
-      disabled: draftedPlayers.length < 6 || transferUsed || spinning || simulating || !!results || benchDraftActive || substituteMode },
-
-    transferUsed ? "Transfer Used" : transferMode ? "Cancel Transfer" : "Transfer Lifeline"), /*#__PURE__*/
-
-    React.createElement("button", {
-      className: "substitute-lifeline",
-      onClick: () => {
-        setSubstituteMode(prev => !prev);
-        setTransferMode(false);
-        setSelectedPlayer(null);
-        setMovingSlotId(null);
-        setSelectedBenchId(null);
-      },
-      disabled: !fullSquadReady || substituteUsed || spinning || simulating || !!results },
-    substituteUsed ? "Sub Used" : substituteMode ? "Cancel Sub" : "Substitute Lifeline"), /*#__PURE__*/
-
-    !results && /*#__PURE__*/React.createElement("button", { className: guideStep === "simulate" ? "guide-pulse" : "", onClick: simulateSeason, disabled: !fullSquadReady || simulating || substituteMode },
-    simulating ? gameMode === "worldcup" ? "Simulating Tournament..." : "Simulating..." : gameMode === "worldcup" ? "Simulate Tournament" : "Simulate Season"), /*#__PURE__*/
 
     React.createElement("button", { className: "ghost", onClick: resetGame }, "Reset"), /*#__PURE__*/
     React.createElement("button", { className: "ghost change-mode-button", type: "button", onClick: returnToStartScreen, disabled: spinning || simulating }, "Change Mode"), /*#__PURE__*/
     React.createElement("button", { className: "share-draft-button", type: "button", onClick: shareDraftXI }, shareCopied ? "Link Copied!" : "Share Draft XI"), /*#__PURE__*/
+    React.createElement("button", { className: "ghost", type: "button", onClick: () => setShowPlayerCollection(true) }, "Collection ", playerCollectionStats.found, "/", playerCollectionStats.total), /*#__PURE__*/
     React.createElement("button", {
       className: "sound-toggle",
       onClick: () => setSoundMuted(prev => !prev) },
@@ -5566,6 +5726,106 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("span", null, "ATK ", calculateTeamProfile(draftedPlayers).attack), /*#__PURE__*/
     React.createElement("span", null, "MID ", calculateTeamProfile(draftedPlayers).midfield), /*#__PURE__*/
     React.createElement("span", null, "DEF ", calculateTeamProfile(draftedPlayers).defense)))), /*#__PURE__*/
+    React.createElement("div", {
+      className: "formation-sticky-lifelines",
+      style: {
+        position: "sticky",
+        top: "10px",
+        zIndex: 80,
+        display: "flex",
+        justifyContent: "center",
+        flexWrap: "wrap",
+        gap: "10px",
+        margin: "12px auto 18px",
+        padding: "10px",
+        width: "fit-content",
+        maxWidth: "100%",
+        borderRadius: "999px",
+        background: "rgba(3, 20, 9, 0.84)",
+        border: "1px solid rgba(141, 255, 179, 0.22)",
+        boxShadow: "0 14px 32px rgba(0, 0, 0, 0.24)",
+        backdropFilter: "blur(10px)" } },
+    /*#__PURE__*/
+    React.createElement("button", {
+      className: (guideStep === "spin" || guideStep === "bench") && !spinning ? "guide-pulse sticky-spin-button" : "sticky-spin-button",
+      onClick: spinClub,
+      disabled: spinning || !!currentClub || fullSquadReady || substituteMode,
+      style: {
+        border: "0",
+        borderRadius: "999px",
+        padding: "10px 18px",
+        background: "linear-gradient(135deg, var(--green, #8dffb3), #22c55e)",
+        color: "var(--green-dark, #06210f)",
+        fontWeight: 900,
+        boxShadow: "0 10px 22px rgba(57,255,136,0.2)" } },
+
+    spinning ? "Spinning..." : currentClub ? "Pick Player" : benchDraftActive ? `Spin Bench (${BENCH_LIMIT - bench.length})` : gameMode === "worldcup" ? "Spin Nation" : "Spin Club"), /*#__PURE__*/
+
+    React.createElement("button", {
+      className: "reroll",
+      onClick: rerollClub,
+      disabled: !currentClub || rerollsLeft <= 0 || spinning || fullSquadReady || substituteMode,
+      style: {
+        border: "0",
+        borderRadius: "999px",
+        padding: "10px 16px",
+        background: rerollsLeft > 0 ? "var(--yellow, #ffe08a)" : "rgba(255,255,255,0.14)",
+        color: rerollsLeft > 0 ? "#201600" : "rgba(255,255,255,0.65)",
+        fontWeight: 900,
+        boxShadow: "0 10px 22px rgba(0,0,0,0.18)" } },
+
+    rerollsLeft > 0 ? `Reroll (${rerollsLeft})` : "No Rerolls"), /*#__PURE__*/
+
+    React.createElement("button", {
+      className: "transfer-lifeline",
+      onClick: () => setTransferMode(prev => !prev),
+      disabled: draftedPlayers.length < 6 || transferUsed || spinning || simulating || !!results || benchDraftActive || substituteMode,
+      style: {
+        border: "0",
+        borderRadius: "999px",
+        padding: "10px 16px",
+        background: transferMode ? "var(--yellow, #ffe08a)" : "linear-gradient(135deg, var(--green, #8dffb3), #22c55e)",
+        color: transferMode ? "#201600" : "var(--green-dark, #06210f)",
+        fontWeight: 900,
+        boxShadow: "0 10px 22px rgba(57,255,136,0.18)" } },
+
+    transferUsed ? "Transfer Used" : transferMode ? "Cancel Transfer" : "Transfer Lifeline"), /*#__PURE__*/
+
+    React.createElement("button", {
+      className: "substitute-lifeline",
+      onClick: () => {
+        setSubstituteMode(prev => !prev);
+        setTransferMode(false);
+        setSelectedPlayer(null);
+        setMovingSlotId(null);
+        setSelectedBenchId(null);
+      },
+      disabled: !fullSquadReady || substituteUsed || spinning || simulating || !!results,
+      style: {
+        border: "0",
+        borderRadius: "999px",
+        padding: "10px 16px",
+        background: substituteMode ? "var(--yellow, #ffe08a)" : "linear-gradient(135deg, var(--green, #8dffb3), #22c55e)",
+        color: substituteMode ? "#201600" : "var(--green-dark, #06210f)",
+        fontWeight: 900,
+        boxShadow: "0 10px 22px rgba(57,255,136,0.18)" } },
+
+    substituteUsed ? "Sub Used" : substituteMode ? "Cancel Sub" : "Substitute Lifeline"), /*#__PURE__*/
+
+    React.createElement("button", {
+      className: "sticky-sim-button",
+      onClick: () => gameMode === "worldcup" ? simulateTournament() : simulateSeason(),
+      disabled: !fullSquadReady || simulating || !!results,
+      style: {
+        border: "0",
+        borderRadius: "999px",
+        padding: "10px 16px",
+        background: "linear-gradient(135deg, var(--green, #8dffb3), #22c55e)",
+        color: "var(--green-dark, #06210f)",
+        fontWeight: 900,
+        boxShadow: "0 10px 22px rgba(57,255,136,0.18)" } },
+
+    gameMode === "worldcup" ? "Sim Tournament" : "Sim Season")), /*#__PURE__*/
     React.createElement("div", { className: "pitch" },
     FORMATION.map(slot => {var _slot$mobileX, _slot$mobileY;
       const player = draft[slot.id];
