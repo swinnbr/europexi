@@ -716,12 +716,17 @@ h1 {
 }
 
 .slot strong {
-  max-width: 100%;
-  font-size: 12px;
-  line-height: 1.1;
+  width: 100%;
+  max-width: calc(100% - 4px);
+  font-size: 10.5px;
+  line-height: 1.05;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-align: center;
+  display: block;
 }
 
 .slot small {
@@ -1763,7 +1768,8 @@ h1 {
   }
 
   .slot strong {
-    font-size: 10px;
+    font-size: 8.5px;
+    line-height: 1;
   }
 
   .slot small {
@@ -2636,6 +2642,23 @@ h1 {
   transform: translate(-50%, -50%) !important;
 }
 
+
+.slot.swap-target {
+  border-color: rgba(185, 246, 255, 0.95);
+  box-shadow:
+    0 0 0 5px rgba(185, 246, 255, 0.24),
+    0 0 36px rgba(54, 218, 235, 0.45);
+  animation: tapMovePulse 0.9s ease-in-out infinite alternate;
+}
+
+.slot.swap-blocked {
+  opacity: 0.48;
+  filter: grayscale(0.65);
+}
+
+.slot.swap-blocked:hover {
+  transform: translate(-50%, -50%) !important;
+}
 @keyframes tapMovePulse {
   from {
     transform: translate(-50%, -50%) scale(1);
@@ -2679,17 +2702,3 @@ h1 {
 }
 
 .slot.best-slot {
-  border-color: rgba(141, 255, 179, 0.9);
-  box-shadow: 0 0 0 2px rgba(141, 255, 179, 0.3), 0 14px 34px rgba(141, 255, 179, 0.18);
-}
-
-.player-card.position-filled,
-.player-card[aria-disabled="true"] {
-  position: relative;
-}
-
-@media (max-width: 720px) {
-  .controls .rescue-spin {
-    flex-basis: 100%;
-  }
-}

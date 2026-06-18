@@ -1826,6 +1826,30 @@ const BALANCED_100_EXTRA_CLUBS = [
 const BALANCED_BIG_FIVE_LEAGUES = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1"];
 
 const STANDARD_CLUB_POOL = [...CLUBS, ...JACKPOT_CLUBS, ...SMALLER_CLUBS, ...EXTRA_TOP5_CLUBS, ...EXPANDED_DRAFT_CLUBS, ...BALANCED_100_EXTRA_CLUBS];
+
+const ERA_BALANCE_META_BY_ID = {
+  psg1516: { season: "All-Era Spotlight", rating: 93 },
+  newcastle2223_expanded: { season: "All-Era Spotlight", rating: 88 },
+  astonvilla2324_expanded: { season: "All-Era Spotlight", rating: 87 },
+  everton0405_extra: { season: "All-Era Spotlight", rating: 86 },
+  westham1516_extra: { season: "All-Era Spotlight", rating: 86 },
+  leeds0001_extra: { season: "All-Era Spotlight", rating: 86 },
+  benfica1314_expanded: { season: "All-Era Spotlight", rating: 89 },
+  sporting2021_expanded: { season: "All-Era Spotlight", rating: 89 },
+  ajax1819_expanded: { season: "All-Era Spotlight", rating: 92 },
+  psv1718_expanded: { season: "All-Era Spotlight", rating: 89 },
+  galatasaray9900_expanded: { season: "All-Era Spotlight", rating: 87 },
+  fenerbahce0708_expanded: { season: "All-Era Spotlight", rating: 87 },
+  celtic2223_expanded: { season: "All-Era Spotlight", rating: 86 },
+  rangers0708_expanded: { season: "All-Era Spotlight", rating: 86 } };
+
+
+STANDARD_CLUB_POOL.forEach(club => {
+  const meta = ERA_BALANCE_META_BY_ID[club.id];
+  if (!meta) return;
+  club.season = meta.season;
+  club.rating = meta.rating;
+});
 const ALL_CLUBS = STANDARD_CLUB_POOL;
 const TOP_FIVE_LEAGUES = BALANCED_BIG_FIVE_LEAGUES;
 
@@ -1844,11 +1868,11 @@ function getWeightedClubPool() {
     const tier = getClubTier(club);
 
     let weight = 1;
-    if (tier === "underdog") weight = 7;
-    if (tier === "strong") weight = 5;
-    if (tier === "elite") weight = 3;
-    if (tier === "legendary") weight = 1;
-    if (tier === "jackpot") weight = 1;
+    if (tier === "underdog") weight = 3;
+    if (tier === "strong") weight = 4;
+    if (tier === "elite") weight = 5;
+    if (tier === "legendary") weight = 4;
+    if (tier === "jackpot") weight = 3;
 
     for (let i = 0; i < weight; i++) {
       pool.push(club);
@@ -1884,7 +1908,8 @@ function cleanPlayerName(name) {
   let cleaned = String(name || "").trim();
 
   cleaned = cleaned.
-  replace(/\s*[-|]\s*.+$/, "").
+  replace(/\s+[\-]\s+.+$/, "").
+  replace(/\s*\|\s*.+$/, "").
   replace(/\s*\([^)]*\)\s*$/, "").
   trim();
 
@@ -1904,6 +1929,31 @@ function getRatingClass(rating) {
   if (rating >= 80) return "rating-yellow";
   if (rating >= 70) return "rating-green";
   return "rating-blue";
+}
+
+function getPitchDisplayName(name) {
+  const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return "";
+
+  const suffixes = new Set(["jr", "jr.", "sr", "sr.", "ii", "iii", "iv"]);
+  while (parts.length > 1 && suffixes.has(parts[parts.length - 1].toLowerCase())) {
+    parts.pop();
+  }
+
+  const lowerParts = parts.map(part => part.toLowerCase().replace(/[^a-z-]/g, ""));
+  const compoundPrefixes = new Set([
+  "mac", "mc", "de", "del", "de la", "van", "van de", "van der", "von", "da", "di", "dos", "du", "le", "la"]);
+
+  if (parts.length >= 3) {
+    const threeWordPrefix = lowerParts.slice(-3, -1).join(" ");
+    if (compoundPrefixes.has(threeWordPrefix)) return parts.slice(-3).join(" ");
+  }
+
+  if (parts.length >= 2 && compoundPrefixes.has(lowerParts[lowerParts.length - 2])) {
+    return parts.slice(-2).join(" ");
+  }
+
+  return parts[parts.length - 1];
 }
 
 function getAltPositions(name, mainPosition) {
@@ -2030,10 +2080,224 @@ function getAltPositions(name, mainPosition) {
 }
 
 
+const SQUAD_DEPTH_BY_NAME = {
+  "Manchester City": [
+  ["Oleksandr Zinchenko", "LB", 83], ["Fernandinho", "CDM", 87], ["David Silva", "CAM", 90],
+  ["Leroy Sane", "LW", 86], ["Raheem Sterling", "RW", 88], ["Julian Alvarez", "ST", 84], ["Manuel Akanji", "CB", 84]],
+  "Manchester United": [
+  ["Gary Neville", "RB", 86], ["Denis Irwin", "LB", 87], ["Roy Keane", "CDM", 90],
+  ["David Beckham", "RM", 90], ["Juan Mata", "CAM", 85], ["Park Ji-sung", "LW", 84], ["Antonio Valencia", "RW", 84]],
+  "Chelsea": [
+  ["Branislav Ivanovic", "RB", 86], ["Marcos Alonso", "LB", 84], ["Michael Essien", "CDM", 89],
+  ["Cesc Fabregas", "CM", 88], ["Eden Hazard", "LW", 92], ["Willian", "RW", 86], ["Oscar", "CAM", 84]],
+  "Arsenal": [
+  ["Bacary Sagna", "RB", 84], ["Nacho Monreal", "LB", 83], ["Emmanuel Petit", "CDM", 87],
+  ["Cesc Fabregas", "CM", 90], ["Mesut Ozil", "CAM", 89], ["Alexis Sanchez", "LW", 90], ["Theo Walcott", "RW", 84]],
+  "Liverpool": [
+  ["Steve Finnan", "RB", 83], ["John Arne Riise", "LB", 84], ["Javier Mascherano", "CDM", 88],
+  ["Xabi Alonso", "CM", 89], ["Steven Gerrard", "CAM", 91], ["Luis Diaz", "LW", 86], ["Dirk Kuyt", "RW", 84]],
+  "Barcelona": [
+  ["Jordi Alba", "LB", 88], ["Sergi Roberto", "RB", 82], ["Yaya Toure", "CDM", 88],
+  ["Cesc Fabregas", "CM", 88], ["Rivaldo", "CAM", 92], ["Neymar", "LW", 93], ["Alexis Sanchez", "RW", 86]],
+  "Real Madrid": [
+  ["Alvaro Arbeloa", "RB", 82], ["Roberto Carlos", "LB", 92], ["Claude Makelele", "CDM", 90],
+  ["Guti", "CM", 86], ["Mesut Ozil", "CAM", 89], ["Vinicius Junior", "LW", 90], ["Rodrygo", "RW", 87]],
+  "Atletico Madrid": [
+  ["Kieran Trippier", "RB", 84], ["Lucas Hernandez", "LB", 84], ["Rodri", "CDM", 88],
+  ["Saul Niguez", "CM", 85], ["Antoine Griezmann", "CAM", 90], ["Yannick Carrasco", "LW", 85], ["Angel Correa", "RW", 84]],
+  "Valencia": [
+  ["Miguel", "RB", 84], ["Jordi Alba", "LB", 84], ["Gaizka Mendieta", "CM", 89],
+  ["David Silva", "CAM", 88], ["Pablo Hernandez", "RW", 83], ["Juan Mata", "LW", 86]],
+  "Sevilla": [
+  ["Dani Alves", "RB", 90], ["Adriano", "LB", 83], ["Ivan Rakitic", "CM", 87],
+  ["Pablo Sarabia", "CAM", 84], ["Diego Capel", "LW", 82], ["Frederic Kanoute", "ST", 86]],
+  "Bayern Munich": [
+  ["Philipp Lahm", "RB", 91], ["Bixente Lizarazu", "LB", 88], ["Javi Martinez", "CDM", 86],
+  ["Bastian Schweinsteiger", "CM", 90], ["Jamal Musiala", "CAM", 88], ["Franck Ribery", "LW", 91], ["Arjen Robben", "RW", 92]],
+  "Borussia Dortmund": [
+  ["Achraf Hakimi", "RB", 86], ["Raphael Guerreiro", "LB", 84], ["Sebastian Kehl", "CDM", 83],
+  ["Shinji Kagawa", "CAM", 86], ["Jadon Sancho", "RW", 88], ["Christian Pulisic", "LW", 84]],
+  "Bayer Leverkusen": [
+  ["Carvajal", "RB", 84], ["Wendell", "LB", 82], ["Michael Ballack", "CM", 90],
+  ["Hakan Calhanoglu", "CAM", 85], ["Leon Bailey", "LW", 84], ["Moussa Diaby", "RW", 86]],
+  "RB Leipzig": [
+  ["Benjamin Henrichs", "RB", 81], ["Marcel Halstenberg", "LB", 82], ["Tyler Adams", "CDM", 81],
+  ["Naby Keita", "CM", 86], ["Emil Forsberg", "CAM", 84], ["Yussuf Poulsen", "RW", 82]],
+  "Inter Milan": [
+  ["Maicon", "RB", 89], ["Giacinto Facchetti", "LB", 91], ["Cristian Chivu", "LB", 84],
+  ["Nicolo Barella", "CM", 88], ["Luis Figo", "RW", 88], ["Ivan Perisic", "LW", 86], ["Hakan Calhanoglu", "CAM", 86]],
+  "AC Milan": [
+  ["Mauro Tassotti", "RB", 86], ["Theo Hernandez", "LB", 88], ["Frank Rijkaard", "CDM", 91],
+  ["Demetrio Albertini", "CM", 88], ["Dejan Savicevic", "CAM", 90], ["Roberto Donadoni", "RW", 88]],
+  "Napoli": [
+  ["Christian Maggio", "RB", 83], ["Faouzi Ghoulam", "LB", 84], ["Jorginho", "CDM", 86],
+  ["Marek Hamsik", "CM", 89], ["Dries Mertens", "CAM", 88], ["Lorenzo Insigne", "LW", 87], ["Jose Callejon", "RW", 84]],
+  "Paris Saint-Germain": [
+  ["Achraf Hakimi", "RB", 87], ["Nuno Mendes", "LB", 85], ["Claude Makelele", "CDM", 88],
+  ["Vitinha", "CM", 85], ["Neymar", "CAM", 92], ["Kylian Mbappe", "LW", 94], ["Ousmane Dembele", "RW", 86]],
+  "Monaco": [
+  ["Djibril Sidibe", "RB", 83], ["Layvin Kurzawa", "LB", 83], ["Aurelien Tchouameni", "CDM", 86],
+  ["Youri Tielemans", "CM", 84], ["James Rodriguez", "CAM", 89], ["Thomas Lemar", "LW", 86]],
+  "Lyon": [
+  ["Anthony Reveillere", "RB", 83], ["Ferland Mendy", "LB", 84], ["Jeremy Toulalan", "CDM", 84],
+  ["Miralem Pjanic", "CM", 86], ["Nabil Fekir", "CAM", 87], ["Memphis Depay", "LW", 86]],
+  "Lille": [
+  ["Mathieu Debuchy", "RB", 83], ["Lucas Digne", "LB", 82], ["Rio Mavuba", "CDM", 83],
+  ["Yohan Cabaye", "CM", 85], ["Eden Hazard", "LW", 89], ["Gervinho", "RW", 84]],
+  "Ajax": [
+  ["Noussair Mazraoui", "RB", 84], ["Nicolas Tagliafico", "LB", 84], ["Frenkie de Jong", "CM", 88],
+  ["Hakim Ziyech", "CAM", 88], ["Dusan Tadic", "LW", 87], ["Antony", "RW", 84]],
+  "Porto": [
+  ["Danilo", "RB", 84], ["Alex Telles", "LB", 85], ["Ruben Neves", "CDM", 84],
+  ["Joao Moutinho", "CM", 86], ["Luis Diaz", "LW", 86], ["Hulk", "RW", 88]],
+  "Benfica": [
+  ["Nelson Semedo", "RB", 83], ["Alex Grimaldo", "LB", 84], ["Nemanja Matic", "CDM", 86],
+  ["Enzo Fernandez", "CM", 86], ["Pablo Aimar", "CAM", 88], ["Angel Di Maria", "RW", 88]],
+  "Sporting CP": [
+  ["Pedro Porro", "RB", 84], ["Nuno Mendes", "LB", 84], ["William Carvalho", "CDM", 84],
+  ["Bruno Fernandes", "CAM", 90], ["Nani", "LW", 86], ["Pedro Goncalves", "RW", 85]],
+  "Tottenham": [
+  ["Kyle Walker", "RB", 86], ["Danny Rose", "LB", 84], ["Mousa Dembele", "CM", 87],
+  ["Christian Eriksen", "CAM", 89], ["Gareth Bale", "RW", 90], ["Dejan Kulusevski", "RW", 84]],
+  "Newcastle United": [
+  ["Kieran Trippier", "RB", 84], ["Dan Burn", "LB", 81], ["Bruno Guimaraes", "CM", 87],
+  ["Joe Willock", "CM", 82], ["Miguel Almiron", "RW", 82], ["Allan Saint-Maximin", "LW", 84]],
+  "Aston Villa": [
+  ["Matty Cash", "RB", 82], ["Lucas Digne", "LB", 82], ["Douglas Luiz", "CDM", 85],
+  ["Youri Tielemans", "CM", 83], ["Philippe Coutinho", "CAM", 84], ["Leon Bailey", "RW", 83]],
+  "Roma": [
+  ["Cafu", "RB", 89], ["John Arne Riise", "LB", 83], ["Daniele De Rossi", "CDM", 89],
+  ["Radja Nainggolan", "CM", 87], ["Francesco Totti", "CAM", 94], ["Mohamed Salah", "RW", 88]],
+  "Lazio": [
+  ["Massimo Oddo", "RB", 84], ["Senad Lulic", "LB", 82], ["Lucas Leiva", "CDM", 84],
+  ["Sergej Milinkovic-Savic", "CM", 88], ["Luis Alberto", "CAM", 86], ["Felipe Anderson", "RW", 84]],
+  "Fiorentina": [
+  ["Lorenzo De Silvestri", "RB", 81], ["Manuel Pasqual", "LB", 83], ["Borja Valero", "CM", 85],
+  ["Rui Costa", "CAM", 90], ["Federico Chiesa", "RW", 86], ["Stevan Jovetic", "LW", 85]],
+  "Marseille": [
+  ["Cesar Azpilicueta", "RB", 83], ["Taye Taiwo", "LB", 84], ["Didier Deschamps", "CDM", 87],
+  ["Samir Nasri", "CAM", 86], ["Dimitri Payet", "LW", 86], ["Florian Thauvin", "RW", 84]],
+  "Nice": [
+  ["Youcef Atal", "RB", 82], ["Melvin Bard", "LB", 80], ["Jean Michael Seri", "CM", 84],
+  ["Hatem Ben Arfa", "CAM", 86], ["Allan Saint-Maximin", "LW", 84], ["Jeremie Boga", "RW", 82]],
+  "Wolfsburg": [
+  ["Christian Trasch", "RB", 81], ["Marcel Schafer", "LB", 82], ["Josuha Guilavogui", "CDM", 82],
+  ["Kevin De Bruyne", "CAM", 90], ["Ivan Perisic", "LW", 85], ["Vieirinha", "RW", 82]],
+  "Schalke": [
+  ["Rafinha", "RB", 83], ["Sead Kolasinac", "LB", 82], ["Leon Goretzka", "CM", 85],
+  ["Julian Draxler", "CAM", 86], ["Jefferson Farfan", "RW", 84], ["Leroy Sane", "LW", 85]],
+  "Real Betis": [
+  ["Emerson Royal", "RB", 81], ["Alex Moreno", "LB", 82], ["Guido Rodriguez", "CDM", 84],
+  ["Sergio Canales", "CAM", 86], ["Joaquin", "RW", 85], ["Juanmi", "LW", 82]],
+  "Athletic Club": [
+  ["Andoni Iraola", "RB", 84], ["Mikel Balenziaga", "LB", 81], ["Ander Herrera", "CM", 84],
+  ["Iker Muniain", "CAM", 85], ["Nico Williams", "RW", 84], ["Markel Susaeta", "RW", 82]],
+  "Everton": [
+  ["Seamus Coleman", "RB", 84], ["Leighton Baines", "LB", 86], ["Idrissa Gueye", "CDM", 84],
+  ["Mikel Arteta", "CM", 86], ["Tim Cahill", "CAM", 85], ["Steven Pienaar", "LW", 82]],
+  "West Ham": [
+  ["Pablo Zabaleta", "RB", 81], ["Aaron Cresswell", "LB", 82], ["Declan Rice", "CDM", 86],
+  ["Dimitri Payet", "CAM", 88], ["Jarrod Bowen", "RW", 84], ["Said Benrahma", "LW", 82]],
+  "Leeds United": [
+  ["Luke Ayling", "RB", 80], ["Ian Harte", "LB", 83], ["Kalvin Phillips", "CDM", 84],
+  ["Harry Kewell", "LW", 86], ["Raphinha", "RW", 85], ["Pablo Hernandez", "CAM", 83]],
+  "Werder Bremen": [
+  ["Clemens Fritz", "RB", 82], ["Ludovic Magnin", "LB", 80], ["Torsten Frings", "CDM", 86],
+  ["Mesut Ozil", "CAM", 87], ["Diego", "CAM", 88], ["Marko Marin", "LW", 83]],
+  "Celtic": [
+  ["Josip Juranovic", "RB", 81], ["Kieran Tierney", "LB", 84], ["Scott Brown", "CDM", 83],
+  ["Callum McGregor", "CM", 83], ["Shunsuke Nakamura", "CAM", 86], ["Jota", "LW", 82]],
+  "Rangers": [
+  ["James Tavernier", "RB", 82], ["Borna Barisic", "LB", 81], ["Barry Ferguson", "CM", 84],
+  ["Brian Laudrup", "LW", 88], ["Ryan Kent", "LW", 81], ["Nacho Novo", "RW", 80]] };
+
+
+
+Object.assign(SQUAD_DEPTH_BY_NAME, {
+  "Leicester City": [["Ricardo Pereira", "RB", 84], ["Ben Chilwell", "LB", 83], ["Wilfred Ndidi", "CDM", 85], ["James Maddison", "CAM", 85], ["Marc Albrighton", "RW", 80]],
+  "Brighton": [["Joel Veltman", "RB", 80], ["Marc Cucurella", "LB", 82], ["Billy Gilmour", "CM", 79], ["Adam Lallana", "CAM", 81], ["Solly March", "RW", 81]],
+  "Brentford": [["Mads Roerslev", "RB", 78], ["Sergio Reguilon", "LB", 80], ["Vitaly Janelt", "CDM", 79], ["Josh Dasilva", "CAM", 78], ["Kevin Schade", "LW", 79]],
+  "Real Sociedad": [["Alvaro Odriozola", "RB", 81], ["Aihen Munoz", "LB", 79], ["Martin Zubimendi", "CDM", 85], ["David Silva", "CAM", 86], ["Takefusa Kubo", "RW", 84]],
+  "Villarreal": [["Mario Gaspar", "RB", 82], ["Alberto Moreno", "LB", 80], ["Etienne Capoue", "CDM", 82], ["Santi Cazorla", "CAM", 87], ["Yeremy Pino", "RW", 82]],
+  "Atalanta": [["Hans Hateboer", "RB", 81], ["Robin Gosens", "LB", 84], ["Marten de Roon", "CDM", 82], ["Teun Koopmeiners", "CM", 84], ["Josip Ilicic", "CAM", 86]],
+  "Lens": [["Jonathan Clauss", "RB", 83], ["Deiver Machado", "LB", 79], ["Seko Fofana", "CM", 85], ["Cheick Doucoure", "CDM", 82], ["Florian Sotoca", "RW", 80]],
+  "Rennes": [["Hamari Traore", "RB", 81], ["Adrien Truffert", "LB", 80], ["Eduardo Camavinga", "CM", 84], ["Benjamin Bourigeaud", "CAM", 83], ["Jeremy Doku", "RW", 82]],
+  "PSV": [["Denzel Dumfries", "RB", 84], ["Angelino", "LB", 82], ["Jerdy Schouten", "CDM", 82], ["Ibrahim Afellay", "CAM", 85], ["Cody Gakpo", "LW", 85]],
+  "Galatasaray": [["Emmanuel Eboue", "RB", 82], ["Hakan Balta", "LB", 80], ["Felipe Melo", "CDM", 84], ["Wesley Sneijder", "CAM", 88], ["Arda Turan", "LW", 86]],
+  "Fenerbahce": [["Gokhan Gonul", "RB", 82], ["Caner Erkin", "LB", 81], ["Mehmet Topal", "CDM", 82], ["Alex de Souza", "CAM", 89], ["Dirk Kuyt", "RW", 83]],
+  "Zenit": [["Anyukov", "RB", 81], ["Domenico Criscito", "LB", 82], ["Igor Denisov", "CDM", 82], ["Danny", "CAM", 85], ["Hulk", "RW", 88]],
+  "Shakhtar Donetsk": [["Dodo", "RB", 81], ["Viktor Kornienko", "LB", 77], ["Anatoliy Tymoshchuk", "CDM", 85], ["Marlos", "RW", 84], ["Taison", "LW", 84]],
+  "Celtic": [["Josip Juranovic", "RB", 81], ["Kieran Tierney", "LB", 84], ["Scott Brown", "CDM", 83], ["Callum McGregor", "CM", 83], ["Shunsuke Nakamura", "CAM", 86]],
+  "Rangers": [["James Tavernier", "RB", 82], ["Borna Barisic", "LB", 81], ["Barry Ferguson", "CM", 84], ["Brian Laudrup", "LW", 88], ["Ryan Kent", "LW", 81]] });
+
+
+const ERA_SPOTLIGHT_PLAYERS_BY_ID = {
+  juv1415: [
+  ["Andrea Barzagli", "CB", 86], ["Kwadwo Asamoah", "LM", 82], ["Martin Caceres", "RB", 81],
+  ["Simone Pepe", "RW", 79], ["Romulo", "RM", 78], ["Sebastian Giovinco", "CAM", 80]],
+  juv9596_balanced: [
+  ["Zinedine Zidane", "CAM", 90], ["Didier Deschamps", "CDM", 87], ["Gianluca Vialli", "ST", 89],
+  ["Fabrizio Ravanelli", "ST", 87], ["Angelo Di Livio", "RM", 84], ["Antonio Conte", "CM", 84]],
+  psg1516: [
+  ["Lionel Messi", "RW", 94], ["Neymar", "LW", 92], ["Kylian Mbappe", "ST", 94],
+  ["Achraf Hakimi", "RB", 87], ["Gianluigi Donnarumma", "GK", 89], ["Nuno Mendes", "LB", 85]],
+  newcastle2223_expanded: [
+  ["Alan Shearer", "ST", 92], ["David Ginola", "LW", 89], ["Peter Beardsley", "CAM", 88],
+  ["Les Ferdinand", "ST", 87], ["Laurent Robert", "LW", 84], ["Gary Speed", "CM", 84]],
+  astonvilla2324_expanded: [
+  ["Jack Grealish", "LW", 87], ["Dwight Yorke", "ST", 88], ["Paul McGrath", "CB", 89],
+  ["Gareth Barry", "CDM", 85], ["Ashley Young", "RW", 84], ["James Milner", "CM", 84]],
+  everton0405_extra: [
+  ["Wayne Rooney", "ST", 89], ["Romelu Lukaku", "ST", 87], ["Leighton Baines", "LB", 86],
+  ["James Rodriguez", "CAM", 86], ["Andrei Kanchelskis", "RW", 85], ["Richarlison", "LW", 84]],
+  westham1516_extra: [
+  ["Declan Rice", "CDM", 87], ["Paolo Di Canio", "CAM", 88], ["Carlos Tevez", "ST", 88],
+  ["Joe Cole", "CAM", 86], ["Jarrod Bowen", "RW", 84], ["Julian Dicks", "LB", 83]],
+  leeds0001_extra: [
+  ["Raphinha", "RW", 86], ["Gary Speed", "CM", 85], ["Lucas Radebe", "CB", 86],
+  ["Tony Yeboah", "ST", 86], ["James Milner", "CM", 84], ["David Batty", "CDM", 84]],
+  benfica1314_expanded: [
+  ["Eusebio", "ST", 95], ["Rui Costa", "CAM", 91], ["Angel Di Maria", "RW", 89],
+  ["Joao Felix", "CAM", 86], ["Enzo Fernandez", "CM", 86], ["Joao Cancelo", "RB", 86]],
+  sporting2021_expanded: [
+  ["Cristiano Ronaldo", "RW", 92], ["Luis Figo", "RW", 91], ["Bruno Fernandes", "CAM", 90],
+  ["Nani", "LW", 86], ["Joao Moutinho", "CM", 85], ["Rui Patricio", "GK", 85]],
+  ajax1819_expanded: [
+  ["Johan Cruyff", "CAM", 96], ["Marco van Basten", "ST", 94], ["Dennis Bergkamp", "CAM", 92],
+  ["Wesley Sneijder", "CAM", 90], ["Clarence Seedorf", "CM", 90], ["Edwin van der Sar", "GK", 90]],
+  psv1718_expanded: [
+  ["Ronaldo", "ST", 94], ["Romario", "ST", 92], ["Ruud Gullit", "CAM", 92],
+  ["Arjen Robben", "RW", 90], ["Ruud van Nistelrooy", "ST", 90], ["Mark van Bommel", "CDM", 86]],
+  galatasaray9900_expanded: [
+  ["Gheorghe Hagi", "CAM", 91], ["Didier Drogba", "ST", 88], ["Wesley Sneijder", "CAM", 88],
+  ["Mauro Icardi", "ST", 86], ["Franck Ribery", "LW", 86], ["Felipe Melo", "CDM", 84]],
+  fenerbahce0708_expanded: [
+  ["Roberto Carlos", "LB", 88], ["Alex de Souza", "CAM", 90], ["Mesut Ozil", "CAM", 87],
+  ["Robin van Persie", "ST", 88], ["Nani", "LW", 85], ["Dirk Kuyt", "RW", 84]],
+  celtic2223_expanded: [
+  ["Henrik Larsson", "ST", 91], ["Kenny Dalglish", "ST", 92], ["Jimmy Johnstone", "RW", 90],
+  ["Shunsuke Nakamura", "CAM", 86], ["Kieran Tierney", "LB", 84], ["Virgil van Dijk", "CB", 86]],
+  rangers0708_expanded: [
+  ["Paul Gascoigne", "CAM", 90], ["Brian Laudrup", "LW", 89], ["Ally McCoist", "ST", 88],
+  ["Giovanni van Bronckhorst", "LB", 86], ["Barry Ferguson", "CM", 85], ["Jorg Albertz", "CM", 84]] };
+
+
+function getEraSpotlightPlayers(club) {
+  return ERA_SPOTLIGHT_PLAYERS_BY_ID[club.id] || [];
+}
+
+function getSupplementalPlayers(club) {
+  return SQUAD_DEPTH_BY_NAME[club.name] || [];
+}
+
 function ensureSquadCoverage(club) {
-  // Generic fallback players removed.
-  // Only real database players appear in spins and player selections.
-  return [...club.players];
+  const seen = new Set();
+  return [...club.players, ...getSupplementalPlayers(club), ...getEraSpotlightPlayers(club)].filter(player => {
+    const key = String(player[0] || "").toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function makePlayers(club) {
@@ -2240,7 +2504,7 @@ function renderClubCollectionCard(collectionStats, options = {}) {
 function buildSchedule() {
   const home = shuffleArray(OPPONENTS);
   const away = shuffleArray(OPPONENTS);
-  return [...home, ...away].slice(0, 38);
+  return home.concat(away).slice(0, 38);
 }
 
 
@@ -2760,23 +3024,62 @@ function applyFormationModifier(profile, formationName) {
 
 }
 
-function makeOpponentProfile(opponentName, opponentRating) {
-  const lower = String(opponentName || "").toLowerCase();
-  const eliteAttack = ["real madrid", "barcelona", "bayern", "psg", "manchester city", "liverpool"];
-  const defensiveTeams = ["atletico", "juventus", "inter", "chelsea"];
-  const midfieldTeams = ["arsenal", "leverkusen", "dortmund", "napoli", "milan"];
+const OPPONENT_TACTICS = {
+  "Manchester City": { style: "possession press", attack: 3, midfield: 5, defense: 2, control: 5, chance: 4, keeping: 1, tempo: 0.98, risk: 1.02, lowBlock: 0, setPiece: 0 },
+  "Real Madrid": { style: "elite transitions", attack: 5, midfield: 3, defense: 1, control: 2, chance: 4, keeping: 1, tempo: 1.04, risk: 1.05, lowBlock: 0, setPiece: 1 },
+  "Bayern Munich": { style: "high tempo press", attack: 5, midfield: 3, defense: 1, control: 2, chance: 4, keeping: 1, tempo: 1.08, risk: 1.06, lowBlock: 0, setPiece: 0 },
+  Liverpool: { style: "gegenpress", attack: 4, midfield: 2, defense: 2, control: 1, chance: 4, keeping: 1, tempo: 1.1, risk: 1.05, lowBlock: 0, setPiece: 1 },
+  Barcelona: { style: "tiki-taka", attack: 3, midfield: 5, defense: 1, control: 5, chance: 3, keeping: 0, tempo: 0.96, risk: 1.01, lowBlock: 0, setPiece: 0 },
+  Arsenal: { style: "positional attack", attack: 3, midfield: 4, defense: 2, control: 4, chance: 3, keeping: 1, tempo: 1.0, risk: 1.02, lowBlock: 0, setPiece: 0 },
+  "Inter Milan": { style: "structured counter", attack: 2, midfield: 2, defense: 5, control: 1, chance: 2, keeping: 3, tempo: 0.94, risk: 0.96, lowBlock: 2, setPiece: 2 },
+  PSG: { style: "star forwards", attack: 5, midfield: 2, defense: 0, control: 1, chance: 4, keeping: 1, tempo: 1.04, risk: 1.08, lowBlock: 0, setPiece: 0 },
+  "Manchester United": { style: "direct attack", attack: 3, midfield: 1, defense: 1, control: 0, chance: 3, keeping: 2, tempo: 1.05, risk: 1.05, lowBlock: 0, setPiece: 1 },
+  Chelsea: { style: "compact power", attack: 1, midfield: 2, defense: 4, control: 1, chance: 1, keeping: 3, tempo: 0.95, risk: 0.97, lowBlock: 2, setPiece: 2 },
+  "Atletico Madrid": { style: "low block", attack: 1, midfield: 1, defense: 5, control: 0, chance: 1, keeping: 3, tempo: 0.9, risk: 0.92, lowBlock: 4, setPiece: 3 },
+  "AC Milan": { style: "balanced elite", attack: 2, midfield: 3, defense: 3, control: 2, chance: 2, keeping: 2, tempo: 0.98, risk: 0.99, lowBlock: 1, setPiece: 1 },
+  Napoli: { style: "fluid front three", attack: 4, midfield: 3, defense: 1, control: 2, chance: 4, keeping: 1, tempo: 1.06, risk: 1.04, lowBlock: 0, setPiece: 0 },
+  "Borussia Dortmund": { style: "vertical press", attack: 4, midfield: 2, defense: 0, control: 1, chance: 3, keeping: 0, tempo: 1.1, risk: 1.08, lowBlock: 0, setPiece: 0 },
+  "Bayer Leverkusen": { style: "control and wingbacks", attack: 3, midfield: 4, defense: 2, control: 4, chance: 3, keeping: 1, tempo: 1.02, risk: 1.02, lowBlock: 0, setPiece: 1 },
+  Juventus: { style: "defensive control", attack: 1, midfield: 2, defense: 5, control: 2, chance: 1, keeping: 3, tempo: 0.92, risk: 0.94, lowBlock: 3, setPiece: 2 },
+  Tottenham: { style: "transition attack", attack: 3, midfield: 1, defense: 1, control: 0, chance: 3, keeping: 1, tempo: 1.06, risk: 1.04, lowBlock: 0, setPiece: 1 },
+  "RB Leipzig": { style: "press and transition", attack: 3, midfield: 2, defense: 1, control: 1, chance: 3, keeping: 0, tempo: 1.09, risk: 1.05, lowBlock: 0, setPiece: 0 },
+  Newcastle: { style: "physical transition", attack: 2, midfield: 2, defense: 3, control: 1, chance: 2, keeping: 2, tempo: 1.02, risk: 1.0, lowBlock: 1, setPiece: 3 },
+  "Aston Villa": { style: "high line transition", attack: 3, midfield: 2, defense: 1, control: 1, chance: 3, keeping: 1, tempo: 1.04, risk: 1.05, lowBlock: 0, setPiece: 1 },
+  Roma: { style: "compact counter", attack: 2, midfield: 1, defense: 3, control: 0, chance: 2, keeping: 1, tempo: 0.95, risk: 0.98, lowBlock: 2, setPiece: 2 },
+  Monaco: { style: "fast attack", attack: 4, midfield: 1, defense: 0, control: 0, chance: 3, keeping: 0, tempo: 1.08, risk: 1.07, lowBlock: 0, setPiece: 0 },
+  Marseille: { style: "aggressive press", attack: 2, midfield: 2, defense: 1, control: 1, chance: 2, keeping: 1, tempo: 1.04, risk: 1.03, lowBlock: 0, setPiece: 1 },
+  Lyon: { style: "technical midfield", attack: 2, midfield: 4, defense: 1, control: 3, chance: 2, keeping: 1, tempo: 0.99, risk: 1.0, lowBlock: 0, setPiece: 1 } };
 
-  const isEliteAttack = eliteAttack.some(name => lower.includes(name));
-  const isDefensive = defensiveTeams.some(name => lower.includes(name));
-  const isMidfield = midfieldTeams.some(name => lower.includes(name));
+
+function makeOpponentProfile(opponentName, opponentRating) {
+  const tactic = OPPONENT_TACTICS[opponentName] || {
+    style: "balanced",
+    attack: 1,
+    midfield: 1,
+    defense: 1,
+    control: 1,
+    chance: 1,
+    keeping: 1,
+    tempo: 1,
+    risk: 1,
+    lowBlock: 0,
+    setPiece: 0 };
+
+
+  const variance = () => Math.floor(Math.random() * 3) - 1;
 
   return {
-    attack: opponentRating + (isEliteAttack ? 3 : 0) + Math.floor(Math.random() * 5) - 2,
-    midfield: opponentRating + (isMidfield ? 3 : 0) + Math.floor(Math.random() * 5) - 2,
-    defense: opponentRating + (isDefensive ? 3 : 0) + Math.floor(Math.random() * 5) - 2,
-    control: opponentRating + (isMidfield ? 2 : 0) + Math.floor(Math.random() * 5) - 2,
-    chance: opponentRating + (isEliteAttack ? 2 : 0) + Math.floor(Math.random() * 5) - 2,
-    keeping: opponentRating + (isDefensive ? 2 : 0) + Math.floor(Math.random() * 5) - 2 };
+    style: tactic.style,
+    attack: opponentRating + tactic.attack + variance(),
+    midfield: opponentRating + tactic.midfield + variance(),
+    defense: opponentRating + tactic.defense + variance(),
+    control: opponentRating + tactic.control + variance(),
+    chance: opponentRating + tactic.chance + variance(),
+    keeping: opponentRating + tactic.keeping + variance(),
+    tempo: tactic.tempo,
+    risk: tactic.risk,
+    lowBlock: tactic.lowBlock,
+    setPiece: tactic.setPiece };
 
 }
 
@@ -2794,14 +3097,20 @@ function getExpectedGoals(attackingProfile, defendingProfile, attackingRating, d
   // Fairer xG curve for the 100-club database.
   // The average draft is usually 85-89, so the engine should not require
   // a 92+ superteam just to have a strong season.
-  const rawXg =
+  const baseXg =
   1.38 +
   ratingEdge * 0.05 +
   attackEdge * 0.024 +
   midfieldEdge * 0.016 +
   chanceEdge * 0.02 +
   controlEdge * 0.01 +
-  (attackingProfile.balanceBonus || 0) * 0.04;
+  (attackingProfile.balanceBonus || 0) * 0.04 +
+  (attackingProfile.setPiece || 0) * 0.022;
+
+  const tempo = attackingProfile.tempo || 1;
+  const risk = attackingProfile.risk || 1;
+  const lowBlockDrag = (defendingProfile.lowBlock || 0) * 0.045;
+  const rawXg = baseXg * tempo * risk - lowBlockDrag;
 
   return clamp(rawXg, 0.32, 4.45);
 }
@@ -2818,6 +3127,74 @@ function rollGoalsFromXg(xg) {
   } while (product > limit && goals < 8);
 
   return Math.max(0, goals - 1);
+}
+
+function rollGoalsFromWeightedXg(xg, attackRating = 85, defenseRating = 85) {
+  // xG should drive the score, but finishing/keeping still matter.
+  // Small triangular noise keeps football variance without making xG feel pointless.
+  const finishingEdge = attackRating - defenseRating;
+  const finishingBonus = clamp(finishingEdge * 0.015, -0.28, 0.32);
+  const smallVariance = (Math.random() + Math.random() - 1) * 0.28;
+  const adjustedXg = clamp(xg + finishingBonus + smallVariance, 0.12, 5.25);
+
+  let goals = rollGoalsFromXg(adjustedXg);
+
+  // A team creating strong chances should rarely blank completely.
+  if (goals === 0 && adjustedXg >= 2.2 && Math.random() < 0.72) goals = 1;
+  if (goals === 0 && adjustedXg >= 1.7 && Math.random() < 0.48) goals = 1;
+
+  return goals;
+}
+
+function applyXgResultWeight(us, them, userXg, opponentXg, fullRating, opponentRating) {
+  // Final fairness layer: xG is not everything, but a big xG edge should strongly
+  // influence W/D/L. This prevents the game from repeatedly showing unfair losses
+  // where Draft XI dominates chances but drops points every time.
+  const xgEdge = userXg - opponentXg;
+  const ratingEdge = fullRating - opponentRating;
+
+  if (xgEdge > 0.25) {
+    const ratingHelp = clamp(ratingEdge * 0.015, -0.08, 0.12);
+
+    if (us < them) {
+      const saveLossChance =
+      xgEdge >= 2.0 ? 0.96 :
+      xgEdge >= 1.5 ? 0.9 :
+      xgEdge >= 1.0 ? 0.76 :
+      xgEdge >= 0.65 ? 0.58 :
+      0.36;
+
+      if (Math.random() < saveLossChance + ratingHelp) {
+        us = them;
+
+        const turnIntoWinChance =
+        xgEdge >= 2.0 ? 0.58 :
+        xgEdge >= 1.5 ? 0.42 :
+        xgEdge >= 1.0 ? 0.26 :
+        0.12;
+
+        if (Math.random() < turnIntoWinChance + ratingHelp) us += 1;
+      }
+    }
+
+    if (us === them) {
+      const winFromDrawChance =
+      xgEdge >= 2.0 ? 0.68 :
+      xgEdge >= 1.5 ? 0.52 :
+      xgEdge >= 1.0 ? 0.36 :
+      xgEdge >= 0.65 ? 0.22 :
+      0.1;
+
+      if (Math.random() < winFromDrawChance + ratingHelp) us += 1;
+    }
+  }
+
+  // Opponents still get upsets, but only when the xG gap is small enough to feel believable.
+  if (opponentXg - userXg >= 1.4 && them <= us && Math.random() < 0.34) {
+    them = us + 1;
+  }
+
+  return { us, them };
 }
 
 function getWeightedScorer(players, preferredRoles) {
@@ -2863,7 +3240,7 @@ function getGoalMinute() {
 }
 
 function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch$allSco;
-  const savedProgress = getStoredJson("draftXIProgressV2", null) || {};
+  const savedProgress = getStoredJson("draftXIProgressV4", null) || {};
   const savedFormationName = FORMATIONS[savedProgress.selectedFormationName] ? savedProgress.selectedFormationName : DEFAULT_FORMATION_NAME;
   const [gameStarted, setGameStarted] = useState(!!savedProgress.gameStarted);
   const [selectedFormationName, setSelectedFormationName] = useState(savedFormationName);
@@ -2889,7 +3266,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const [simProgress, setSimProgress] = useState(0);
   const [lastPlacedSlot, setLastPlacedSlot] = useState(null);
   const [results, setResults] = useState(savedProgress.results || null);
-  const [rerollsLeft, setRerollsLeft] = useState(Number.isFinite(savedProgress.rerollsLeft) ? savedProgress.rerollsLeft : 3);
+  const [rerollsLeft, setRerollsLeft] = useState(Number.isFinite(savedProgress.rerollsLeft) ? savedProgress.rerollsLeft : 1);
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [soundMuted, setSoundMuted] = useState(false);
   const [rewards, setRewards] = useState(savedProgress.rewards || []);
@@ -2947,7 +3324,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       transferUsed,
       clubCollection };
 
-    saveStoredJson("draftXIProgressV2", progress);
+    saveStoredJson("draftXIProgressV4", progress);
   }, [gameStarted, selectedFormationName, currentClub, draft, pickedNames, lastClubId, recentClubIds, usedClubIds, results, rerollsLeft, rewards, seasonAwards, liveLeagueTable, playerSeasonStats, transferUsed, clubCollection]);
 
   useEffect(() => {
@@ -3200,11 +3577,11 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     available.forEach(club => {
       const tier = getClubTier(club);
       let weight = 1;
-      if (tier === "underdog") weight = 7;
-      if (tier === "strong") weight = 5;
-      if (tier === "elite") weight = 3;
-      if (tier === "legendary") weight = 1;
-      if (tier === "jackpot") weight = 1;
+      if (tier === "underdog") weight = 3;
+      if (tier === "strong") weight = 4;
+      if (tier === "elite") weight = 5;
+      if (tier === "legendary") weight = 4;
+      if (tier === "jackpot") weight = 3;
 
       for (let i = 0; i < weight; i++) weighted.push(club);
     });
@@ -3360,6 +3737,50 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setTimeout(() => setLastPlacedSlot(null), 700);
   }
 
+  function swapPlayersWithSlot(targetSlotId) {
+    if (!movingSlotId || movingSlotId === targetSlotId) return;
+
+    const movingPlayer = draft[movingSlotId];
+    const targetPlayer = draft[targetSlotId];
+    if (!movingPlayer || !targetPlayer) return;
+
+    const sourcePosition = getSlotLabel(movingSlotId);
+    const targetPosition = getSlotLabel(targetSlotId);
+
+    if (!canPlaySlot(movingPlayer, targetPosition)) return;
+    if (!canPlaySlot(targetPlayer, sourcePosition)) return;
+
+    const movingPenalty = getPenalty(movingPlayer, targetSlotId);
+    const targetPenalty = getPenalty(targetPlayer, movingSlotId);
+
+    const movedPlayer = {
+      ...movingPlayer,
+      slotId: targetSlotId,
+      slotLabel: targetPosition,
+      penalty: movingPenalty,
+      finalRating: Math.max(60, movingPlayer.rating - movingPenalty) };
+
+    const swappedPlayer = {
+      ...targetPlayer,
+      slotId: movingSlotId,
+      slotLabel: sourcePosition,
+      penalty: targetPenalty,
+      finalRating: Math.max(60, targetPlayer.rating - targetPenalty) };
+
+    setDraft(prev => ({
+      ...prev,
+      [movingSlotId]: swappedPlayer,
+      [targetSlotId]: movedPlayer }));
+
+    playSound("move", soundMuted);
+    setMovingSlotId(null);
+    setLastPlacedSlot(targetSlotId);
+    setResults(null);
+
+    setTimeout(() => scrollToSection(pitchRef, "center"), 100);
+    setTimeout(() => setLastPlacedSlot(null), 700);
+  }
+
 
   function calculateRewards(summary) {var _summary$table$find;
     const earned = [];
@@ -3404,7 +3825,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
   function resetGame() {
-    try {localStorage.removeItem("draftXIProgressV1");localStorage.removeItem("draftXIProgressV2");} catch {}
+    try {localStorage.removeItem("draftXIProgressV1");localStorage.removeItem("draftXIProgressV2");localStorage.removeItem("draftXIProgressV3");localStorage.removeItem("draftXIProgressV4");} catch {}
     setSaveNotice(false);
     setCurrentClub(null);
     setDraft({});
@@ -3424,7 +3845,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setSimProgress(0);
     setLastPlacedSlot(null);
     setResults(null);
-    setRerollsLeft(3);
+    setRerollsLeft(1);
     setSelectedMatch(null);
     setRewards([]);
     setSeasonAwards([]);
@@ -3522,11 +3943,13 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       // Calibrated for arcade-draft fun.
       // A normal good draft should feel powerful; only messy/low-rated XIs should struggle.
       const draftDifficultyBonus =
-      fullRating >= 93 ? 1.45 :
-      fullRating >= 91 ? 1.34 :
-      fullRating >= 90 ? 1.24 :
-      fullRating >= 89 ? 1.14 :
-      fullRating >= 88 ? 1.04 :
+      fullRating >= 94 ? 1.95 :
+      fullRating >= 93 ? 1.82 :
+      fullRating >= 92 ? 1.68 :
+      fullRating >= 91 ? 1.56 :
+      fullRating >= 90 ? 1.44 :
+      fullRating >= 89 ? 1.26 :
+      fullRating >= 88 ? 1.08 :
       fullRating >= 87 ? 0.94 :
       fullRating >= 86 ? 0.82 :
       fullRating >= 85 ? 0.7 :
@@ -3534,21 +3957,30 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       0.32;
 
       const opponentXgMultiplier =
-      fullRating >= 93 ? 0.64 :
-      fullRating >= 91 ? 0.67 :
-      fullRating >= 90 ? 0.69 :
-      fullRating >= 89 ? 0.72 :
+      fullRating >= 94 ? 0.54 :
+      fullRating >= 93 ? 0.57 :
+      fullRating >= 92 ? 0.6 :
+      fullRating >= 91 ? 0.63 :
+      fullRating >= 90 ? 0.66 :
+      fullRating >= 89 ? 0.7 :
       fullRating >= 88 ? 0.75 :
       fullRating >= 87 ? 0.78 :
       fullRating >= 86 ? 0.82 :
       fullRating >= 85 ? 0.86 :
       0.92;
 
-      const adjustedUserXg = userXg + draftDifficultyBonus;
-      const adjustedOpponentXg = opponentXg * opponentXgMultiplier;
+      const draftAgencyBonus =
+      fullRating >= 92 ? 0.2 :
+      fullRating >= 90 ? 0.16 :
+      fullRating >= 87 ? 0.12 :
+      fullRating >= 85 ? 0.14 :
+      0.08;
 
-      let us = rollGoalsFromXg(adjustedUserXg);
-      let them = rollGoalsFromXg(adjustedOpponentXg);
+      const adjustedUserXg = (userXg + draftDifficultyBonus + draftAgencyBonus) * 1.025;
+      const adjustedOpponentXg = opponentXg * opponentXgMultiplier * 0.96;
+
+      let us = rollGoalsFromWeightedXg(adjustedUserXg, fullRating, opponentRating);
+      let them = rollGoalsFromWeightedXg(adjustedOpponentXg, opponentRating, fullRating);
 
       // Arcade composure: strong XIs are allowed to feel clutch in close games.
       if (us + 1 === them && fullRating >= 85 && adjustedUserXg >= adjustedOpponentXg - 0.2) {
@@ -3557,8 +3989,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         fullRating >= 89 ? 0.36 :
         fullRating >= 87 ? 0.3 :
         0.24;
+        const earlySeasonDrawDampener = week <= 5 ? 0.62 : 1;
 
-        if (Math.random() < drawSaveChance) us += 1;
+        if (Math.random() < drawSaveChance * earlySeasonDrawDampener) us += 1;
       }
 
       if (us === them && fullRating >= 88 && adjustedUserXg >= adjustedOpponentXg + 0.35) {
@@ -3575,8 +4008,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         xgEdge >= 0.75 ? 0.76 :
         xgEdge >= 0.45 ? 0.58 :
         0.34;
+        const earlySeasonLossSaveDampener = week <= 5 ? 0.72 : 1;
 
-        if (Math.random() < unfairLossSaveChance) {
+        if (Math.random() < unfairLossSaveChance * earlySeasonLossSaveDampener) {
           us = them;
 
           if (fullRating >= 88 && xgEdge >= 0.8) {
@@ -3584,6 +4018,45 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
             if (Math.random() < turnDrawToWinChance) us += 1;
           }
         }
+      }
+
+      const xgWeightedScore = applyXgResultWeight(
+      us,
+      them,
+      adjustedUserXg,
+      adjustedOpponentXg,
+      fullRating,
+      opponentRating);
+
+      us = xgWeightedScore.us;
+      them = xgWeightedScore.them;
+
+      // Perfect-season assist: 90+ squads should be capable of 38-0.
+      // This does not force wins, but it heavily rewards clear xG control from elite drafts.
+      if (fullRating >= 90 && us <= them) {
+        const xgEdge = adjustedUserXg - adjustedOpponentXg;
+        const eliteRatingBoost = clamp((fullRating - 90) * 0.075, 0, 0.28);
+        const xgControlBoost = clamp(xgEdge * 0.16, -0.06, 0.34);
+        const opponentPenalty = clamp((opponentRating - 86) * 0.025, 0, 0.12);
+
+        if (us < them) {
+          const rescueLossChance = clamp(0.62 + eliteRatingBoost + xgControlBoost - opponentPenalty, 0.42, 0.9);
+          if (Math.random() < rescueLossChance) {
+            us = them;
+          }
+        }
+
+        if (us === them) {
+          const convertDrawChance = clamp(0.38 + eliteRatingBoost + xgControlBoost - opponentPenalty, 0.2, 0.78);
+          if (Math.random() < convertDrawChance) {
+            us += 1;
+          }
+        }
+      }
+
+      // Superteam finishing floor: if an elite team creates 2.0+ xG, blanking should be rare.
+      if (fullRating >= 90 && us === 0 && adjustedUserXg >= 2.0 && Math.random() < 0.88) {
+        us = 1;
       }
 
       // Avoid too many absurd 7-5 arcade scores while still allowing occasional blowouts.
@@ -3743,7 +4216,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       React.createElement("p", null, "- Spin from ", ALL_CLUBS.length, " clubs across Europe, including top leagues and jackpot teams."), /*#__PURE__*/
       React.createElement("p", null, "- Select any player from the club you land on."), /*#__PURE__*/
       React.createElement("p", null, "- Place them into the correct position on the pitch."), /*#__PURE__*/
-      React.createElement("p", null, "- Use your 3 rerolls wisely."), /*#__PURE__*/
+      React.createElement("p", null, "- Use your 1 reroll wisely."), /*#__PURE__*/
       React.createElement("p", null, "- Complete your XI and simulate a 38-match season."), /*#__PURE__*/
       React.createElement("p", null, "- Can you go ", /*#__PURE__*/React.createElement("strong", null, "38-0"), "?")), /*#__PURE__*/
 
@@ -3981,7 +4454,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     movingSlotId && draft[movingSlotId] && /*#__PURE__*/
     React.createElement("section", { className: "selected-banner" }, "Moving: ", /*#__PURE__*/
-    React.createElement("strong", null, draft[movingSlotId].name), " \u2014 click an open alternate position."),
+    React.createElement("strong", null, draft[movingSlotId].name), " - click an eligible empty slot or occupied player to swap."),
 
 
 
@@ -4088,16 +4561,20 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       const moveTarget = movingPlayer && !player && canPlaySlot(movingPlayer, slot.label);
       const moveBlocked = movingPlayer && !player && !moveTarget;
       const moveSource = movingSlotId === slot.id;
+      const swapTarget = movingPlayer && player && !moveSource && canPlaySlot(movingPlayer, slot.label) && canPlaySlot(player, getSlotLabel(movingSlotId));
+      const swapBlocked = movingPlayer && player && !moveSource && !swapTarget;
       return /*#__PURE__*/(
         React.createElement("div", {
           key: slot.id,
           role: "button",
           tabIndex: 0,
-          className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${slotPlayable ? "valid-slot" : ""} ${slotBest ? "best-slot" : ""} ${slotInvalid ? "invalid-slot" : ""} ${moveTarget ? "move-target" : ""} ${moveBlocked ? "move-blocked" : ""} ${moveSource ? "moving-source" : ""} ${transferMode && player ? "transfer-remove" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,
+          className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${slotPlayable ? "valid-slot" : ""} ${slotBest ? "best-slot" : ""} ${slotInvalid ? "invalid-slot" : ""} ${moveTarget ? "move-target" : ""} ${moveBlocked ? "move-blocked" : ""} ${moveSource ? "moving-source" : ""} ${swapTarget ? "swap-target" : ""} ${swapBlocked ? "swap-blocked" : ""} ${transferMode && player ? "transfer-remove" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,
           style: { left: `${isMobileFormation ? (_slot$mobileX = slot.mobileX) !== null && _slot$mobileX !== void 0 ? _slot$mobileX : slot.x : slot.x}%`, top: `${isMobileFormation ? (_slot$mobileY = slot.mobileY) !== null && _slot$mobileY !== void 0 ? _slot$mobileY : slot.y : slot.y}%` },
           onClick: () => {
             if (transferMode && player) removePlayerForTransfer(slot.id);else
             if (movingSlotId && player && movingSlotId === slot.id) setMovingSlotId(null);else
+            if (movingSlotId && player && swapTarget) swapPlayersWithSlot(slot.id);else
+            if (movingSlotId && player && swapBlocked) return;else
             if (movingSlotId && !player && moveTarget) movePlayerToSlot(slot.id);else
             if (player && !results && !simulating) {
               setSelectedPlayer(null);
@@ -4109,6 +4586,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
               e.preventDefault();
               if (transferMode && player) removePlayerForTransfer(slot.id);else
               if (movingSlotId && player && movingSlotId === slot.id) setMovingSlotId(null);else
+              if (movingSlotId && player && swapTarget) swapPlayersWithSlot(slot.id);else
+              if (movingSlotId && player && swapBlocked) return;else
               if (movingSlotId && !player && moveTarget) movePlayerToSlot(slot.id);else
               if (player && !results && !simulating) {
                 setSelectedPlayer(null);
@@ -4120,9 +4599,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         React.createElement("span", null, slot.label),
         player ? /*#__PURE__*/
         React.createElement(React.Fragment, null, /*#__PURE__*/
-        React.createElement("strong", null, player.name), /*#__PURE__*/
+        React.createElement("strong", { title: player.name }, getPitchDisplayName(player.name)), /*#__PURE__*/
         React.createElement("small", { className: getRatingClass(player.finalRating) }, player.finalRating), /*#__PURE__*/
-        React.createElement("em", null, moveSource ? "Tap again to cancel" : player.positions.join("/"))) : /*#__PURE__*/
+        React.createElement("em", null, moveSource ? "Tap again to cancel" : movingSlotId ? swapTarget ? "Swap Here" : "Not Eligible" : player.positions.join("/"))) : /*#__PURE__*/
 
 
 
@@ -4347,9 +4826,11 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 const rootElement = document.getElementById("root");
 
 if (rootElement && typeof ReactDOM !== "undefined") {
+  const app = React.createElement(App, null);
+
   if (ReactDOM.createRoot) {
-    ReactDOM.createRoot(rootElement).render( /*#__PURE__*/React.createElement(App, null));
+    ReactDOM.createRoot(rootElement).render(app);
   } else if (ReactDOM.render) {
-    ReactDOM.render( /*#__PURE__*/React.createElement(App, null), rootElement);
+    ReactDOM.render(app, rootElement);
   }
 }
