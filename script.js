@@ -1,5 +1,5 @@
-// Draft XI Europe v4.0  fresh JSX with 20-team table, expanded variety, no repeats, and no generic players
-// Draft XI: Europe v2.0  integrated CodePen JSX
+// Draft XI World Cup v4.0  fresh JSX with 20-team table, expanded variety, no repeats, and no generic players
+// Draft XI: World Cup v2.0  integrated CodePen JSX
 // Includes expanded teams, contextual alternate positions, fair spinner, reroll, locked players, smarter greying, live simulation, and Play Again.
 function setMobileViewportHeight() {
   if (typeof window === "undefined" || typeof document === "undefined") return;
@@ -2829,14 +2829,14 @@ function getLeagueIcon(league) {
 function renderClubCollectionCard(collectionStats, options = {}) {
   const { showNoRepeat = false, usedClubIds = [] } = options;
   const totalClubs = collectionStats.totalClubs || ALL_CLUBS.length;
-  const discoveredText = `${collectionStats.total} / ${totalClubs} clubs discovered`;
+  const discoveredText = `${collectionStats.total} / ${totalClubs} nations discovered`;
 
   return /*#__PURE__*/React.createElement(
   "section",
   { className: "collection-panel club-collection-card", style: CLUB_COLLECTION_STYLES.card }, /*#__PURE__*/
   React.createElement("div", { style: CLUB_COLLECTION_STYLES.header }, /*#__PURE__*/
   React.createElement("div", { style: CLUB_COLLECTION_STYLES.title }, /*#__PURE__*/
-  React.createElement("span", { style: CLUB_COLLECTION_STYLES.eyebrow }, "Club Collection"), /*#__PURE__*/
+  React.createElement("span", { style: CLUB_COLLECTION_STYLES.eyebrow }, "Nation Collection"), /*#__PURE__*/
   React.createElement("strong", { style: CLUB_COLLECTION_STYLES.count }, discoveredText)), /*#__PURE__*/
   React.createElement("span", { style: CLUB_COLLECTION_STYLES.percent }, collectionStats.percent, "%")), /*#__PURE__*/
 
@@ -3286,18 +3286,24 @@ function calculateSeasonAwards(summary, playerStats) {
   const goldenGlove = [...playerStats].
   filter(p => p.position === "GK").
   sort((a, b) => b.cleanSheets - a.cleanSheets || b.averageRating - a.averageRating)[0];
-  const awards = [
+  const awards = summary.tournamentMode ? [
+  { icon: "🏆", title: "Golden Ball", value: `${mvp.name} - ${mvp.averageRating} AVG` },
+  { icon: "👟", title: "Golden Boot", value: `${topScorer.name} - ${topScorer.goals} goals` },
+  { icon: "🎯", title: "Playmaker Award", value: `${topAssister.name} - ${topAssister.assists} assists` }] :
+  [
   { icon: "Award", title: "Player of the Season", value: `${mvp.name} - ${mvp.averageRating} AVG` },
   { icon: "Award", title: "Golden Boot", value: `${topScorer.name} - ${topScorer.goals} goals` },
   { icon: "Award", title: "Assist King", value: `${topAssister.name} - ${topAssister.assists} assists` }];
 
 
   if (goldenGlove) {
-    awards.push({ icon: "Award", title: "Golden Glove", value: `${goldenGlove.name} - ${goldenGlove.cleanSheets} clean sheets` });
+    awards.push({ icon: summary.tournamentMode ? "🧤" : "Award", title: "Golden Glove", value: `${goldenGlove.name} - ${goldenGlove.cleanSheets} clean sheets` });
   }
 
 
-  if (summary.wins === 38) {
+  if (summary.tournamentMode && summary.wonWorldCup) {
+    awards.unshift({ icon: "🌍", title: "World Cup Winners", value: "Lifted the trophy" });
+  } else if (summary.wins === 38) {
     awards.unshift({ icon: "Award", title: "Perfect Season", value: "38 wins from 38 matches" });
   }
 
@@ -3684,7 +3690,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const activeClubs = gameMode === "worldcup" ? WORLD_CUP_CLUBS : ALL_CLUBS;
   const activeLeagues = gameMode === "worldcup" ? WORLD_CUP_GROUPS : TOP_FIVE_LEAGUES;
   const activeRestLabel = gameMode === "worldcup" ? "Other Groups" : "Rest of Europe";
-  const modeTitle = "Draft XI";
+  const modeTitle = gameMode === "worldcup" ? "World Cup Draft" : "Draft XI";
   const modeSubtitle = "Build the greatest football squad ever assembled.";
 
   function closeTutorial() {
@@ -4216,32 +4222,56 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     20;
     const wonLeague = summary.wonLeague || finishPosition === 1;
 
-    if (wonLeague) {
-      earned.push("League Champions");
-    } else if (finishPosition <= 4) {
-      earned.push("UCL Qualified");
-    } else if (finishPosition <= 7) {
-      earned.push("European Qualification");
-    }
+    if (summary.tournamentMode) {
+      if (summary.wonWorldCup) {
+        earned.push("World Champion");
+      } else if (summary.eliminatedStage === "World Cup Final") {
+        earned.push("World Cup Runner-Up");
+      } else if (summary.eliminatedStage === "Semi Final") {
+        earned.push("Semi-Finalist");
+      } else if (summary.eliminatedStage === "Quarter Final") {
+        earned.push("Quarter-Finalist");
+      } else if (summary.qualifiedFromGroup) {
+        earned.push("Knockout Qualifier");
+      } else {
+        earned.push("Group Stage Fighter");
+      }
 
-    if (summary.points >= 100) {
-      earned.push("Centurions Badge");
-    }
+      if (summary.losses === 0) {
+        earned.push("Unbeaten Tournament");
+      }
 
-    if (summary.losses === 0) {
-      earned.push("Invincibles Shield");
-    }
+      if (summary.gf - summary.ga >= 10) {
+        earned.push("Goal Machine");
+      }
+    } else {
+      if (wonLeague) {
+        earned.push("League Champions");
+      } else if (finishPosition <= 4) {
+        earned.push("UCL Qualified");
+      } else if (finishPosition <= 7) {
+        earned.push("European Qualification");
+      }
 
-    if (summary.wins >= 35) {
-      earned.push("Dominant Dynasty");
-    }
+      if (summary.points >= 100) {
+        earned.push("Centurions Badge");
+      }
 
-    if (summary.wins === 38) {
-      earned.push("Perfect 38-0 GOAT Card");
-    }
+      if (summary.losses === 0) {
+        earned.push("Invincibles Shield");
+      }
 
-    if (summary.gf - summary.ga >= 80) {
-      earned.push("Goal Machine");
+      if (summary.wins >= 35) {
+        earned.push("Dominant Dynasty");
+      }
+
+      if (summary.wins === 38) {
+        earned.push("Perfect 38-0 GOAT Card");
+      }
+
+      if (summary.gf - summary.ga >= 80) {
+        earned.push("Goal Machine");
+      }
     }
 
     if (earned.length === 0) {
@@ -5024,15 +5054,15 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   null;
 
   const guideStep = selectedPlayer ? "place" : currentClub ? "select" : draftedPlayers.length >= 11 ? "simulate" : "spin";
-  const guideTitle = guideStep === "spin" ? "Spin for your next club" :
+  const guideTitle = guideStep === "spin" ? gameMode === "worldcup" ? "Spin your next nation" : "Spin your next club" :
   guideStep === "select" ? `Choose one player from ${currentClub.name}` :
   guideStep === "place" ? `Place ${selectedPlayer.name}` :
-  results ? "Season complete" : "Your XI is ready";
-  const guideText = guideStep === "spin" ? `Your XI is ${draftedPlayers.length}/11 complete. Use Spin Club to continue.` :
-  guideStep === "select" ? currentClubHasPlayablePick ? "Pick the player who best fits your empty positions." : "No player from this club fits your open slots. Take a free rescue spin." :
+  results ? gameMode === "worldcup" ? "Tournament complete" : "Season complete" : "Your XI is ready";
+  const guideText = guideStep === "spin" ? `Your XI is ${draftedPlayers.length}/11 complete. Use ${gameMode === "worldcup" ? "Spin Nation" : "Spin Club"} to continue.` :
+  guideStep === "select" ? currentClubHasPlayablePick ? "Pick the player who best fits your empty positions." : `No player from this ${gameMode === "worldcup" ? "nation" : "club"} fits your open slots. Take a free rescue spin.` :
   guideStep === "place" ? bestSelectedSlot ? `Tap the glowing ${bestSelectedSlot.label} slot. Best fit is highlighted brighter.` : "No open natural role. Choose another player or use Transfer Lifeline." :
   results ? "Review your results, awards, table, and share card." :
-  "Hit Simulate Season and chase 38-0.";
+  gameMode === "worldcup" ? "Hit Simulate Tournament and chase the World Cup." : "Hit Simulate Season and chase 38-0.";
   const nextNeededText = nextNeededSlot ? `Next needed: ${nextNeededSlot.label}` : "Squad complete";
   const shareCardText = results ? makeShareCardText(results, playerSeasonStats, selectedFormationName, teamRating) : "";
 
@@ -5052,7 +5082,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("button", { className: "tutorial-start", type: "button", onClick: closeTutorial }, "Got it"))), /*#__PURE__*/
     React.createElement("section", { className: "hero" }, /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/
-    React.createElement("p", { className: "eyebrow" }, "Europe Draft"), /*#__PURE__*/
+    React.createElement("p", { className: "eyebrow" }, gameMode === "worldcup" ? "World Cup Draft" : "Europe Draft"), /*#__PURE__*/
     React.createElement("h1", null, modeTitle), /*#__PURE__*/
     React.createElement("p", null, gameMode === "worldcup" ? "Spin a World Cup nation, select any player, place them in your XI, then simulate a full World Cup run." : "Spin a European club, select any player, place them in your XI, then simulate a 38-game season."))), /*#__PURE__*/
 
@@ -5076,7 +5106,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     React.createElement("section", { className: "controls" }, /*#__PURE__*/
     React.createElement("button", { className: guideStep === "spin" && !spinning ? "guide-pulse" : "", onClick: spinClub, disabled: spinning || !!currentClub || draftedPlayers.length >= 11 },
-    spinning ? "Spinning..." : currentClub ? "Pick or Reroll" : "Spin Club"), /*#__PURE__*/
+    spinning ? "Spinning..." : currentClub ? "Pick or Reroll" : gameMode === "worldcup" ? "Spin Nation" : "Spin Club"), /*#__PURE__*/
 
     React.createElement("button", { className: "reroll", onClick: rerollClub, disabled: !currentClub || rerollsLeft <= 0 || spinning || draftedPlayers.length >= 11 },
     rerollsLeft > 0 ? `Reroll (${rerollsLeft})` : "No Rerolls"), /*#__PURE__*/
@@ -5144,7 +5174,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
 
-    React.createElement("p", null, "Spinning club..."), /*#__PURE__*/
+    React.createElement("p", null, gameMode === "worldcup" ? "Spinning nation..." : "Spinning club..."), /*#__PURE__*/
     React.createElement("small", { className: "scroll-hint" }, "Landing team appears here \u2193")),
 
 
@@ -5222,7 +5252,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
     currentClub && !currentClubHasPlayablePick && /*#__PURE__*/
-    React.createElement("section", { className: "selected-banner rescue-banner" }, "No eligible player fits the remaining slots. Use Rescue Spin for a free replacement club."),
+    React.createElement("section", { className: "selected-banner rescue-banner" }, gameMode === "worldcup" ? "No eligible player fits the remaining slots. Use Rescue Spin for a free replacement nation." : "No eligible player fits the remaining slots. Use Rescue Spin for a free replacement club."),
 
 
     currentClub && /*#__PURE__*/
@@ -5414,7 +5444,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     seasonAwards.length > 0 && /*#__PURE__*/
     React.createElement("div", { className: "awards-panel" }, /*#__PURE__*/
-    React.createElement("h3", null, "Season Awards"), /*#__PURE__*/
+    React.createElement("h3", null, gameMode === "worldcup" ? "Tournament Rewards" : "Season Awards"), /*#__PURE__*/
     React.createElement("div", { className: "awards-grid" },
     seasonAwards.map((award) => /*#__PURE__*/
     React.createElement("div", { key: award.title, className: "award-card" }, /*#__PURE__*/

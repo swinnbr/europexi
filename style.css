@@ -3430,3 +3430,91 @@ button.mode-pill-button {
     margin-top: 28px !important;
   }
 }
+.tournament-rewards-panel {
+  border-color: rgba(255, 224, 138, 0.34) !important;
+  background:
+    radial-gradient(circle at top left, rgba(255, 224, 138, 0.14), transparent 34%),
+    rgba(255, 255, 255, 0.075) !important;
+}
+
+.tournament-rewards-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.tournament-rewards-head h2 {
+  margin: 0;
+  font-size: clamp(26px, 4vw, 42px);
+  letter-spacing: -0.04em;
+}
+
+.tournament-rewards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tournament-reward-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 86px;
+  padding: 15px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.tournament-reward-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255, 224, 138, 0.16);
+  font-size: 22px;
+}
+
+.tournament-reward-card strong {
+  display: block;
+  color: #fff7d6;
+  font-size: 15px;
+  font-weight: 1000;
+}
+
+.tournament-reward-card small {
+  display: block;
+  margin-top: 3px;
+  color: #dfffea;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+@media (max-width: 760px) {
+  .tournament-rewards-head {
+    display: block;
+  }
+
+  .tournament-rewards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tournament-reward-card {
+    min-height: 74px;
+  }
+}
+.reward-card strong {
+  letter-spacing: 0.2px;
+}
+
+.rewards-panel h3::before {
+  content: "🏆 ";
+}
+
+.reward-card {
+  border-left: 4px solid rgba(255, 215, 0, 0.8);
+}
