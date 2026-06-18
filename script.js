@@ -2707,16 +2707,6 @@ function getProjectedLevel(teamRating) {
   return "Work in Progress";
 }
 
-function getPointsPrediction(teamRating) {
-  if (!teamRating) return "Projected points: --";
-
-  const midpoint = Math.round(45 + (teamRating - 78) * 3.15);
-  const low = Math.max(38, midpoint - 7);
-  const high = Math.min(112, midpoint + 7);
-
-  return `Projected points: ${low}-${high}`;
-}
-
 function makeShareCardText(results, playerSeasonStats, formationName, teamRating) {var _results$table$find;
   if (!results) return "";
   const topScorer = [...playerSeasonStats].sort((a, b) => b.goals - a.goals || b.averageRating - a.averageRating)[0];
@@ -3576,6 +3566,26 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         if (Math.random() < winnerChance) us += 1;
       }
 
+      // xG frustration guard: losing while clearly winning xG should be an occasional
+      // gut punch, not the main way a strong draft drops points.
+      if (us < them && adjustedUserXg > adjustedOpponentXg) {
+        const xgEdge = adjustedUserXg - adjustedOpponentXg;
+        const unfairLossSaveChance =
+        xgEdge >= 1.1 ? 0.88 :
+        xgEdge >= 0.75 ? 0.76 :
+        xgEdge >= 0.45 ? 0.58 :
+        0.34;
+
+        if (Math.random() < unfairLossSaveChance) {
+          us = them;
+
+          if (fullRating >= 88 && xgEdge >= 0.8) {
+            const turnDrawToWinChance = fullRating >= 91 ? 0.24 : fullRating >= 89 ? 0.18 : 0.12;
+            if (Math.random() < turnDrawToWinChance) us += 1;
+          }
+        }
+      }
+
       // Avoid too many absurd 7-5 arcade scores while still allowing occasional blowouts.
       us = clamp(us, 0, fullRating >= 94 ? 7 : 6);
       them = clamp(them, 0, opponentRating >= 88 ? 5 : 4);
@@ -4067,7 +4077,6 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("span", null, "XI Rating"), /*#__PURE__*/
     React.createElement("strong", null, teamRating || "--"), /*#__PURE__*/
     React.createElement("small", null, draftedPlayers.length, "/11 -  ", rerollsLeft), /*#__PURE__*/
-    React.createElement("small", { className: "points-prediction" }, getPointsPrediction(teamRating)),
     draftedPlayers.length > 0 && /*#__PURE__*/React.createElement("small", { className: "projected-level" }, getProjectedLevel(teamRating)))), /*#__PURE__*/
     React.createElement("div", { className: "pitch" },
     FORMATION.map(slot => {var _slot$mobileX, _slot$mobileY;
