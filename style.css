@@ -4425,3 +4425,484 @@ button.formation-bench-card::before {
   float: none !important;
   margin: 0 !important;
 }
+
+
+/* Sticky spin controls: keeps Spin/Reroll reachable after placing a player */
+.sticky-draft-controls {
+  position: sticky;
+  top: 10px;
+  z-index: 80;
+  padding: 12px;
+  border-radius: 24px;
+  background: rgba(3, 20, 9, 0.86);
+  border: 1px solid rgba(141, 255, 179, 0.22);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+}
+
+.sticky-draft-controls::before {
+  content: "Draft Controls";
+  align-self: center;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-right: 2px;
+}
+
+@media (max-width: 720px) {
+  .sticky-draft-controls {
+    top: 6px;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 18px;
+    max-height: 34vh;
+    overflow-y: auto;
+  }
+
+  .sticky-draft-controls::before {
+    width: 100%;
+    margin: 0 0 2px;
+  }
+
+  .sticky-draft-controls button {
+    padding: 11px 13px;
+    font-size: 12px;
+  }
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Draft XI Clean UI Polish
+   Goal: cleaner, calmer interface without touching game logic.
+───────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --bg-0: #020705;
+  --bg-1: #04130a;
+  --bg-2: #082516;
+  --panel: rgba(255, 255, 255, 0.065);
+  --panel-strong: rgba(255, 255, 255, 0.105);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --text: #f6fff8;
+  --muted: #a9d9b8;
+  --muted-2: #d8f8e1;
+  --green: #79f2a4;
+  --green-dark: #05200d;
+  --yellow: #ffe28a;
+  --red: #ff7676;
+  --shadow: 0 18px 54px rgba(0, 0, 0, 0.28);
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(121, 242, 164, 0.14), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.10), transparent 30%),
+    linear-gradient(135deg, var(--bg-1), var(--bg-2) 58%, var(--bg-0));
+}
+
+.app {
+  width: min(1120px, calc(100% - 24px));
+  padding: 22px 0 48px;
+}
+
+/* Cleaner header */
+
+.hero {
+  align-items: stretch;
+  margin-bottom: 16px;
+}
+
+.hero h1,
+.start-card h1,
+h1 {
+  letter-spacing: -0.065em;
+}
+
+.hero p {
+  margin-bottom: 0;
+  color: rgba(216, 248, 225, 0.82);
+}
+
+.record-card {
+  min-width: 160px;
+  padding: 18px;
+  border-radius: 24px;
+}
+
+.record-card strong {
+  font-size: 48px;
+}
+
+/* Cleaner controls */
+
+.controls {
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.controls button,
+.results-actions button,
+.play-again,
+.start-button {
+  min-height: 44px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: 950;
+  box-shadow: none;
+}
+
+.controls button:hover:not(:disabled),
+.results-actions button:hover:not(:disabled),
+.play-again:hover,
+.start-button:hover {
+  filter: brightness(1.06);
+}
+
+/* Keep controls useful, but less bulky */
+.sticky-draft-controls {
+  top: 8px;
+  z-index: 90;
+  padding: 10px;
+  border-radius: 22px;
+  background: rgba(3, 18, 9, 0.82);
+  border: 1px solid rgba(121, 242, 164, 0.2);
+  backdrop-filter: blur(16px);
+}
+
+.sticky-draft-controls::before {
+  content: "Controls";
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+/* Panels */
+
+.club-panel,
+.pitch-wrap,
+.results,
+.spinner-card,
+.simulation-loader,
+.selected-banner,
+.formation-picker,
+.rewards-panel,
+.player-stats-panel,
+.live-table-card,
+.final-table-panel,
+.awards-panel,
+.history-panel,
+.club-collection-card,
+.collection-panel,
+.season-record-card,
+.season-sim {
+  margin-bottom: 16px;
+  border-radius: 24px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.065);
+  border: 1px solid rgba(255, 255, 255, 0.115);
+}
+
+.selected-banner,
+.transfer-banner {
+  padding: 12px 16px;
+  border-radius: 18px;
+}
+
+/* Formation picker as compact chips */
+
+.formation-picker {
+  padding: 12px;
+  border-radius: 20px;
+}
+
+.formation-picker > span {
+  font-size: 11px;
+}
+
+.formation-picker button {
+  padding: 8px 12px;
+  border-radius: 999px;
+}
+
+/* Spinner */
+
+.spinner-card {
+  padding: 18px;
+}
+
+.spinner-window {
+  height: 92px;
+  border-radius: 22px;
+  max-width: 640px;
+}
+
+.reel-spinner {
+  padding: 17px 0;
+}
+
+.reel-team {
+  height: 58px;
+  border-radius: 16px;
+}
+
+/* Current club/player list: less scrolling on desktop */
+
+.club-header {
+  margin-bottom: 14px;
+}
+
+.club-header h2,
+.pitch-wrap h2,
+.results h2 {
+  font-size: clamp(24px, 4vw, 32px);
+}
+
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+  gap: 9px;
+}
+
+.player-card {
+  min-height: 54px;
+  padding: 9px 10px;
+  border-radius: 15px;
+  grid-template-columns: 76px minmax(0, 1fr);
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.player-card.selected {
+  min-height: 68px;
+}
+
+.player-pos {
+  min-width: 64px;
+  height: 26px;
+  border-radius: 8px;
+}
+
+.player-name {
+  font-size: 14px;
+}
+
+.player-rating {
+  width: 38px;
+  min-width: 38px;
+  height: 28px;
+  font-size: 12px;
+}
+
+.inline-position-buttons .mini-pos-btn {
+  width: 38px;
+  min-width: 38px;
+  height: 28px;
+  font-size: 10px;
+}
+
+/* Pitch polish */
+
+.pitch {
+  max-width: 700px;
+  min-height: 700px;
+  margin-top: 14px;
+  border-radius: 24px;
+  border-width: 3px;
+}
+
+.slot {
+  width: 106px;
+  min-height: 72px;
+  border-radius: 16px;
+  padding: 8px;
+}
+
+.slot strong {
+  font-size: 10px;
+}
+
+.slot small {
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+}
+
+/* Benches and collections less loud */
+
+.bench-panel,
+.bench-slot-panel {
+  border-radius: 22px;
+}
+
+.bench-slot-panel .bench-slot-card {
+  width: 112px !important;
+  height: 122px !important;
+  min-width: 112px !important;
+  min-height: 122px !important;
+  border-radius: 18px !important;
+}
+
+.club-collection-card,
+.collection-panel,
+.history-panel {
+  opacity: 0.92;
+}
+
+.league-breakdown,
+.league-collection-mini,
+.collection-grid {
+  gap: 6px;
+}
+
+/* Results/readability */
+
+.results-summary,
+.season-summary,
+.record-grid,
+.stats-grid {
+  gap: 10px;
+}
+
+.results-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.final-table-panel,
+.live-table-card,
+.player-stats-panel,
+.awards-panel {
+  overflow-x: auto;
+}
+
+/* Mobile cleanup */
+
+@media (max-width: 760px) {
+  .app {
+    width: min(100% - 16px, 1120px);
+    padding-top: 14px;
+  }
+
+  .hero {
+    display: grid;
+    gap: 12px;
+  }
+
+  .record-card {
+    min-width: 0;
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .record-card strong {
+    font-size: 38px;
+  }
+
+  .sticky-draft-controls {
+    top: 6px;
+    max-height: none;
+    overflow: visible;
+    padding: 8px;
+    border-radius: 18px;
+  }
+
+  .sticky-draft-controls button {
+    flex: 1 1 calc(50% - 8px);
+    padding: 10px 11px;
+    font-size: 12px;
+  }
+
+  .player-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .club-panel,
+  .pitch-wrap,
+  .results,
+  .spinner-card,
+  .simulation-loader,
+  .formation-picker,
+  .rewards-panel,
+  .player-stats-panel,
+  .live-table-card,
+  .final-table-panel,
+  .awards-panel,
+  .history-panel,
+  .club-collection-card,
+  .collection-panel,
+  .season-record-card,
+  .season-sim {
+    padding: 14px;
+    border-radius: 20px;
+  }
+
+  .spinner-window {
+    height: 84px;
+  }
+
+  .reel-team {
+    width: 168px;
+    flex-basis: 168px;
+  }
+
+  .pitch {
+    min-height: 610px;
+    border-radius: 20px;
+  }
+
+  .slot {
+    width: 92px;
+    min-height: 66px;
+    padding: 7px;
+  }
+
+  .slot strong {
+    font-size: 9.5px;
+  }
+
+  .slot em {
+    font-size: 10px;
+  }
+
+  .club-header {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .club-header strong {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 420px) {
+  .controls button,
+  .results-actions button {
+    width: 100%;
+  }
+
+  .sticky-draft-controls button {
+    width: auto;
+  }
+
+  .player-card {
+    grid-template-columns: 66px minmax(0, 1fr);
+  }
+
+  .player-bottom-row {
+    gap: 5px;
+  }
+
+  .pitch {
+    min-height: 570px;
+  }
+
+  .slot {
+    width: 86px;
+    min-height: 62px;
+  }
+}

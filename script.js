@@ -3638,6 +3638,7 @@ function getGoalMinute() {
   return Math.floor(Math.random() * 24) + 66;
 }
 
+
 function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch$allSco;
   const savedProgress = getStoredJson("draftXIProgressV4", null) || {};
   const savedFormationName = FORMATIONS[savedProgress.selectedFormationName] ? savedProgress.selectedFormationName : DEFAULT_FORMATION_NAME;
@@ -3747,6 +3748,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }, [saveNotice]);
 
 
+  const controlsRef = useRef(null);
   const spinnerRef = useRef(null);
   const spinnerWindowRef = useRef(null);
   const clubPanelRef = useRef(null);
@@ -4216,7 +4218,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setCurrentClub(null);
     setSpinWinner(null);
     setResults(null);
-    setTimeout(() => scrollToSection(pitchRef, "center"), 120);
+    setTimeout(() => scrollToSection(controlsRef, "start"), 120);
   }
 
   function placePlayer(slotId) {
@@ -4247,7 +4249,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setLastPlacedSlot(slotId);
     setResults(null);
 
-    setTimeout(() => scrollToSection(pitchRef, "center"), 140);
+    setTimeout(() => scrollToSection(controlsRef, "start"), 140);
     setTimeout(() => setLastPlacedSlot(null), 700);
   }
 
@@ -4451,6 +4453,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       spinFallbackRef.current = null;
     }
   }
+
 
   function resetGame() {
     try {localStorage.removeItem("draftXIProgressV1");localStorage.removeItem("draftXIProgressV2");localStorage.removeItem("draftXIProgressV3");localStorage.removeItem("draftXIProgressV4");} catch {}
@@ -5289,7 +5292,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
 
-    React.createElement("section", { className: "controls" }, /*#__PURE__*/
+    React.createElement("section", { className: "controls sticky-draft-controls", ref: controlsRef }, /*#__PURE__*/
     React.createElement("button", { className: (guideStep === "spin" || guideStep === "bench") && !spinning ? "guide-pulse" : "", onClick: spinClub, disabled: spinning || !!currentClub || fullSquadReady || substituteMode },
     spinning ? "Spinning..." : currentClub ? "Pick or Reroll" : benchDraftActive ? `Spin Bench (${BENCH_LIMIT - bench.length})` : gameMode === "worldcup" ? "Spin Nation" : "Spin Club"), /*#__PURE__*/
 
