@@ -3340,7 +3340,7 @@ function makeShareCardText(results, playerSeasonStats, formationName, teamRating
   const positionText = tablePosition ? `League Finish: ${tablePosition}${tablePosition === 1 ? "st" : tablePosition === 2 ? "nd" : tablePosition === 3 ? "rd" : "th"}` : "League Finish: --";
 
   return [
-  "Draft XI: Europe",
+  "Draft XI",
   "",
   `Formation: ${formationName}`,
   `XI Rating: ${teamRating || "--"}`,
@@ -3684,8 +3684,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const activeClubs = gameMode === "worldcup" ? WORLD_CUP_CLUBS : ALL_CLUBS;
   const activeLeagues = gameMode === "worldcup" ? WORLD_CUP_GROUPS : TOP_FIVE_LEAGUES;
   const activeRestLabel = gameMode === "worldcup" ? "Other Groups" : "Rest of Europe";
-  const modeTitle = gameMode === "worldcup" ? "World Cup XI" : "Draft XI: Europe";
-  const modeSubtitle = gameMode === "worldcup" ? "Build a squad from all 48 World Cup teams." : "Build the greatest squad in European football history.";
+  const modeTitle = "Draft XI";
+  const modeSubtitle = "Build the greatest football squad ever assembled.";
 
   function closeTutorial() {
     setShowTutorial(false);
