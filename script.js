@@ -4962,7 +4962,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       React.createElement("div", { className: "start-logo" }, "XI"), /*#__PURE__*/
       React.createElement("h1", null, modeTitle), /*#__PURE__*/
       React.createElement("p", { className: "start-subtitle" }, "Choose your draft mode."), /*#__PURE__*/
-      React.createElement("div", { className: "mode-pill-stack" }, /*#__PURE__*/
+      React.createElement("div", { className: "mode-pill-stack", style: { display: "flex", flexDirection: "column", gap: "42px", width: "min(340px, 92vw)", margin: "30px auto 8px" } }, /*#__PURE__*/
       React.createElement("button", {
         className: "mode-pill-button",
         type: "button",
@@ -4976,7 +4976,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           fontSize: "16px",
           fontWeight: 900,
           textAlign: "center",
-          cursor: "pointer" },
+          cursor: "pointer",
+          marginBottom: "18px" },
 
         onClick: () => {
           selectGameMode("europe");
@@ -5054,10 +5055,6 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("p", { className: "eyebrow" }, "Europe Draft"), /*#__PURE__*/
     React.createElement("h1", null, modeTitle), /*#__PURE__*/
     React.createElement("p", null, gameMode === "worldcup" ? "Spin a World Cup nation, select any player, place them in your XI, then simulate a full World Cup run." : "Spin a European club, select any player, place them in your XI, then simulate a 38-game season."))), /*#__PURE__*/
-
-    renderClubCollectionCard(collectionStats, { showNoRepeat: true, usedClubIds }), /*#__PURE__*/
-
-
 
     React.createElement("section", { className: `next-move-card step-${guideStep}` }, /*#__PURE__*/
     React.createElement("div", { className: "next-move-top" }, /*#__PURE__*/
@@ -5568,11 +5565,6 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("small", null, "Top Scorer: ", run.topScorer))))), /*#__PURE__*/
 
 
-
-
-
-
-    renderClubCollectionCard(collectionStats), /*#__PURE__*/
 
 
 

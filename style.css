@@ -3390,3 +3390,43 @@ button.mode-pill-button {
   color: #ffd700;
   font-weight: 900;
 }
+  .start-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+
+/* Start screen spacing patch - Europe / World Cup buttons */
+.start-screen .mode-pill-stack,
+.start-card .mode-pill-stack,
+.mode-pill-stack {
+  display: grid !important;
+  gap: 28px !important;
+  row-gap: 28px !important;
+  width: min(360px, 100%) !important;
+  margin: 30px auto 8px !important;
+}
+
+.start-screen .mode-pill-button,
+.start-card .mode-pill-button,
+button.mode-pill-button {
+  min-height: 64px !important;
+  margin: 0 !important;
+}
+
+.start-screen .mode-pill-button + .mode-pill-button,
+.start-card .mode-pill-button + .mode-pill-button,
+.mode-pill-button + .mode-pill-button {
+  margin-top: 0 !important;
+}
+
+@media (max-width: 640px) {
+  .start-screen .mode-pill-stack,
+  .start-card .mode-pill-stack,
+  .mode-pill-stack {
+    gap: 24px !important;
+    row-gap: 24px !important;
+    margin-top: 28px !important;
+  }
+}
