@@ -2891,17 +2891,21 @@ function getLeagueIcon(league) {
 }
 
 function renderClubCollectionCard(collectionStats, options = {}) {
-  const { showNoRepeat = false, usedClubIds = [] } = options;
+  const { showNoRepeat = false, usedClubIds = [], mode = "europe" } = options;
+  const isWorldCupCollection = mode === "worldcup";
+  const collectionName = isWorldCupCollection ? "Nation Collection" : "Club Collection";
+  const discoveredLabel = isWorldCupCollection ? "nations discovered" : "clubs discovered";
   const totalClubs = collectionStats.totalClubs || ALL_CLUBS.length;
-  const discoveredText = `${collectionStats.total} / ${totalClubs} nations discovered`;
+  const discoveredText = `${collectionStats.total}/${totalClubs}`;
 
   return /*#__PURE__*/React.createElement(
   "section",
   { className: "collection-panel club-collection-card", style: CLUB_COLLECTION_STYLES.card }, /*#__PURE__*/
   React.createElement("div", { style: CLUB_COLLECTION_STYLES.header }, /*#__PURE__*/
   React.createElement("div", { style: CLUB_COLLECTION_STYLES.title }, /*#__PURE__*/
-  React.createElement("span", { style: CLUB_COLLECTION_STYLES.eyebrow }, "Nation Collection"), /*#__PURE__*/
-  React.createElement("strong", { style: CLUB_COLLECTION_STYLES.count }, discoveredText)), /*#__PURE__*/
+  React.createElement("span", { style: CLUB_COLLECTION_STYLES.eyebrow }, collectionName), /*#__PURE__*/
+  React.createElement("strong", { style: CLUB_COLLECTION_STYLES.count }, discoveredText), /*#__PURE__*/
+  React.createElement("small", { className: "collection-clean-label" }, discoveredLabel)), /*#__PURE__*/
   React.createElement("span", { style: CLUB_COLLECTION_STYLES.percent }, collectionStats.percent, "%")), /*#__PURE__*/
 
   React.createElement("div", { className: "collection-bar", style: CLUB_COLLECTION_STYLES.bar }, /*#__PURE__*/
@@ -2914,7 +2918,7 @@ function renderClubCollectionCard(collectionStats, options = {}) {
   collectionStats.byLeague.map(item => /*#__PURE__*/React.createElement(
   "span",
   { key: item.league, style: CLUB_COLLECTION_STYLES.leaguePill }, /*#__PURE__*/
-  React.createElement("span", null, getLeagueIcon(item.league), " ", item.league), /*#__PURE__*/
+  React.createElement("span", null, getLeagueIcon(item.league)), /*#__PURE__*/
   React.createElement("strong", { style: CLUB_COLLECTION_STYLES.leagueCount }, item.count)))),
 
 
@@ -3744,6 +3748,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const [substituteMode, setSubstituteMode] = useState(false);
   const [substituteUsed, setSubstituteUsed] = useState(!!savedProgress.substituteUsed);
   const [selectedBenchId, setSelectedBenchId] = useState(null);
+  const [substitutionRefreshKey, setSubstitutionRefreshKey] = useState(0);
   const [draftHistory, setDraftHistory] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("draftXIHistory") || "[]");
@@ -3949,7 +3954,6 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setSelectedBenchId(null);
     setMovingSlotId(null);
     setFormationNotice(null);
-    setClubCollection([]);
   }
 
   function getSlotLabelForFormation(formationName, slotId) {var _slots$find;
@@ -4432,32 +4436,46 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     const slotLabel = getSlotLabel(slotId);
     if (!canPlaySlot(selectedBenchPlayer, slotLabel)) return;
 
+    const now = Date.now();
     const penalty = getPenalty(selectedBenchPlayer, slotId);
     const incoming = {
       ...selectedBenchPlayer,
+      id: selectedBenchPlayer.id || selectedBenchPlayer.name,
+      benchId: null,
       slotId,
       slotLabel,
       penalty,
-      finalRating: Math.max(60, selectedBenchPlayer.rating - penalty) };
+      finalRating: Math.max(60, selectedBenchPlayer.rating - penalty),
+      renderKey: `starter_${selectedBenchPlayer.id || selectedBenchPlayer.name}_${slotId}_${now}` };
 
     const outgoing = {
       ...starter,
-      benchId: `${starter.id || starter.name}_bench_return_${Date.now()}`,
+      id: starter.id || starter.name,
+      benchId: `${starter.id || starter.name}_bench_return_${now}`,
       slotId: null,
       slotLabel: "BENCH",
       penalty: 0,
-      finalRating: starter.rating || starter.finalRating };
+      finalRating: starter.rating || starter.finalRating,
+      renderKey: `bench_${starter.id || starter.name}_${now}` };
 
-    setDraft(prev => ({ ...prev, [slotId]: incoming }));
+    setDraft(prev => {
+      const next = { ...prev };
+      delete next[slotId];
+      next[slotId] = incoming;
+      return next;
+    });
     setBench(prev => prev.map(player => player.benchId === selectedBenchPlayer.benchId ? outgoing : player));
+    setSubstitutionRefreshKey(prev => prev + 1);
     setSubstituteUsed(true);
     setSubstituteMode(false);
     setSelectedBenchId(null);
     setMovingSlotId(null);
     setSelectedPlayer(null);
     setResults(null);
+    setLastPlacedSlot(slotId);
     playSound("move", soundMuted);
-    setTimeout(() => scrollToSection(pitchRef, "center"), 100);
+    setTimeout(() => scrollToSection(pitchRef, "center"), 80);
+    setTimeout(() => setLastPlacedSlot(null), 700);
   }
 
   function calculateRewards(summary) {var _summary$table$find;
@@ -5350,10 +5368,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         const id = getPlayerCollectionId(player);
         const unlocked = discoveredPlayerIds.has(id);
         return /*#__PURE__*/React.createElement("div", { key: id, className: `player-collection-card ${unlocked ? "unlocked" : "locked"}` }, /*#__PURE__*/
-        React.createElement("span", { className: "collection-card-club" }, unlocked ? player.club : "???"), /*#__PURE__*/
-        React.createElement("strong", { title: unlocked ? player.name : "Locked Player" }, unlocked ? getPitchDisplayName(player.name) : "Locked"), /*#__PURE__*/
-        React.createElement("small", { className: unlocked ? getRatingClass(player.rating) : "" }, unlocked ? player.rating : "?"), /*#__PURE__*/
-        React.createElement("em", null, unlocked ? player.position : "Draft to unlock"));
+        React.createElement("strong", { className: "collection-card-name", title: unlocked ? player.name : "Locked Player" }, unlocked ? getPitchDisplayName(player.name) : "Locked"), /*#__PURE__*/
+        React.createElement("div", { className: "collection-card-meta" }, /*#__PURE__*/
+        React.createElement("span", null, unlocked ? player.position : "?"), /*#__PURE__*/
+        React.createElement("small", { className: unlocked ? getRatingClass(player.rating) : "" }, unlocked ? player.rating : "?")));
       })))));
   }
 
@@ -5405,22 +5423,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           selectGameMode("worldcup");
           playSound("start", soundMuted);
           setGameStarted(true);
-        } }, "Start World Cup Mode"), /*#__PURE__*/
-      React.createElement("button", {
-        className: "mode-pill-button",
-        type: "button",
-        style: {
-          width: "100%",
-          minHeight: "56px",
-          border: "0",
-          borderRadius: "999px",
-          background: "#86f7a8",
-          color: "#06180d",
-          fontSize: "16px",
-          fontWeight: 900,
-          textAlign: "center",
-          cursor: "pointer" },
-        onClick: () => setShowPlayerCollection(true) }, "Player Collection ", playerCollectionStats.found, "/", playerCollectionStats.total)))));
+        } }, "Start World Cup Mode")))));
 
 
 
@@ -5459,6 +5462,271 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
   return /*#__PURE__*/(
     React.createElement("main", { className: "app" },
+    /*#__PURE__*/React.createElement("style", null, `
+      .mobile-quick-actions {
+        display: none;
+      }
+      .start-screen {
+        padding-bottom: 28px;
+      }
+      .player-collection-screen {
+        padding: 18px 14px 34px;
+      }
+      .player-collection-shell {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+      }
+      .player-collection-hero {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 18px;
+        margin: 12px auto 18px;
+        padding: 18px;
+        border-radius: 24px;
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.10);
+      }
+      .player-collection-hero h1 {
+        margin: 3px 0 7px;
+      }
+      .player-collection-hero p {
+        margin: 0;
+        line-height: 1.35;
+      }
+      .collection-stat-card {
+        min-width: 132px;
+        padding: 14px 16px;
+        border-radius: 20px;
+        background: rgba(3,20,9,.72);
+        border: 1px solid rgba(141,255,179,.18);
+        text-align: center;
+      }
+      .collection-stat-card strong {
+        font-size: 30px;
+        line-height: 1;
+      }
+      .collection-stat-card span,
+      .collection-stat-card small {
+        display: block;
+        margin-top: 3px;
+      }
+      .player-collection-bar {
+        margin: 0 0 8px;
+      }
+      .collection-percent-label {
+        margin: 0 0 18px;
+        opacity: .72;
+        font-weight: 800;
+        letter-spacing: .01em;
+      }
+      .player-collection-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+      }
+      .player-collection-card {
+        display: grid;
+        gap: 10px;
+        min-height: 96px;
+        padding: 14px;
+        border-radius: 18px;
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.10);
+      }
+      .player-collection-card.locked {
+        opacity: .58;
+      }
+      .collection-card-club {
+        font-size: 11px;
+        line-height: 1.15;
+        opacity: .75;
+        font-weight: 900;
+        letter-spacing: .02em;
+        text-transform: uppercase;
+      }
+      .collection-card-name {
+        font-size: 15px;
+        line-height: 1.18;
+        font-weight: 950;
+        align-self: end;
+      }
+      .collection-card-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: auto;
+      }
+      .collection-card-meta span,
+      .collection-card-meta small {
+        display: inline-grid;
+        min-width: 42px;
+        min-height: 28px;
+        place-items: center;
+        border-radius: 999px;
+        background: rgba(255,255,255,.11);
+        font-size: 12px;
+        line-height: 1;
+        font-weight: 950;
+        font-style: normal;
+      }
+      .collection-clean-label {
+        display: block;
+        margin-top: 2px;
+        font-size: 11px;
+        line-height: 1.1;
+        opacity: .72;
+        font-weight: 800;
+        letter-spacing: .01em;
+        text-transform: uppercase;
+      }
+      @media (max-width: 768px) {
+        .app {
+          padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 92px) !important;
+        }
+        .mobile-quick-actions {
+          position: fixed;
+          left: 10px;
+          right: 10px;
+          bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+          z-index: 2000;
+          display: grid;
+          grid-template-columns: 1.15fr .85fr .95fr;
+          gap: 8px;
+          padding: 9px;
+          border-radius: 20px;
+          background: rgba(3, 20, 9, 0.96);
+          border: 1px solid rgba(141, 255, 179, 0.2);
+          box-shadow: 0 14px 34px rgba(0,0,0,.36);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+        }
+        .mobile-quick-actions button {
+          min-height: 46px;
+          border: 0;
+          border-radius: 15px;
+          padding: 8px 9px;
+          font-size: 12px;
+          line-height: 1.05;
+          font-weight: 950;
+          color: #06210f;
+          background: linear-gradient(135deg, var(--green, #8dffb3), #22c55e);
+          box-shadow: 0 8px 18px rgba(57,255,136,.16);
+        }
+        .mobile-quick-actions button:disabled {
+          opacity: .58;
+          color: rgba(255,255,255,.72);
+          background: rgba(255,255,255,.12);
+          box-shadow: none;
+        }
+        .mobile-quick-actions .mobile-reroll-action {
+          background: var(--yellow, #ffe08a);
+          color: #201600;
+        }
+        .mobile-quick-actions .mobile-reroll-action:disabled {
+          color: rgba(255,255,255,.72);
+          background: rgba(255,255,255,.12);
+        }
+        .mobile-quick-actions .mobile-sim-action {
+          background: rgba(255,255,255,.14);
+          color: white;
+        }
+        .mobile-quick-actions.mobile-sim-ready,
+        .mobile-quick-actions.mobile-results-ready {
+          grid-template-columns: 1.35fr 1fr;
+        }
+        .mobile-quick-actions .mobile-sim-action.ready,
+        .mobile-quick-actions .mobile-play-again-action.ready {
+          background: linear-gradient(135deg, var(--green, #8dffb3), #22c55e);
+          color: #06210f;
+        }
+        .mobile-quick-actions .mobile-collection-action {
+          background: rgba(255,255,255,.14);
+          color: white;
+          box-shadow: none;
+        }
+        .formation-sticky-lifelines .sticky-spin-button,
+        .formation-sticky-lifelines .reroll,
+        .formation-sticky-lifelines .sticky-sim-button {
+          display: none !important;
+        }
+        .formation-sticky-lifelines {
+          position: static !important;
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 8px !important;
+          width: 100% !important;
+          max-width: 440px !important;
+          margin: 10px auto 14px !important;
+          padding: 10px !important;
+          border-radius: 18px !important;
+          background: rgba(3, 20, 9, 0.92) !important;
+          box-shadow: 0 12px 34px rgba(0,0,0,.24) !important;
+        }
+        .formation-sticky-lifelines button {
+          width: 100% !important;
+          min-height: 42px !important;
+          padding: 9px 10px !important;
+          border-radius: 14px !important;
+          font-size: 12px !important;
+          line-height: 1.05 !important;
+          white-space: normal !important;
+        }
+        .collection-panel.club-collection-card {
+          padding: 14px !important;
+        }
+        .league-collection-mini {
+          grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+          gap: 7px !important;
+        }
+        .league-collection-mini > span {
+          min-height: 36px !important;
+          padding: 7px 6px !important;
+          justify-content: center !important;
+          text-align: center !important;
+        }
+        .mobile-quick-actions .mobile-collection-action {
+          border-radius: 999px !important;
+          font-weight: 950 !important;
+          letter-spacing: .01em !important;
+        }
+        .player-collection-screen {
+          padding: 12px 10px calc(env(safe-area-inset-bottom, 0px) + 20px) !important;
+        }
+        .player-collection-hero {
+          grid-template-columns: 1fr !important;
+          gap: 12px !important;
+          padding: 14px !important;
+          margin-bottom: 14px !important;
+        }
+        .collection-stat-card {
+          width: 100% !important;
+          min-width: 0 !important;
+        }
+        .player-collection-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 10px !important;
+        }
+        .player-collection-card {
+          min-height: 88px !important;
+          padding: 12px !important;
+          border-radius: 16px !important;
+          gap: 9px !important;
+        }
+        .collection-card-name {
+          font-size: 14px !important;
+        }
+        .collection-card-club {
+          font-size: 10px !important;
+        }
+        .collection-back-mode-button.collection-back-detailed {
+          width: min(340px, 100%) !important;
+          min-height: 54px !important;
+          margin-bottom: 12px !important;
+        }
+      }
+    `),
     saveNotice && /*#__PURE__*/React.createElement("div", { className: "save-toast" }, "Saved draft restored"),
     showTutorial && /*#__PURE__*/React.createElement("div", { className: "tutorial-overlay", role: "dialog", "aria-modal": "true" }, /*#__PURE__*/
     React.createElement("div", { className: "tutorial-card" }, /*#__PURE__*/
@@ -5494,6 +5762,44 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("span", { className: guideStep === "bench" ? "active" : bench.length >= BENCH_LIMIT ? "done" : "" }, "Bench"), /*#__PURE__*/
     React.createElement("span", { className: guideStep === "simulate" ? "active" : results ? "done" : "" }, "Sim")), /*#__PURE__*/
 
+    React.createElement("section", { className: `mobile-quick-actions ${results ? "mobile-results-ready" : fullSquadReady ? "mobile-sim-ready" : "mobile-draft-ready"}`, "aria-label": "Mobile draft actions" },
+    results ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/
+    React.createElement("button", {
+      className: "mobile-play-again-action ready",
+      type: "button",
+      onClick: resetGame }, "Play Again"), /*#__PURE__*/
+    React.createElement("button", {
+      className: "mobile-collection-action",
+      type: "button",
+      onClick: () => setShowPlayerCollection(true) }, "Collection ", playerCollectionStats.found, "/", playerCollectionStats.total)) :
+    fullSquadReady ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/
+    React.createElement("button", {
+      className: !simulating ? "mobile-sim-action ready" : "mobile-sim-action",
+      type: "button",
+      onClick: () => gameMode === "worldcup" ? simulateWorldCupTournament() : simulateSeason(),
+      disabled: simulating || !!results },
+    simulating ? "Simulating..." : gameMode === "worldcup" ? "Sim Tournament" : "Sim Season"), /*#__PURE__*/
+    React.createElement("button", {
+      className: "mobile-collection-action",
+      type: "button",
+      onClick: () => setShowPlayerCollection(true) }, "Collection ", playerCollectionStats.found, "/", playerCollectionStats.total)) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/
+    React.createElement("button", {
+      className: (guideStep === "spin" || guideStep === "bench") && !spinning ? "guide-pulse mobile-spin-action" : "mobile-spin-action",
+      type: "button",
+      onClick: spinClub,
+      disabled: spinning || !!currentClub || fullSquadReady || substituteMode },
+    spinning ? "Spinning..." : currentClub ? "Pick Player" : benchDraftActive ? `Spin Bench (${BENCH_LIMIT - bench.length})` : gameMode === "worldcup" ? "Spin Nation" : "Spin Club"), /*#__PURE__*/
+    React.createElement("button", {
+      className: "mobile-reroll-action",
+      type: "button",
+      onClick: rerollClub,
+      disabled: !currentClub || rerollsLeft <= 0 || spinning || fullSquadReady || substituteMode },
+    rerollsLeft > 0 ? `Reroll ${rerollsLeft}` : "Reroll"), /*#__PURE__*/
+    React.createElement("button", {
+      className: "mobile-collection-action",
+      type: "button",
+      onClick: () => setShowPlayerCollection(true) }, "Collection ", playerCollectionStats.found, "/", playerCollectionStats.total))), /*#__PURE__*/
+
 
 
     React.createElement("section", { className: "controls sticky-draft-controls", ref: controlsRef }, /*#__PURE__*/
@@ -5510,6 +5816,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     soundMuted ? "Sound Off" : "Sound On")), /*#__PURE__*/
 
 
+
+    renderClubCollectionCard(collectionStats, { compact: true, mode: gameMode }), /*#__PURE__*/
 
     React.createElement("section", { className: "formation-picker" }, /*#__PURE__*/
     React.createElement("span", null, "Formation"), /*#__PURE__*/
@@ -5859,7 +6167,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       const subBlocked = substituteMode && selectedBenchPlayer && player && !subTarget;
       return /*#__PURE__*/(
         React.createElement("div", {
-          key: slot.id,
+          key: `${slot.id}_${player ? player.id || player.name : "empty"}_${player ? player.renderKey || player.benchId || "" : ""}_${substitutionRefreshKey}`,
           role: "button",
           tabIndex: 0,
           className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${slotPlayable ? "valid-slot" : ""} ${slotBest ? "best-slot" : ""} ${slotInvalid ? "invalid-slot" : ""} ${moveTarget ? "move-target" : ""} ${moveBlocked ? "move-blocked" : ""} ${moveSource ? "moving-source" : ""} ${swapTarget ? "swap-target" : ""} ${swapBlocked ? "swap-blocked" : ""} ${transferMode && player ? "transfer-remove" : ""} ${subTarget ? "sub-target" : ""} ${subBlocked ? "sub-blocked" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,

@@ -5482,3 +5482,647 @@ button.collection-back-detailed {
 .move-overlay.active {
   display: grid;
 }
+  /* =========================================================
+   Draft XI Mobile Smooth + QoL Patch
+   Paste this at the VERY BOTTOM of your current CSS file.
+   Desktop is intentionally left untouched.
+   ========================================================= */
+
+@media (max-width: 720px) {
+  html,
+  body {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .app {
+    width: min(100%, calc(100vw - 18px));
+    padding: 12px 0 96px;
+  }
+
+  /* Make the top area tighter on phones. */
+  .hero {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-size: clamp(34px, 12vw, 54px);
+  }
+
+  .hero p {
+    font-size: 13px;
+    line-height: 1.35;
+    margin: 8px 0 0;
+  }
+
+  .record-card {
+    min-width: 110px;
+    padding: 12px;
+    border-radius: 18px;
+  }
+
+  .record-card strong {
+    font-size: 38px;
+  }
+
+  .record-card span,
+  .record-card small {
+    font-size: 11px;
+  }
+
+  /* Smaller panels = less scrolling and less repaint cost. */
+  .club-panel,
+  .pitch-wrap,
+  .results,
+  .spinner-card,
+  .simulation-loader,
+  .selected-banner,
+  .formation-picker,
+  .rewards-panel,
+  .player-stats-panel,
+  .live-table-card,
+  .final-table-panel,
+  .awards-panel,
+  .history-panel,
+  .club-collection-card,
+  .collection-panel,
+  .season-record-card,
+  .season-sim {
+    margin-bottom: 12px;
+    padding: 14px;
+    border-radius: 20px;
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.22);
+  }
+
+  /* Main QoL fix: important actions stay near the thumb. */
+  .controls,
+  .sticky-draft-controls,
+  .formation-sticky-lifelines {
+    position: sticky !important;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    top: auto !important;
+    z-index: 1000 !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px !important;
+    width: min(100%, calc(100vw - 18px)) !important;
+    max-width: 480px !important;
+    margin: 10px auto 14px !important;
+    padding: 9px !important;
+    border-radius: 20px !important;
+    background: rgba(3, 20, 9, 0.92) !important;
+    border: 1px solid rgba(141, 255, 179, 0.22) !important;
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.36) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .controls button,
+  .sticky-draft-controls button,
+  .formation-sticky-lifelines button {
+    min-height: 44px !important;
+    padding: 10px 8px !important;
+    border-radius: 14px !important;
+    font-size: 12px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: none !important;
+    touch-action: manipulation;
+  }
+
+  /* Spin / Simulate should feel like primary actions. */
+  .sticky-spin-button,
+  .simulate-season-button,
+  .simulate-button,
+  .controls button:first-child {
+    grid-column: span 2;
+    min-height: 48px !important;
+    font-size: 14px !important;
+  }
+
+  /* Keep secondary actions from overcrowding the draft flow. */
+  .share-draft-button,
+  .sound-toggle,
+  .change-mode-button,
+  .controls .ghost {
+    opacity: 0.92;
+  }
+
+  /* Formation selector becomes horizontally scrollable instead of tall. */
+  .formation-picker {
+    display: block;
+    overflow: hidden;
+  }
+
+  .formation-picker > span {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .formation-picker > div {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .formation-picker button {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    min-height: 38px;
+    padding: 9px 12px;
+  }
+
+  .formation-picker small {
+    display: block;
+    margin-top: 8px;
+    line-height: 1.3;
+  }
+
+  /* Spinner: lighter animation + less layout work on phones. */
+  .spinner-window {
+    height: 78px !important;
+    border-radius: 16px !important;
+    contain: layout paint style;
+    transform: translateZ(0);
+  }
+
+  .reel-spinner {
+    gap: 7px !important;
+    padding: 14px 0 !important;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+  }
+
+  .reel-team {
+    width: 136px !important;
+    flex-basis: 136px !important;
+    height: 48px !important;
+    border-radius: 13px !important;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28) !important;
+  }
+
+  .reel-team span {
+    max-width: 120px !important;
+    font-size: 11px !important;
+  }
+
+  .reel-team small {
+    font-size: 9px !important;
+  }
+
+  .spinner-pointer {
+    font-size: 18px !important;
+  }
+
+  /* Player selection: easier taps, less vertical bloat. */
+  .player-grid {
+    gap: 7px !important;
+  }
+
+  .player-card,
+  .player-option,
+  .bench-card,
+  .bench-player-card {
+    min-height: 54px;
+    touch-action: manipulation;
+    transform: translateZ(0);
+  }
+
+  .player-card:hover,
+  .player-option:hover,
+  .slot:hover,
+  .bench-card:hover,
+  .bench-player-card:hover {
+    transform: none !important;
+  }
+
+  .club-header {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .club-header h2 {
+    font-size: 22px;
+  }
+
+  .club-header p {
+    font-size: 12px;
+    margin: 4px 0 0;
+  }
+
+  .club-header strong {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 15px;
+    font-size: 22px;
+  }
+
+  /* Pitch performance: isolate expensive absolute-positioned cards. */
+  .pitch-wrap {
+    contain: layout paint;
+  }
+
+  .pitch {
+    contain: layout paint;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .slot {
+    will-change: transform;
+    transform: translateZ(0);
+    touch-action: manipulation;
+  }
+
+  .slot .player-name,
+  .slot small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Results/table: avoid huge cramped columns. */
+  .results-actions,
+  .table-actions,
+  .sim-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .results-actions button,
+  .table-actions button,
+  .sim-actions button {
+    min-height: 42px;
+    padding: 10px 8px;
+    border-radius: 14px;
+    font-size: 12px;
+  }
+
+  .live-table-card,
+  .final-table-panel {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 560px;
+  }
+
+  /* Disable the most expensive decorative animations on mobile. */
+  .start-logo,
+  .jackpot-team::after,
+  .guide-pulse {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .app {
+    width: min(100%, calc(100vw - 12px));
+  }
+
+  .controls,
+  .sticky-draft-controls,
+  .formation-sticky-lifelines {
+    width: min(100%, calc(100vw - 12px)) !important;
+    gap: 7px !important;
+    padding: 8px !important;
+  }
+
+  .controls button,
+  .sticky-draft-controls button,
+  .formation-sticky-lifelines button {
+    font-size: 11px !important;
+  }
+
+  .reel-team {
+    width: 126px !important;
+    flex-basis: 126px !important;
+  }
+
+  .reel-team span {
+    max-width: 112px !important;
+  }
+}
+
+@media (max-width: 720px) and (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* DraftXI_mobile_bottom_bar_fix.css
+   Put this at the VERY BOTTOM of your CSS.
+   This removes the ugly circular mobile layout and turns controls into
+   a clean bottom action bar. Desktop is untouched. */
+
+@media (max-width: 760px) {
+  body {
+    padding-bottom: calc(112px + env(safe-area-inset-bottom));
+  }
+
+  .sticky-draft-controls,
+  .controls.sticky-draft-controls {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+    top: auto !important;
+    z-index: 9999 !important;
+
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+
+    max-height: none !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 10px !important;
+
+    border-radius: 22px !important;
+    background: rgba(4, 17, 9, 0.94) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    box-shadow: 0 -12px 34px rgba(0, 0, 0, 0.38) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+  }
+
+  .sticky-draft-controls button,
+  .controls.sticky-draft-controls button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 42px !important;
+    padding: 10px 8px !important;
+
+    border-radius: 14px !important;
+    font-size: 11px !important;
+    line-height: 1.05 !important;
+    white-space: normal !important;
+    text-align: center !important;
+
+    transform: none !important;
+  }
+
+  .sticky-draft-controls button:hover:not(:disabled),
+  .controls.sticky-draft-controls button:hover:not(:disabled),
+  .sticky-draft-controls button:active:not(:disabled),
+  .controls.sticky-draft-controls button:active:not(:disabled) {
+    transform: none !important;
+    filter: brightness(1.06) !important;
+  }
+
+  /* Main action gets full-width priority when available */
+  .sticky-draft-controls button:first-child,
+  .controls.sticky-draft-controls button:first-child {
+    grid-column: 1 / -1 !important;
+    min-height: 46px !important;
+    font-size: 13px !important;
+  }
+
+  /* Simulate button also deserves a full row once active */
+  .sticky-draft-controls button.guide-pulse,
+  .controls.sticky-draft-controls button.guide-pulse {
+    grid-column: 1 / -1 !important;
+  }
+
+  /* Keep low-priority utility buttons smaller and less loud */
+  .sticky-draft-controls .ghost,
+  .sticky-draft-controls .sound-toggle,
+  .controls.sticky-draft-controls .ghost,
+  .controls.sticky-draft-controls .sound-toggle {
+    min-height: 36px !important;
+    font-size: 10px !important;
+    opacity: 0.88 !important;
+  }
+
+  .formation-picker {
+    margin-bottom: 12px !important;
+  }
+
+  .pitch-wrap,
+  .club-panel,
+  .bench-panel,
+  .bench-slot-panel,
+  .results,
+  .season-sim,
+  .live-table-card {
+    scroll-margin-bottom: 130px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .sticky-draft-controls,
+  .controls.sticky-draft-controls {
+    left: 6px !important;
+    right: 6px !important;
+    gap: 6px !important;
+    padding: 8px !important;
+  }
+
+  .sticky-draft-controls button,
+  .controls.sticky-draft-controls button {
+    min-height: 38px !important;
+    padding: 8px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .sticky-draft-controls button:first-child,
+  .controls.sticky-draft-controls button:first-child {
+    min-height: 42px !important;
+    font-size: 12px !important;
+  }
+}
+/* MOBILE ACTION BAR */
+@media (max-width: 768px) {
+  .mobile-action-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    z-index: 9999;
+  }
+
+  .mobile-action-bar button {
+    flex: 1;
+    min-height: 48px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  /* Prevent content hiding behind bar */
+  .game-container,
+  .draft-container,
+  .main-content {
+    padding-bottom: 90px;
+  }
+}
+  .club-name {
+  font-size: 11px;
+  opacity: 0.75;
+  font-weight: 600;
+}
+
+.player-name {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.player-meta {
+  font-size: 13px;
+  font-weight: 700;
+}
+  .collection-card {
+  padding: 14px;
+}
+
+.collection-club {
+  margin-bottom: 10px;
+  font-size: 11px;
+  opacity: 0.75;
+  font-weight: 600;
+}
+
+.collection-player {
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.collection-meta {
+  font-size: 13px;
+  font-weight: 600;
+}
+/* =========================================================
+   Collection no-club-name polish
+   Use with DraftXI_collection_no_club_names.jsx
+   ========================================================= */
+
+.collection-card-club,
+.collection-club,
+.club-name {
+  display: none !important;
+}
+
+.player-collection-grid {
+  gap: 12px !important;
+}
+
+.player-collection-card {
+  min-height: 94px !important;
+  padding: 14px 12px !important;
+  align-content: center !important;
+  justify-items: center !important;
+  gap: 8px !important;
+}
+
+.player-collection-card strong,
+.collection-player {
+  display: block !important;
+  max-width: 100% !important;
+  margin: 0 0 6px !important;
+  color: #f5fff8 !important;
+  font-size: 15px !important;
+  font-weight: 1000 !important;
+  line-height: 1.15 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.player-collection-card small,
+.collection-meta {
+  min-width: 56px !important;
+  min-height: 30px !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 7px 11px !important;
+  border-radius: 999px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  background: rgba(141, 255, 179, 0.15) !important;
+  color: var(--green) !important;
+  font-size: 12px !important;
+  font-weight: 1000 !important;
+  line-height: 1 !important;
+}
+
+.player-collection-card em {
+  margin-top: -2px !important;
+  color: var(--muted) !important;
+  font-size: 11px !important;
+  font-style: normal !important;
+  font-weight: 900 !important;
+}
+
+@media (max-width: 720px) {
+  .player-collection-screen {
+    padding: 16px 12px 94px !important;
+  }
+
+  .player-collection-hero {
+    padding: 16px !important;
+    border-radius: 22px !important;
+    gap: 12px !important;
+  }
+
+  .player-collection-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .player-collection-card {
+    min-height: 86px !important;
+    padding: 12px 10px !important;
+    border-radius: 16px !important;
+  }
+
+  .player-collection-card strong,
+  .collection-player {
+    font-size: 13.5px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .player-collection-card small,
+  .collection-meta {
+    min-height: 28px !important;
+    padding: 6px 9px !important;
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .player-collection-grid {
+    gap: 8px !important;
+  }
+
+  .player-collection-card strong,
+  .collection-player {
+    font-size: 12.5px !important;
+  }
+}
