@@ -3673,6 +3673,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const [liveLeagueTable, setLiveLeagueTable] = useState(savedProgress.liveLeagueTable || []);
   const [transferMode, setTransferMode] = useState(false);
   const [transferUsed, setTransferUsed] = useState(!!savedProgress.transferUsed);
+  const [bench, setBench] = useState(savedProgress.bench || []);
+  const [substituteMode, setSubstituteMode] = useState(false);
+  const [substituteUsed, setSubstituteUsed] = useState(!!savedProgress.substituteUsed);
+  const [selectedBenchId, setSelectedBenchId] = useState(null);
   const [draftHistory, setDraftHistory] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("draftXIHistory") || "[]");
@@ -3686,6 +3690,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const [showTutorial, setShowTutorial] = useState(() => !getStoredJson("draftXITutorialSeen", false));
   const [saveNotice, setSaveNotice] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+  const [formationNotice, setFormationNotice] = useState(null);
   const [gameMode, setGameMode] = useState(savedProgress.gameMode || "europe");
   const activeClubs = gameMode === "worldcup" ? WORLD_CUP_CLUBS : ALL_CLUBS;
   const activeLeagues = gameMode === "worldcup" ? WORLD_CUP_GROUPS : TOP_FIVE_LEAGUES;
@@ -3727,10 +3732,12 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       liveLeagueTable,
       playerSeasonStats,
       transferUsed,
+      bench,
+      substituteUsed,
       clubCollection };
 
     saveStoredJson("draftXIProgressV4", progress);
-  }, [gameStarted, gameMode, selectedFormationName, currentClub, draft, pickedNames, lastClubId, recentClubIds, usedClubIds, results, rerollsLeft, rewards, seasonAwards, liveLeagueTable, playerSeasonStats, transferUsed, clubCollection]);
+  }, [gameStarted, gameMode, selectedFormationName, currentClub, draft, pickedNames, lastClubId, recentClubIds, usedClubIds, results, rerollsLeft, rewards, seasonAwards, liveLeagueTable, playerSeasonStats, transferUsed, bench, substituteUsed, clubCollection]);
 
   useEffect(() => {
     if (!saveNotice) return;
@@ -3758,6 +3765,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
   const FORMATION = FORMATIONS[selectedFormationName] || FORMATIONS[DEFAULT_FORMATION_NAME];
   const draftedPlayers = Object.values(draft);
+  const BENCH_LIMIT = 3;
+  const benchDraftActive = !results && draftedPlayers.length >= 11 && bench.length < BENCH_LIMIT;
+  const fullSquadReady = draftedPlayers.length >= 11 && bench.length >= BENCH_LIMIT;
+  const selectedBenchPlayer = bench.find(player => player.benchId === selectedBenchId) || null;
   const collectionStats = useMemo(() => getClubCollectionStats(clubCollection, activeClubs, activeLeagues, activeRestLabel), [clubCollection, gameMode]);
 
   useEffect(() => {
@@ -3846,33 +3857,105 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setPlayerSeasonStats([]);
     setTransferMode(false);
     setTransferUsed(false);
+    setBench([]);
+    setSubstituteMode(false);
+    setSubstituteUsed(false);
+    setSelectedBenchId(null);
     setMovingSlotId(null);
+    setFormationNotice(null);
     setClubCollection([]);
+  }
+
+  function getSlotLabelForFormation(formationName, slotId) {var _slots$find;
+    const slots = FORMATIONS[formationName] || FORMATIONS[DEFAULT_FORMATION_NAME];
+    return ((_slots$find = slots.find(slot => slot.id === slotId)) === null || _slots$find === void 0 ? void 0 : _slots$find.label) || slotId;
+  }
+
+  function getPenaltyForFormation(player, formationName, slotId) {
+    const slotPosition = getSlotLabelForFormation(formationName, slotId);
+    const listedPositions = player.positions || [player.position];
+
+    if (player.position === slotPosition) return 0;
+    if (listedPositions.includes(slotPosition)) return 0;
+    if (canPlaySlot(player, slotPosition)) return 2;
+
+    return 5;
+  }
+
+  function autoFitDraftToFormation(players, formationName) {
+    const slots = FORMATIONS[formationName] || FORMATIONS[DEFAULT_FORMATION_NAME];
+    const nextDraft = {};
+    const remainingPlayers = [...players];
+
+    function bestPlayerForSlot(slot) {
+      let bestIndex = -1;
+      let bestScore = -Infinity;
+
+      remainingPlayers.forEach((player, index) => {
+        const possiblePositions = player.positions || [player.position];
+        const exact = possiblePositions.includes(slot.label) || player.position === slot.label;
+        const compatible = canPlaySlot(player, slot.label);
+        const penalty = exact ? 0 : compatible ? 2 : 5;
+        const score = player.rating * 10 - penalty * 25 + (exact ? 80 : compatible ? 25 : 0);
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestIndex = index;
+        }
+      });
+
+      if (bestIndex < 0) return null;
+      const player = remainingPlayers.splice(bestIndex, 1)[0];
+      const penalty = getPenaltyForFormation(player, formationName, slot.id);
+
+      return {
+        ...player,
+        slotId: slot.id,
+        slotLabel: slot.label,
+        penalty,
+        finalRating: Math.max(60, player.rating - penalty) };
+    }
+
+    const prioritySlots = [...slots].sort((a, b) => {
+      const order = { GK: 0, ST: 1, CB: 2, RB: 3, LB: 3, CDM: 4, CM: 5, CAM: 6, LW: 7, RW: 7, LM: 8, RM: 8 };
+      return (order[a.label] || 99) - (order[b.label] || 99);
+    });
+
+    prioritySlots.forEach(slot => {
+      if (!remainingPlayers.length) return;
+      const player = bestPlayerForSlot(slot);
+      if (player) nextDraft[slot.id] = player;
+    });
+
+    return nextDraft;
   }
 
   function changeFormation(name) {
     if (name === selectedFormationName) return;
+    if (spinning || simulating || results) return;
+
+    const currentPlayers = Object.values(draft);
+    const nextDraft = autoFitDraftToFormation(currentPlayers, name);
+    const outOfPositionCount = Object.values(nextDraft).filter(player => (player.penalty || 0) > 0).length;
 
     setSelectedFormationName(name);
-    setDraft({});
-    setPickedNames([]);
+    setDraft(nextDraft);
     setSelectedPlayer(null);
-    setCurrentClub(null);
-    setRecentClubIds([]);
-    setUsedClubIds([]);
-    setSpinWinner(null);
-    setSpinReel([]);
-    setSpinOffset(0);
     setMovingSlotId(null);
     setLastPlacedSlot(null);
     setResults(null);
     setRewards([]);
     setSeasonAwards([]);
     setLiveLeagueTable([]);
-    setTransferMode(false);
-    setTransferUsed(false);
     setPlayerSeasonStats([]);
     setSelectedMatch(null);
+    setFormationNotice(currentPlayers.length ? {
+      name,
+      count: currentPlayers.length,
+      outOfPositionCount } :
+    null);
+
+    setTimeout(() => scrollToSection(pitchRef, "center"), 100);
   }
 
   function getSlotLabel(slotId) {var _FORMATION$find;
@@ -3928,6 +4011,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   function clubHasPlayablePick(club) {
     if (!club) return false;
 
+    if (draftedPlayers.length >= 11 && bench.length < BENCH_LIMIT) {
+      return makePlayers(club).some(player => !pickedNames.includes(player.name));
+    }
+
     const emptySlotsForClub = FORMATION.filter(slot => !draft[slot.id]);
     if (!emptySlotsForClub.length) return false;
 
@@ -3970,7 +4057,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       return counts;
     }, {});
 
-    const remainingPicks = Math.max(0, 11 - draftedPlayers.length);
+    const remainingPicks = benchDraftActive ? Math.max(0, BENCH_LIMIT - bench.length) : Math.max(0, 11 - draftedPlayers.length);
     const missingTopFiveLeagues = activeLeagues.filter(
     league => !draftedLeagueCounts[league]);
 
@@ -4045,7 +4132,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
   function spinClub() {
-    if (draftedPlayers.length >= 11 || spinning || currentClub) return;
+    if (fullSquadReady || spinning || currentClub || substituteMode) return;
 
     const winner = pickClub();
 
@@ -4061,7 +4148,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
   function rerollClub() {
-    if (!currentClub || rerollsLeft <= 0 || spinning || draftedPlayers.length >= 11) return;
+    if (!currentClub || rerollsLeft <= 0 || spinning || fullSquadReady || substituteMode) return;
 
     const winner = pickClub(currentClub.id);
 
@@ -4078,7 +4165,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
   function rescueSpinClub() {
-    if (!currentClub || spinning || draftedPlayers.length >= 11 || clubHasPlayablePick(currentClub)) return;
+    if (!currentClub || spinning || fullSquadReady || clubHasPlayablePick(currentClub) || substituteMode) return;
 
     const winner = pickClub(currentClub.id);
     if (!winner) return;
@@ -4096,9 +4183,39 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
   function selectPlayer(player) {
     if (pickedNames.includes(player.name)) return;
+
+    if (benchDraftActive) {
+      addBenchPlayer(player);
+      return;
+    }
+
     playSound("select", soundMuted);
     setSelectedPlayer(player);
     setTimeout(() => scrollToSection(pitchRef, "center"), 90);
+  }
+
+  function addBenchPlayer(player) {
+    if (!benchDraftActive || pickedNames.includes(player.name) || bench.length >= BENCH_LIMIT) return;
+
+    const benchPlayer = {
+      ...player,
+      benchId: `${player.id}_bench_${Date.now()}_${bench.length}`,
+      finalRating: player.rating,
+      penalty: 0,
+      slotId: null,
+      slotLabel: "BENCH" };
+
+    playSound("place", soundMuted);
+    setBench(prev => [...prev, benchPlayer].slice(0, BENCH_LIMIT));
+    setPickedNames(prev => [...prev, player.name]);
+    if (player.clubId) {
+      setUsedClubIds(prev => Array.from(new Set([...prev, player.clubId])));
+    }
+    setSelectedPlayer(null);
+    setCurrentClub(null);
+    setSpinWinner(null);
+    setResults(null);
+    setTimeout(() => scrollToSection(pitchRef, "center"), 120);
   }
 
   function placePlayer(slotId) {
@@ -4215,6 +4332,43 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
 
+  function makeSubstitution(slotId) {
+    if (!substituteMode || substituteUsed || !selectedBenchPlayer || results || simulating) return;
+
+    const starter = draft[slotId];
+    if (!starter) return;
+
+    const slotLabel = getSlotLabel(slotId);
+    if (!canPlaySlot(selectedBenchPlayer, slotLabel)) return;
+
+    const penalty = getPenalty(selectedBenchPlayer, slotId);
+    const incoming = {
+      ...selectedBenchPlayer,
+      slotId,
+      slotLabel,
+      penalty,
+      finalRating: Math.max(60, selectedBenchPlayer.rating - penalty) };
+
+    const outgoing = {
+      ...starter,
+      benchId: `${starter.id || starter.name}_bench_return_${Date.now()}`,
+      slotId: null,
+      slotLabel: "BENCH",
+      penalty: 0,
+      finalRating: starter.rating || starter.finalRating };
+
+    setDraft(prev => ({ ...prev, [slotId]: incoming }));
+    setBench(prev => prev.map(player => player.benchId === selectedBenchPlayer.benchId ? outgoing : player));
+    setSubstituteUsed(true);
+    setSubstituteMode(false);
+    setSelectedBenchId(null);
+    setMovingSlotId(null);
+    setSelectedPlayer(null);
+    setResults(null);
+    playSound("move", soundMuted);
+    setTimeout(() => scrollToSection(pitchRef, "center"), 100);
+  }
+
   function calculateRewards(summary) {var _summary$table$find;
     const earned = [];
     const finishPosition = summary.finishPosition || (
@@ -4326,6 +4480,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setPlayerSeasonStats([]);
     setTransferMode(false);
     setTransferUsed(false);
+    setBench([]);
+    setSubstituteMode(false);
+    setSubstituteUsed(false);
+    setSelectedBenchId(null);
     setMovingSlotId(null);
   }
 
@@ -4372,7 +4530,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
   function simulateWorldCupTournament() {
-    if (draftedPlayers.length < 11 || simulating) return;
+    if (!fullSquadReady || simulating) return;
 
     playSound("season", soundMuted);
     setSimulating(true);
@@ -4683,7 +4841,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     // Allow simulation to start even if a stale saved result exists.
     // This fixes cases where localStorage restores "Season Complete" and the sim button appears dead.
-    if (draftedPlayers.length < 11 || simulating) return;
+    if (!fullSquadReady || simulating) return;
 
     playSound("season", soundMuted);
     setSimulating(true);
@@ -5053,17 +5211,21 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }) || selectedOpenSlots[0] :
   null;
 
-  const guideStep = selectedPlayer ? "place" : currentClub ? "select" : draftedPlayers.length >= 11 ? "simulate" : "spin";
+  const guideStep = substituteMode ? "sub" : selectedPlayer ? "place" : currentClub ? "select" : benchDraftActive ? "bench" : fullSquadReady ? "simulate" : "spin";
   const guideTitle = guideStep === "spin" ? gameMode === "worldcup" ? "Spin your next nation" : "Spin your next club" :
   guideStep === "select" ? `Choose one player from ${currentClub.name}` :
   guideStep === "place" ? `Place ${selectedPlayer.name}` :
-  results ? gameMode === "worldcup" ? "Tournament complete" : "Season complete" : "Your XI is ready";
+  guideStep === "bench" ? `Draft your bench (${bench.length}/${BENCH_LIMIT})` :
+  guideStep === "sub" ? "Choose a starter to replace" :
+  results ? gameMode === "worldcup" ? "Tournament complete" : "Season complete" : "Your squad is ready";
   const guideText = guideStep === "spin" ? `Your XI is ${draftedPlayers.length}/11 complete. Use ${gameMode === "worldcup" ? "Spin Nation" : "Spin Club"} to continue.` :
   guideStep === "select" ? currentClubHasPlayablePick ? "Pick the player who best fits your empty positions." : `No player from this ${gameMode === "worldcup" ? "nation" : "club"} fits your open slots. Take a free rescue spin.` :
   guideStep === "place" ? bestSelectedSlot ? `Tap the glowing ${bestSelectedSlot.label} slot. Best fit is highlighted brighter.` : "No open natural role. Choose another player or use Transfer Lifeline." :
+  guideStep === "bench" ? `Your starting XI is complete. Spin ${BENCH_LIMIT - bench.length} more ${BENCH_LIMIT - bench.length === 1 ? "bench player" : "bench players"}.` :
+  guideStep === "sub" ? selectedBenchPlayer ? `Tap an eligible starter to swap with ${selectedBenchPlayer.name}.` : "Pick one bench player, then tap an eligible starter on the pitch." :
   results ? "Review your results, awards, table, and share card." :
   gameMode === "worldcup" ? "Hit Simulate Tournament and chase the World Cup." : "Hit Simulate Season and chase 38-0.";
-  const nextNeededText = nextNeededSlot ? `Next needed: ${nextNeededSlot.label}` : "Squad complete";
+  const nextNeededText = nextNeededSlot ? `Next needed: ${nextNeededSlot.label}` : benchDraftActive ? `Bench needed: ${BENCH_LIMIT - bench.length}` : "Squad complete";
   const shareCardText = results ? makeShareCardText(results, playerSeasonStats, selectedFormationName, teamRating) : "";
 
   return /*#__PURE__*/(
@@ -5089,7 +5251,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("section", { className: `next-move-card step-${guideStep}` }, /*#__PURE__*/
     React.createElement("div", { className: "next-move-top" }, /*#__PURE__*/
     React.createElement("span", null, "NEXT MOVE"), /*#__PURE__*/
-    React.createElement("strong", null, draftedPlayers.length, "/11")), /*#__PURE__*/
+    React.createElement("strong", null, draftedPlayers.length, "/11", bench.length > 0 ? ` + ${bench.length}/${BENCH_LIMIT} bench` : "")), /*#__PURE__*/
     React.createElement("h2", null, guideTitle), /*#__PURE__*/
     React.createElement("p", null, guideText), /*#__PURE__*/
     React.createElement("div", { className: "squad-progress" }, /*#__PURE__*/
@@ -5100,27 +5262,40 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("span", { className: guideStep === "spin" ? "active" : draftedPlayers.length > 0 || currentClub || selectedPlayer ? "done" : "" }, "Spin"), /*#__PURE__*/
     React.createElement("span", { className: guideStep === "select" ? "active" : selectedPlayer || draftedPlayers.length > 0 ? "done" : "" }, "Select"), /*#__PURE__*/
     React.createElement("span", { className: guideStep === "place" ? "active" : draftedPlayers.length > 0 ? "done" : "" }, "Place"), /*#__PURE__*/
+    React.createElement("span", { className: guideStep === "bench" ? "active" : bench.length >= BENCH_LIMIT ? "done" : "" }, "Bench"), /*#__PURE__*/
     React.createElement("span", { className: guideStep === "simulate" ? "active" : results ? "done" : "" }, "Sim")), /*#__PURE__*/
 
 
 
     React.createElement("section", { className: "controls" }, /*#__PURE__*/
-    React.createElement("button", { className: guideStep === "spin" && !spinning ? "guide-pulse" : "", onClick: spinClub, disabled: spinning || !!currentClub || draftedPlayers.length >= 11 },
-    spinning ? "Spinning..." : currentClub ? "Pick or Reroll" : gameMode === "worldcup" ? "Spin Nation" : "Spin Club"), /*#__PURE__*/
+    React.createElement("button", { className: (guideStep === "spin" || guideStep === "bench") && !spinning ? "guide-pulse" : "", onClick: spinClub, disabled: spinning || !!currentClub || fullSquadReady || substituteMode },
+    spinning ? "Spinning..." : currentClub ? "Pick or Reroll" : benchDraftActive ? `Spin Bench (${BENCH_LIMIT - bench.length})` : gameMode === "worldcup" ? "Spin Nation" : "Spin Club"), /*#__PURE__*/
 
-    React.createElement("button", { className: "reroll", onClick: rerollClub, disabled: !currentClub || rerollsLeft <= 0 || spinning || draftedPlayers.length >= 11 },
+    React.createElement("button", { className: "reroll", onClick: rerollClub, disabled: !currentClub || rerollsLeft <= 0 || spinning || fullSquadReady || substituteMode },
     rerollsLeft > 0 ? `Reroll (${rerollsLeft})` : "No Rerolls"), /*#__PURE__*/
 
-    currentClub && !currentClubHasPlayablePick && !spinning && draftedPlayers.length < 11 && /*#__PURE__*/React.createElement("button", { className: "rescue-spin", onClick: rescueSpinClub }, "Rescue Spin"), /*#__PURE__*/
+    currentClub && !currentClubHasPlayablePick && !spinning && !fullSquadReady && /*#__PURE__*/React.createElement("button", { className: "rescue-spin", onClick: rescueSpinClub }, "Rescue Spin"), /*#__PURE__*/
 
     React.createElement("button", {
       className: "transfer-lifeline",
       onClick: () => setTransferMode(prev => !prev),
-      disabled: draftedPlayers.length < 6 || transferUsed || spinning || simulating || !!results },
+      disabled: draftedPlayers.length < 6 || transferUsed || spinning || simulating || !!results || benchDraftActive || substituteMode },
 
     transferUsed ? "Transfer Used" : transferMode ? "Cancel Transfer" : "Transfer Lifeline"), /*#__PURE__*/
 
-    !results && /*#__PURE__*/React.createElement("button", { className: guideStep === "simulate" ? "guide-pulse" : "", onClick: simulateSeason, disabled: draftedPlayers.length < 11 || simulating },
+    React.createElement("button", {
+      className: "substitute-lifeline",
+      onClick: () => {
+        setSubstituteMode(prev => !prev);
+        setTransferMode(false);
+        setSelectedPlayer(null);
+        setMovingSlotId(null);
+        setSelectedBenchId(null);
+      },
+      disabled: !fullSquadReady || substituteUsed || spinning || simulating || !!results },
+    substituteUsed ? "Sub Used" : substituteMode ? "Cancel Sub" : "Substitute Lifeline"), /*#__PURE__*/
+
+    !results && /*#__PURE__*/React.createElement("button", { className: guideStep === "simulate" ? "guide-pulse" : "", onClick: simulateSeason, disabled: !fullSquadReady || simulating || substituteMode },
     simulating ? gameMode === "worldcup" ? "Simulating Tournament..." : "Simulating..." : gameMode === "worldcup" ? "Simulate Tournament" : "Simulate Season"), /*#__PURE__*/
 
     React.createElement("button", { className: "ghost", onClick: resetGame }, "Reset"), /*#__PURE__*/
@@ -5141,14 +5316,23 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       key: name,
       className: selectedFormationName === name ? "active" : "",
       onClick: () => changeFormation(name),
-      disabled: spinning || simulating || draftedPlayers.length > 0 },
+      disabled: spinning || simulating || !!results },
 
     name))),
 
 
 
-    draftedPlayers.length > 0 && /*#__PURE__*/
-    React.createElement("small", null, "Reset your XI to change formation.")),
+    draftedPlayers.length > 0 && !results && /*#__PURE__*/
+    React.createElement("small", null, "Changing formation will auto-fit your current XI. Tap players to fix any bad fits."),
+    results && /*#__PURE__*/
+    React.createElement("small", null, "Start a new draft to change formation after simulation.")),
+
+
+
+    formationNotice && !results && draftedPlayers.length > 0 && /*#__PURE__*/
+    React.createElement("section", { className: `formation-notice ${formationNotice.outOfPositionCount ? "has-warnings" : ""}` }, /*#__PURE__*/
+    React.createElement("strong", null, "Formation changed to ", formationNotice.name), /*#__PURE__*/
+    React.createElement("span", null, formationNotice.outOfPositionCount ? `${formationNotice.outOfPositionCount} player${formationNotice.outOfPositionCount === 1 ? "" : "s"} need${formationNotice.outOfPositionCount === 1 ? "s" : ""} a better position. Tap cards on the pitch to swap them.` : "Your XI was auto-fitted cleanly.")),
 
 
 
@@ -5251,6 +5435,14 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("section", { className: "selected-banner transfer-banner" }, "Transfer Lifeline active \u2014 click one drafted player on the pitch to remove them, then spin for a replacement."),
 
 
+    benchDraftActive && !currentClub && /*#__PURE__*/
+    React.createElement("section", { className: "selected-banner bench-banner" }, "Starting XI complete \u2014 spin for ", BENCH_LIMIT - bench.length, " more bench ", BENCH_LIMIT - bench.length === 1 ? "player" : "players", "."),
+
+
+    substituteMode && /*#__PURE__*/
+    React.createElement("section", { className: "selected-banner substitute-banner" }, selectedBenchPlayer ? ["Substitute active \u2014 tap an eligible starter to replace with ", /*#__PURE__*/React.createElement("strong", { key: "name" }, selectedBenchPlayer.name), "."] : "Substitute active \u2014 choose one bench player below, then tap an eligible starter."),
+
+
     currentClub && !currentClubHasPlayablePick && /*#__PURE__*/
     React.createElement("section", { className: "selected-banner rescue-banner" }, gameMode === "worldcup" ? "No eligible player fits the remaining slots. Use Rescue Spin for a free replacement nation." : "No eligible player fits the remaining slots. Use Rescue Spin for a free replacement club."),
 
@@ -5267,7 +5459,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("div", { className: "mobile-flow-hint" }, "Pick a player, then tap their position button."), /*#__PURE__*/
     React.createElement("div", { className: "player-grid" },
     availablePlayers.map(player => {
-      const unavailable = pickedNames.includes(player.name) || isPlayerPositionUnavailable(player);
+      const unavailable = pickedNames.includes(player.name) || !benchDraftActive && isPlayerPositionUnavailable(player);
       const isSelected = (selectedPlayer === null || selectedPlayer === void 0 ? void 0 : selectedPlayer.id) === player.id;
 
       return /*#__PURE__*/(
@@ -5276,7 +5468,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           role: "button",
           tabIndex: unavailable ? -1 : 0,
           "aria-disabled": unavailable,
-          className: `player-card ${isSelected ? "selected" : ""} ${isPlayerPositionUnavailable(player) ? "position-filled" : ""}`,
+          className: `player-card ${benchDraftActive ? "bench-pick-card" : ""} ${isSelected ? "selected" : ""} ${!benchDraftActive && isPlayerPositionUnavailable(player) ? "position-filled" : ""}`,
           onClick: () => {
             if (!unavailable) selectPlayer(player);
           },
@@ -5295,7 +5487,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         React.createElement("div", { className: "player-bottom-row" }, /*#__PURE__*/
         React.createElement("b", { className: `player-rating ${getRatingClass(player.rating)}` }, player.rating),
 
-        isSelected && /*#__PURE__*/
+        benchDraftActive && /*#__PURE__*/React.createElement("span", { className: "bench-pick-pill" }, "Bench Pick"),
+
+        isSelected && !benchDraftActive && /*#__PURE__*/
         React.createElement("div", { className: "inline-position-buttons" },
         getEligibleSlotOptions(player).map(pos => {
           const openSlot = FORMATION.find(
@@ -5321,7 +5515,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
 
-        isPlayerPositionUnavailable(player) && /*#__PURE__*/React.createElement("em", { className: "taken-position" }, "No open role"))));
+        !benchDraftActive && isPlayerPositionUnavailable(player) && /*#__PURE__*/React.createElement("em", { className: "taken-position" }, "No open role"))));
 
 
 
@@ -5358,14 +5552,18 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       const moveSource = movingSlotId === slot.id;
       const swapTarget = movingPlayer && player && !moveSource && canPlaySlot(movingPlayer, slot.label) && canPlaySlot(player, getSlotLabel(movingSlotId));
       const swapBlocked = movingPlayer && player && !moveSource && !swapTarget;
+      const subTarget = substituteMode && selectedBenchPlayer && player && canPlaySlot(selectedBenchPlayer, slot.label);
+      const subBlocked = substituteMode && selectedBenchPlayer && player && !subTarget;
       return /*#__PURE__*/(
         React.createElement("div", {
           key: slot.id,
           role: "button",
           tabIndex: 0,
-          className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${slotPlayable ? "valid-slot" : ""} ${slotBest ? "best-slot" : ""} ${slotInvalid ? "invalid-slot" : ""} ${moveTarget ? "move-target" : ""} ${moveBlocked ? "move-blocked" : ""} ${moveSource ? "moving-source" : ""} ${swapTarget ? "swap-target" : ""} ${swapBlocked ? "swap-blocked" : ""} ${transferMode && player ? "transfer-remove" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,
+          className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${slotPlayable ? "valid-slot" : ""} ${slotBest ? "best-slot" : ""} ${slotInvalid ? "invalid-slot" : ""} ${moveTarget ? "move-target" : ""} ${moveBlocked ? "move-blocked" : ""} ${moveSource ? "moving-source" : ""} ${swapTarget ? "swap-target" : ""} ${swapBlocked ? "swap-blocked" : ""} ${transferMode && player ? "transfer-remove" : ""} ${subTarget ? "sub-target" : ""} ${subBlocked ? "sub-blocked" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,
           style: { left: `${isMobileFormation ? (_slot$mobileX = slot.mobileX) !== null && _slot$mobileX !== void 0 ? _slot$mobileX : slot.x : slot.x}%`, top: `${isMobileFormation ? (_slot$mobileY = slot.mobileY) !== null && _slot$mobileY !== void 0 ? _slot$mobileY : slot.y : slot.y}%` },
           onClick: () => {
+            if (substituteMode && player && subTarget) makeSubstitution(slot.id);else
+            if (substituteMode) return;else
             if (transferMode && player) removePlayerForTransfer(slot.id);else
             if (movingSlotId && player && movingSlotId === slot.id) setMovingSlotId(null);else
             if (movingSlotId && player && swapTarget) swapPlayersWithSlot(slot.id);else
@@ -5379,6 +5577,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           onKeyDown: e => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
+              if (substituteMode && player && subTarget) makeSubstitution(slot.id);else
+              if (substituteMode) return;else
               if (transferMode && player) removePlayerForTransfer(slot.id);else
               if (movingSlotId && player && movingSlotId === slot.id) setMovingSlotId(null);else
               if (movingSlotId && player && swapTarget) swapPlayersWithSlot(slot.id);else
@@ -5395,7 +5595,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         player ? /*#__PURE__*/
         React.createElement(React.Fragment, null, /*#__PURE__*/
         React.createElement("strong", { title: player.name }, getPitchDisplayName(player.name)), /*#__PURE__*/
-        React.createElement("small", { className: getRatingClass(player.finalRating) }, player.finalRating), /*#__PURE__*/
+        React.createElement("small", { className: getRatingClass(player.finalRating) }, player.finalRating),
+        player.penalty > 0 && /*#__PURE__*/React.createElement("small", { className: "penalty-badge" }, "-", player.penalty, " OOP"), /*#__PURE__*/
         React.createElement("em", null, moveSource ? "Tap again to cancel" : movingSlotId ? swapTarget ? "Swap Here" : "Not Eligible" : player.positions.join("/"))) : /*#__PURE__*/
 
 
@@ -5405,6 +5606,80 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
     }))),
+
+
+    (bench.length > 0 || benchDraftActive || fullSquadReady) && /*#__PURE__*/
+    React.createElement("section", {
+      className: "bench-panel bench-slot-panel",
+      style: {
+        width: "100%",
+        margin: "22px 0",
+        padding: "22px",
+        borderRadius: 30,
+        background: "rgba(255, 255, 255, 0.075)",
+        border: "1px solid rgba(141, 255, 179, 0.24)",
+        boxShadow: "0 22px 70px rgba(0, 0, 0, 0.28)" } },
+    /*#__PURE__*/
+    React.createElement("div", { className: "bench-panel-header", style: { marginBottom: 16 } }, /*#__PURE__*/
+    React.createElement("div", null, /*#__PURE__*/
+    React.createElement("h3", { style: { margin: "0 0 6px", color: "#f5fff8", fontSize: 24, fontWeight: 1000 } }, "Bench"), /*#__PURE__*/
+    React.createElement("p", { style: { margin: 0, color: "#ccefd7", fontSize: 14, fontWeight: 800 } }, bench.length, "/", BENCH_LIMIT, " players", benchDraftActive ? " - keep spinning to fill it." : fullSquadReady ? " - ready for one substitution." : ""))), /*#__PURE__*/
+    React.createElement("div", {
+      className: "bench-grid bench-slot-grid",
+      style: {
+        width: "100%",
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 16 } },
+
+
+    bench.length ? bench.map(player => {
+      const activeBench = selectedBenchId === player.benchId;
+      return /*#__PURE__*/React.createElement("button", {
+        key: player.benchId || player.id || player.name,
+        type: "button",
+        className: `bench-card bench-slot-card ${activeBench ? "selected" : ""}`,
+        disabled: !substituteMode || substituteUsed || !!results || simulating,
+        onClick: () => setSelectedBenchId(activeBench ? null : player.benchId),
+        style: {
+          appearance: "none",
+          WebkitAppearance: "none",
+          position: "relative",
+          width: 118,
+          height: 128,
+          minWidth: 118,
+          minHeight: 128,
+          maxWidth: 118,
+          margin: 0,
+          padding: "12px 9px 10px",
+          borderRadius: 20,
+          border: activeBench ? "3px solid #8dffb3" : "3px solid rgba(21, 142, 66, 0.95)",
+          background: "rgba(3, 20, 9, 0.96)",
+          color: "#f5fff8",
+          display: "grid",
+          gridTemplateRows: "17px 18px 45px 15px",
+          placeItems: "center",
+          alignContent: "center",
+          justifyContent: "center",
+          gap: 1,
+          textAlign: "center",
+          overflow: "hidden",
+          boxShadow: activeBench ? "0 0 0 4px rgba(141,255,179,.18), 0 0 24px rgba(141,255,179,.32), 0 12px 26px rgba(0,0,0,.28)" : "inset 0 0 0 1px rgba(141,255,179,.08), 0 10px 24px rgba(0,0,0,.24)",
+          fontFamily: "Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+          lineHeight: 1,
+          whiteSpace: "normal",
+          opacity: 1,
+          filter: "none",
+          cursor: substituteMode && !substituteUsed && !results && !simulating ? "pointer" : "default" } },
+
+      /*#__PURE__*/
+      React.createElement("span", { style: { display: "block", width: "100%", color: "#f5fff8", fontSize: 13, fontWeight: 1000, lineHeight: 1, letterSpacing: ".02em", textTransform: "uppercase", textAlign: "center" } }, player.position), /*#__PURE__*/
+      React.createElement("strong", { title: player.name, style: { display: "block", width: 92, maxWidth: 92, color: "#f5fff8", fontSize: 12, fontWeight: 900, lineHeight: 1.05, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" } }, getPitchDisplayName(player.name)), /*#__PURE__*/
+      React.createElement("small", { className: getRatingClass(player.finalRating || player.rating), style: { display: "inline-grid", placeItems: "center", width: 43, height: 43, minWidth: 43, minHeight: 43, margin: "1px 0", padding: 0, borderRadius: 999, background: "#f1c40f", color: "#14200b", fontSize: 17, fontWeight: 1000, lineHeight: 1, textAlign: "center", boxShadow: "0 4px 10px rgba(0,0,0,.22)" } }, player.finalRating || player.rating), /*#__PURE__*/
+      React.createElement("em", { style: { display: "block", width: "100%", color: "#9feeb8", fontSize: 12, fontStyle: "italic", fontWeight: 800, lineHeight: 1, textAlign: "center", opacity: .95, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, substituteMode ? activeBench ? "Selected" : "Tap to Sub" : player.positions ? player.positions.join("/") : player.position));
+    }) : /*#__PURE__*/React.createElement("div", { className: "bench-empty" }, "Bench opens after the starting XI is complete."))),
 
 
 
