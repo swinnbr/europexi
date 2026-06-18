@@ -230,6 +230,19 @@ h1 {
   border: 1px solid var(--panel-border);
 }
 
+.controls .share-draft-button,
+.results-actions .share-draft-button {
+  background: linear-gradient(135deg, var(--green), #22c55e);
+  color: var(--green-dark);
+  border: 1px solid rgba(141, 255, 179, 0.45);
+  box-shadow: 0 12px 30px rgba(57, 255, 136, 0.2);
+}
+
+.controls .share-draft-button:hover:not(:disabled),
+.results-actions .share-draft-button:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
 /* Shared panels */
 
 .club-panel,

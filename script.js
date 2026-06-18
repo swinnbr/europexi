@@ -3358,7 +3358,8 @@ function makeShareCardText(results, playerSeasonStats, formationName, teamRating
   `MVP: ${mvp ? `${mvp.name} (${mvp.averageRating} AVG)` : "None"}`,
   results.badge,
   "",
-  "Can you beat my XI?"].
+  "Can you beat my XI?",
+  "Play at https://draftxi.xyz"].
   join("\n");
 }
 
@@ -4528,6 +4529,27 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     (_navigator$clipboard = navigator.clipboard) === null || _navigator$clipboard === void 0 ? void 0 : _navigator$clipboard.writeText(text);
   }
 
+  async function shareDraftXI() {var _navigator$clipboard2;
+    const shareUrl = "https://draftxi.xyz";
+    const shareTitle = "Draft XI";
+    const shareText = results ? makeShareCardText(results, playerSeasonStats, selectedFormationName, teamRating) : "Play Draft XI and build the ultimate football draft team.";
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl });
+      } else {
+        await ((_navigator$clipboard2 = navigator.clipboard) === null || _navigator$clipboard2 === void 0 ? void 0 : _navigator$clipboard2.writeText(`${shareTitle} - ${shareUrl}`));
+        setShareCopied(true);
+        window.setTimeout(() => setShareCopied(false), 1600);
+      }
+    } catch (error) {
+      // Share was cancelled or blocked. No need to interrupt gameplay.
+    }
+  }
+
 
   function simulateWorldCupTournament() {
     if (!fullSquadReady || simulating) return;
@@ -5300,6 +5322,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     React.createElement("button", { className: "ghost", onClick: resetGame }, "Reset"), /*#__PURE__*/
     React.createElement("button", { className: "ghost change-mode-button", type: "button", onClick: returnToStartScreen, disabled: spinning || simulating }, "Change Mode"), /*#__PURE__*/
+    React.createElement("button", { className: "share-draft-button", type: "button", onClick: shareDraftXI }, shareCopied ? "Link Copied!" : "Share Draft XI"), /*#__PURE__*/
     React.createElement("button", {
       className: "sound-toggle",
       onClick: () => setSoundMuted(prev => !prev) },
@@ -5695,7 +5718,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
     React.createElement("div", { className: "results-actions" }, /*#__PURE__*/
-    React.createElement("button", { type: "button", onClick: copyLatestResult }, shareCopied ? "Copied!" : "Copy Share Card")),
+    React.createElement("button", { type: "button", onClick: copyLatestResult }, shareCopied ? "Copied!" : "Copy Share Card"), /*#__PURE__*/
+    React.createElement("button", { className: "share-draft-button", type: "button", onClick: shareDraftXI }, "Share Draft XI")),
 
 
     ((_results$table = results.table) === null || _results$table === void 0 ? void 0 : _results$table.length) > 0 && /*#__PURE__*/
