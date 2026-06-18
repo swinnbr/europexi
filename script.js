@@ -1,5 +1,5 @@
-// Draft XI Europe v4.0 — fresh JSX with 20-team table, expanded variety, no repeats, and no generic players
-// Draft XI: Europe v2.0 — integrated CodePen JSX
+// Draft XI Europe v4.0  fresh JSX with 20-team table, expanded variety, no repeats, and no generic players
+// Draft XI: Europe v2.0  integrated CodePen JSX
 // Includes expanded teams, contextual alternate positions, fair spinner, reroll, locked players, smarter greying, live simulation, and Play Again.
 function setMobileViewportHeight() {
   if (typeof window === "undefined" || typeof document === "undefined") return;
@@ -980,7 +980,7 @@ const EXTRA_TOP5_CLUBS = [
   rating: 78,
   players: [
   ["Thijs Dallinga", "ST", 80], ["Branco van den Boomen", "CM", 80], ["Zakaria Aboukhlal", "RW", 79],
-  ["Rafael Ratao", "LW", 78], ["Stijn Spierings", "CDM", 79], ["Farès Chaibi", "CAM", 79],
+  ["Rafael Ratao", "LW", 78], ["Stijn Spierings", "CDM", 79], ["Fars Chaibi", "CAM", 79],
   ["Mikkel Desler", "RB", 77], ["Rasmus Nicolaisen", "CB", 78], ["Anthony Rouault", "CB", 78],
   ["Issiaga Sylla", "LB", 77], ["Maxime Dupe", "GK", 78]] },
 
@@ -1118,7 +1118,7 @@ const EXPANDED_DRAFT_CLUBS = [
   ["Hirving Lozano", "LW", 84], ["Luuk de Jong", "ST", 83], ["Marco van Ginkel", "CM", 82],
   ["Steven Bergwijn", "RW", 82], ["Jeroen Zoet", "GK", 81], ["Arias", "RB", 81],
   ["Daniel Schwaab", "CB", 79], ["Nick Viergever", "CB", 79], ["Jorrit Hendrix", "CDM", 80],
-  ["Gastón Pereiro", "CAM", 81], ["Davy Propper", "CM", 81], ["Angelino", "LB", 80],
+  ["Gastn Pereiro", "CAM", 81], ["Davy Propper", "CM", 81], ["Angelino", "LB", 80],
   ["Pablo Rosario", "CDM", 78], ["Donyell Malen", "ST", 79], ["Mauro Junior", "LW", 77]] },
 
 
@@ -1328,8 +1328,8 @@ const EXPANDED_DRAFT_CLUBS = [
   ["Felix Magath", "CAM", 88], ["Horst Hrubesch", "ST", 87], ["Manfred Kaltz", "RB", 87],
   ["Uli Stein", "GK", 85], ["Ditmar Jakobs", "CB", 84], ["Holger Hieronymus", "CB", 83],
   ["Wolfgang Rolff", "CM", 83], ["Bernd Wehmeyer", "LB", 82], ["Jimmy Hartwig", "CDM", 82],
-  ["Lars Bastrup", "LW", 81], ["Thomas von Heesen", "CM", 82], ["Jürgen Milewski", "RW", 80],
-  ["Michael Schröder", "CB", 79], ["Wolfram Wuttke", "CAM", 80], ["Gerard Plessers", "LB", 79]] },
+  ["Lars Bastrup", "LW", 81], ["Thomas von Heesen", "CM", 82], ["Jrgen Milewski", "RW", 80],
+  ["Michael Schrder", "CB", 79], ["Wolfram Wuttke", "CAM", 80], ["Gerard Plessers", "LB", 79]] },
 
 
 {
@@ -1774,7 +1774,7 @@ const BALANCED_100_EXTRA_CLUBS = [
   rating: 84,
   players: [
   ["Dominique Casagrande", "GK", 81], ["Christian Karembeu", "CM", 86], ["Marcel Desailly", "CB", 88],
-  ["Nicolas Ouédec", "ST", 84], ["Japhet N'Doram", "CAM", 86], ["Claude Makelele", "CDM", 84],
+  ["Nicolas Oudec", "ST", 84], ["Japhet N'Doram", "CAM", 86], ["Claude Makelele", "CDM", 84],
   ["Reynald Pedros", "LW", 84], ["Patrice Loko", "ST", 85], ["Jean-Michel Ferri", "CM", 82],
   ["Serge Le Dizet", "RB", 80], ["Bruno Carotti", "LB", 79]] },
 
@@ -1790,7 +1790,7 @@ const BALANCED_100_EXTRA_CLUBS = [
   ["Lionel Charbonnier", "GK", 81], ["Laurent Blanc", "CB", 88], ["Frank Verlaat", "CB", 82],
   ["Taribo West", "LB", 82], ["Sabri Lamouchi", "CM", 84], ["Corentin Martins", "CAM", 84],
   ["Lilian Laslandes", "ST", 83], ["Bernard Diomede", "LW", 82], ["Moussa Saib", "CDM", 83],
-  ["Philippe Violeau", "CM", 80], ["Stephane Mahé", "RB", 79]] },
+  ["Philippe Violeau", "CM", 80], ["Stephane Mah", "RB", 79]] },
 
 
 {
@@ -1825,7 +1825,7 @@ const BALANCED_100_EXTRA_CLUBS = [
 
 const BALANCED_BIG_FIVE_LEAGUES = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1"];
 
-const STANDARD_CLUB_POOL = [...CLUBS, ...JACKPOT_CLUBS, ...SMALLER_CLUBS, ...EXTRA_TOP5_CLUBS, ...EXPANDED_DRAFT_CLUBS, ...BALANCED_100_EXTRA_CLUBS].filter(club => BALANCED_BIG_FIVE_LEAGUES.includes(club.league));
+const STANDARD_CLUB_POOL = [...CLUBS, ...JACKPOT_CLUBS, ...SMALLER_CLUBS, ...EXTRA_TOP5_CLUBS, ...EXPANDED_DRAFT_CLUBS, ...BALANCED_100_EXTRA_CLUBS];
 const ALL_CLUBS = STANDARD_CLUB_POOL;
 const TOP_FIVE_LEAGUES = BALANCED_BIG_FIVE_LEAGUES;
 
@@ -1884,7 +1884,7 @@ function cleanPlayerName(name) {
   let cleaned = String(name || "").trim();
 
   cleaned = cleaned.
-  replace(/\s*[-–—|]\s*.+$/, "").
+  replace(/\s*[-|]\s*.+$/, "").
   replace(/\s*\([^)]*\)\s*$/, "").
   trim();
 
@@ -2048,6 +2048,7 @@ function makePlayers(club) {
       position: p[1],
       positions: getAltPositions(name, p[1]),
       rating: p[2],
+      clubId: club.id,
       club: club.name,
       season: club.season,
       league: club.league,
@@ -2084,9 +2085,13 @@ function getClubCollectionStats(collectionIds) {
   map(id => ALL_CLUBS.find(club => club.id === id)).
   filter(Boolean);
 
-  const byLeague = TOP_FIVE_LEAGUES.map(league => ({
+  const byLeague = [
+  ...TOP_FIVE_LEAGUES.map(league => ({
     league,
-    count: clubs.filter(club => club.league === league).length }));
+    count: clubs.filter(club => club.league === league).length })),
+  {
+    league: "Rest of Europe",
+    count: clubs.filter(club => !TOP_FIVE_LEAGUES.includes(club.league)).length }];
 
 
   const total = Math.min(uniqueIds.length, ALL_CLUBS.length);
@@ -2185,14 +2190,15 @@ const CLUB_COLLECTION_STYLES = {
 
 function getLeagueIcon(league) {
   const icons = {
-    "Premier League": "🏴",
-    "La Liga": "🇪🇸",
-    Bundesliga: "🇩🇪",
-    "Serie A": "🇮🇹",
-    "Ligue 1": "🇫🇷" };
+    "Premier League": "PL",
+    "La Liga": "LL",
+    Bundesliga: "BL",
+    "Serie A": "SA",
+    "Ligue 1": "L1",
+    "Rest of Europe": "EU" };
 
 
-  return icons[league] || "⚽";
+  return icons[league] || "EU";
 }
 
 function renderClubCollectionCard(collectionStats, options = {}) {
@@ -2226,7 +2232,7 @@ function renderClubCollectionCard(collectionStats, options = {}) {
   showNoRepeat && usedClubIds.length > 0 && /*#__PURE__*/React.createElement(
   "small",
   { style: CLUB_COLLECTION_STYLES.note },
-  "No-repeat active: ", usedClubIds.length, " landed club", usedClubIds.length === 1 ? "" : "s", " locked out this run."));
+  "No-repeat active: ", usedClubIds.length, " drafted club", usedClubIds.length === 1 ? "" : "s", " locked out this run."));
 
 
 }
@@ -2656,18 +2662,18 @@ function calculateSeasonAwards(summary, playerStats) {
   filter(p => p.position === "GK").
   sort((a, b) => b.cleanSheets - a.cleanSheets || b.averageRating - a.averageRating)[0];
   const awards = [
-  { icon: "🏆", title: "Player of the Season", value: `${mvp.name} · ${mvp.averageRating} AVG` },
-  { icon: "⚽", title: "Golden Boot", value: `${topScorer.name} · ${topScorer.goals} goals` },
-  { icon: "🎯", title: "Assist King", value: `${topAssister.name} · ${topAssister.assists} assists` }];
+  { icon: "Award", title: "Player of the Season", value: `${mvp.name} - ${mvp.averageRating} AVG` },
+  { icon: "Award", title: "Golden Boot", value: `${topScorer.name} - ${topScorer.goals} goals` },
+  { icon: "Award", title: "Assist King", value: `${topAssister.name} - ${topAssister.assists} assists` }];
 
 
   if (goldenGlove) {
-    awards.push({ icon: "🧤", title: "Golden Glove", value: `${goldenGlove.name} · ${goldenGlove.cleanSheets} clean sheets` });
+    awards.push({ icon: "Award", title: "Golden Glove", value: `${goldenGlove.name} - ${goldenGlove.cleanSheets} clean sheets` });
   }
 
 
   if (summary.wins === 38) {
-    awards.unshift({ icon: "🐐", title: "Perfect Season", value: "38 wins from 38 matches" });
+    awards.unshift({ icon: "Award", title: "Perfect Season", value: "38 wins from 38 matches" });
   }
 
   return awards;
@@ -2719,8 +2725,8 @@ function makeShareCardText(results, playerSeasonStats, formationName, teamRating
   const positionText = tablePosition ? `League Finish: ${tablePosition}${tablePosition === 1 ? "st" : tablePosition === 2 ? "nd" : tablePosition === 3 ? "rd" : "th"}` : "League Finish: --";
 
   return [
-  "⚽ Draft XI: Europe",
-  "━━━━━━━━━━━━━━━━",
+  "Draft XI: Europe",
+  "",
   `Formation: ${formationName}`,
   `XI Rating: ${teamRating || "--"}`,
   `Record: ${results.wins}-${results.draws}-${results.losses}`,
@@ -2730,14 +2736,14 @@ function makeShareCardText(results, playerSeasonStats, formationName, teamRating
   `Top Scorer: ${topScorer ? `${topScorer.name} (${topScorer.goals})` : "None"}`,
   `MVP: ${mvp ? `${mvp.name} (${mvp.averageRating} AVG)` : "None"}`,
   results.badge,
-  "━━━━━━━━━━━━━━━━",
+  "",
   "Can you beat my XI?"].
   join("\n");
 }
 
 
 
-// v5 Simulation Rework — xG first, result second.
+// v5 Simulation Rework  xG first, result second.
 // Goals now create the result instead of W/D/L being decided before scorelines.
 function getFormationModifier(formationName) {
   const modifiers = {
@@ -2867,7 +2873,7 @@ function getGoalMinute() {
 }
 
 function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch$allSco;
-  const savedProgress = getStoredJson("draftXIProgressV1", null) || {};
+  const savedProgress = getStoredJson("draftXIProgressV2", null) || {};
   const savedFormationName = FORMATIONS[savedProgress.selectedFormationName] ? savedProgress.selectedFormationName : DEFAULT_FORMATION_NAME;
   const [gameStarted, setGameStarted] = useState(!!savedProgress.gameStarted);
   const [selectedFormationName, setSelectedFormationName] = useState(savedFormationName);
@@ -2951,7 +2957,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       transferUsed,
       clubCollection };
 
-    saveStoredJson("draftXIProgressV1", progress);
+    saveStoredJson("draftXIProgressV2", progress);
   }, [gameStarted, selectedFormationName, currentClub, draft, pickedNames, lastClubId, recentClubIds, usedClubIds, results, rerollsLeft, rewards, seasonAwards, liveLeagueTable, playerSeasonStats, transferUsed, clubCollection]);
 
   useEffect(() => {
@@ -3083,14 +3089,13 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
   function getPenalty(player, slotId) {
     const slotPosition = getSlotLabel(slotId);
+    const listedPositions = player.positions || [player.position];
 
-    // If the game lets the player go into that slot, they keep their full rating.
-    // This removes confusing cases like CB -> RB being free but CB -> LB losing rating,
-    // or CM/CDM/CAM and ST/LW/RW switches behaving differently.
-    if (canPlaySlot(player, slotPosition)) return 0;
+    if (player.position === slotPosition) return 0;
+    if (listedPositions.includes(slotPosition)) return 0;
+    if (canPlaySlot(player, slotPosition)) return 2;
 
-    // Only apply a penalty if a player is somehow forced into a truly invalid role.
-    return 6;
+    return 5;
   }
 
   function getPlayableSlotsForPlayer(player) {
@@ -3118,6 +3123,18 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     // Example: a real ST-only player greys out when ST is full, but Messi can remain selectable
     // if CAM is open because CAM is one of his contextual positions.
     return playableSlots.every(slot => draft[slot.id]);
+  }
+
+  function clubHasPlayablePick(club) {
+    if (!club) return false;
+
+    const emptySlotsForClub = FORMATION.filter(slot => !draft[slot.id]);
+    if (!emptySlotsForClub.length) return false;
+
+    return makePlayers(club).some((player) =>
+    !pickedNames.includes(player.name) &&
+    emptySlotsForClub.some(slot => canPlaySlot(player, slot.label)));
+
   }
 
   function buildSpin(winner) {
@@ -3161,7 +3178,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     let available = ALL_CLUBS.filter(
     (club) =>
     club.id !== excludeCurrentId &&
-    !usedClubIds.includes(club.id));
+    !usedClubIds.includes(club.id) &&
+    clubHasPlayablePick(club));
 
 
     // League representation rule: by the end of the XI, force any missing Top 5 league.
@@ -3178,7 +3196,11 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       }
     }
 
-    // If the run-wide no-repeat rule gets exhausted, relax only the older landed clubs.
+    // If the run-wide no-repeat rule gets exhausted, relax only the drafted-club lockout.
+    if (available.length === 0) {
+      available = ALL_CLUBS.filter(club => club.id !== excludeCurrentId && clubHasPlayablePick(club));
+    }
+
     if (available.length === 0) {
       available = ALL_CLUBS.filter(club => club.id !== excludeCurrentId);
     }
@@ -3211,7 +3233,6 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setCurrentClub(winner);
     setLastClubId(winner.id);
     setRecentClubIds(prev => [...prev, winner.id].slice(-4));
-    setUsedClubIds(prev => Array.from(new Set([...prev, winner.id])));
     setClubCollection(prev => {
       const next = Array.from(new Set([...prev, winner.id]));
       saveStoredJson("draftXIClubCollection", next);
@@ -3256,6 +3277,23 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setTimeout(() => scrollToSection(spinnerRef, "center"), 60);
   }
 
+  function rescueSpinClub() {
+    if (!currentClub || spinning || draftedPlayers.length >= 11 || clubHasPlayablePick(currentClub)) return;
+
+    const winner = pickClub(currentClub.id);
+    if (!winner) return;
+
+    playSound("reroll", soundMuted);
+    setCurrentClub(null);
+    setSelectedPlayer(null);
+    setResults(null);
+    setSelectedMatch(null);
+    buildSpin(winner);
+    setSpinning(true);
+
+    setTimeout(() => scrollToSection(spinnerRef, "center"), 60);
+  }
+
   function selectPlayer(player) {
     if (pickedNames.includes(player.name)) return;
     playSound("select", soundMuted);
@@ -3282,6 +3320,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     playSound("place", soundMuted);
     setDraft(prev => ({ ...prev, [slotId]: placedPlayer }));
     setPickedNames(prev => [...prev, selectedPlayer.name]);
+    if (selectedPlayer.clubId) {
+      setUsedClubIds(prev => Array.from(new Set([...prev, selectedPlayer.clubId])));
+    }
     setSelectedPlayer(null);
     setCurrentClub(null);
     setSpinWinner(null);
@@ -3338,42 +3379,42 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     const wonLeague = summary.wonLeague || finishPosition === 1;
 
     if (wonLeague) {
-      earned.push("👑 League Champions");
+      earned.push("League Champions");
     } else if (finishPosition <= 4) {
-      earned.push("⭐ UCL Qualified");
+      earned.push("UCL Qualified");
     } else if (finishPosition <= 7) {
-      earned.push("🌍 European Qualification");
+      earned.push("European Qualification");
     }
 
     if (summary.points >= 100) {
-      earned.push("💯 Centurions Badge");
+      earned.push("Centurions Badge");
     }
 
     if (summary.losses === 0) {
-      earned.push("🛡️ Invincibles Shield");
+      earned.push("Invincibles Shield");
     }
 
     if (summary.wins >= 35) {
-      earned.push("🔥 Dominant Dynasty");
+      earned.push("Dominant Dynasty");
     }
 
     if (summary.wins === 38) {
-      earned.push("🐐 Perfect 38-0 GOAT Card");
+      earned.push("Perfect 38-0 GOAT Card");
     }
 
     if (summary.gf - summary.ga >= 80) {
-      earned.push("⚽ Goal Machine");
+      earned.push("Goal Machine");
     }
 
     if (earned.length === 0) {
-      earned.push("🎟️ Draft Token");
+      earned.push("Draft Token");
     }
 
     return earned;
   }
 
   function resetGame() {
-    try {localStorage.removeItem("draftXIProgressV1");} catch {}
+    try {localStorage.removeItem("draftXIProgressV1");localStorage.removeItem("draftXIProgressV2");} catch {}
     setSaveNotice(false);
     setCurrentClub(null);
     setDraft({});
@@ -3418,6 +3459,14 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     });
 
     setPickedNames(prev => prev.filter(name => name !== player.name));
+    if (player.clubId) {
+      setUsedClubIds(prev => {
+        const stillDraftedFromClub = Object.entries(draft).some(([draftSlotId, draftedPlayer]) =>
+        draftSlotId !== slotId && draftedPlayer.clubId === player.clubId);
+
+        return stillDraftedFromClub ? prev : prev.filter(clubId => clubId !== player.clubId);
+      });
+    }
     setSelectedPlayer(null);
     setMovingSlotId(null);
     setTransferMode(false);
@@ -3480,32 +3529,30 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       const userXg = getExpectedGoals(teamProfile, opponentProfile, fullRating, opponentRating);
       const opponentXg = getExpectedGoals(opponentProfile, teamProfile, opponentRating, fullRating);
 
-      // Calibrated 100-club balance.
-      // With the bigger database, an 87-rated XI should be a European/top-4 level team,
-      // not a mid-table/relegation-risk team. These boosts smooth the curve instead of
-      // making only 90+ teams useful.
+      // Calibrated for arcade-draft fun.
+      // A normal good draft should feel powerful; only messy/low-rated XIs should struggle.
       const draftDifficultyBonus =
-      fullRating >= 93 ? 1.08 :
-      fullRating >= 91 ? 0.96 :
-      fullRating >= 90 ? 0.88 :
-      fullRating >= 89 ? 0.82 :
-      fullRating >= 88 ? 0.74 :
-      fullRating >= 87 ? 0.66 :
-      fullRating >= 86 ? 0.52 :
-      fullRating >= 85 ? 0.38 :
-      fullRating >= 84 ? 0.24 :
-      0.1;
+      fullRating >= 93 ? 1.45 :
+      fullRating >= 91 ? 1.34 :
+      fullRating >= 90 ? 1.24 :
+      fullRating >= 89 ? 1.14 :
+      fullRating >= 88 ? 1.04 :
+      fullRating >= 87 ? 0.94 :
+      fullRating >= 86 ? 0.82 :
+      fullRating >= 85 ? 0.7 :
+      fullRating >= 84 ? 0.54 :
+      0.32;
 
       const opponentXgMultiplier =
-      fullRating >= 93 ? 0.76 :
-      fullRating >= 91 ? 0.78 :
-      fullRating >= 90 ? 0.8 :
-      fullRating >= 89 ? 0.82 :
-      fullRating >= 88 ? 0.84 :
-      fullRating >= 87 ? 0.86 :
-      fullRating >= 86 ? 0.89 :
-      fullRating >= 85 ? 0.92 :
-      0.96;
+      fullRating >= 93 ? 0.64 :
+      fullRating >= 91 ? 0.67 :
+      fullRating >= 90 ? 0.69 :
+      fullRating >= 89 ? 0.72 :
+      fullRating >= 88 ? 0.75 :
+      fullRating >= 87 ? 0.78 :
+      fullRating >= 86 ? 0.82 :
+      fullRating >= 85 ? 0.86 :
+      0.92;
 
       const adjustedUserXg = userXg + draftDifficultyBonus;
       const adjustedOpponentXg = opponentXg * opponentXgMultiplier;
@@ -3513,25 +3560,20 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       let us = rollGoalsFromXg(adjustedUserXg);
       let them = rollGoalsFromXg(adjustedOpponentXg);
 
-      // Rating floor protection: an 87+ XI can still lose, but should not spiral
-      // into 12th-16th because of random Poisson swings. Close losses are sometimes
-      // converted into draws/wins when the team is clearly good enough.
-      if (us < them && fullRating >= 87) {
-        const closeLoss = them - us === 1;
-        const xgEdge = adjustedUserXg - adjustedOpponentXg;
-        const rescueChance =
-        fullRating >= 91 ? 0.48 :
-        fullRating >= 89 ? 0.40 :
-        fullRating >= 88 ? 0.34 :
-        0.28;
+      // Arcade composure: strong XIs are allowed to feel clutch in close games.
+      if (us + 1 === them && fullRating >= 85 && adjustedUserXg >= adjustedOpponentXg - 0.2) {
+        const drawSaveChance =
+        fullRating >= 91 ? 0.42 :
+        fullRating >= 89 ? 0.36 :
+        fullRating >= 87 ? 0.3 :
+        0.24;
 
-        if (closeLoss && (xgEdge >= -0.15 || Math.random() < rescueChance)) {
-          us += 1;
-        }
+        if (Math.random() < drawSaveChance) us += 1;
       }
 
-      if (us === them && fullRating >= 87 && adjustedUserXg - adjustedOpponentXg >= 0.45 && Math.random() < 0.28) {
-        us += 1;
+      if (us === them && fullRating >= 88 && adjustedUserXg >= adjustedOpponentXg + 0.35) {
+        const winnerChance = fullRating >= 91 ? 0.26 : fullRating >= 90 ? 0.22 : 0.18;
+        if (Math.random() < winnerChance) us += 1;
       }
 
       // Avoid too many absurd 7-5 arcade scores while still allowing occasional blowouts.
@@ -3617,7 +3659,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           points: livePoints,
           gf: liveGf,
           ga: liveGa,
-          latest: `GW ${week}: ${match.score} vs ${match.opponent} · xG ${match.xg}`,
+          latest: `GW ${week}: ${match.score} vs ${match.opponent} - xG ${match.xg}`,
           recent: gamesSoFar.slice(-5) });
 
         setSimProgress(Math.round(week / 38 * 100));
@@ -3633,14 +3675,14 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       const wonLeague = finishPosition === 1;
 
       let finalBadge = "Mid Table";
-      if (wins === 38 && wonLeague) finalBadge = "🐐 38-0 GOAT";else
-      if (losses === 0 && wonLeague) finalBadge = "🛡️ Invincibles Champions";else
-      if (points >= 100 && wonLeague) finalBadge = "💯 Centurions Champions";else
-      if (wonLeague) finalBadge = "👑 League Champions";else
-      if (finishPosition <= 4) finalBadge = "⭐ UCL Qualified";else
-      if (finishPosition <= 7) finalBadge = "🌍 European Race";else
-      if (finishPosition <= 12) finalBadge = "📊 Mid Table";else
-      finalBadge = "⚠️ Rebuild Needed";
+      if (wins === 38 && wonLeague) finalBadge = "38-0 GOAT";else
+      if (losses === 0 && wonLeague) finalBadge = "Invincibles Champions";else
+      if (points >= 100 && wonLeague) finalBadge = "Centurions Champions";else
+      if (wonLeague) finalBadge = "League Champions";else
+      if (finishPosition <= 4) finalBadge = "UCL Qualified";else
+      if (finishPosition <= 7) finalBadge = "European Race";else
+      if (finishPosition <= 12) finalBadge = "Mid Table";else
+      finalBadge = "Rebuild Needed";
 
       const summary = {
         wins,
@@ -3684,16 +3726,16 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     return /*#__PURE__*/(
       React.createElement("section", { className: "start-screen" }, /*#__PURE__*/
       React.createElement("div", { className: "start-card" }, /*#__PURE__*/
-      React.createElement("div", { className: "start-logo" }, "\u26BD"), /*#__PURE__*/
+      React.createElement("div", { className: "start-logo" }, "XI"), /*#__PURE__*/
       React.createElement("h1", null, "Draft XI: Europe"), /*#__PURE__*/
       React.createElement("p", { className: "start-subtitle" }, "Build the greatest squad in European football history."), /*#__PURE__*/
       React.createElement("div", { className: "start-description" }, /*#__PURE__*/
-      React.createElement("p", null, "\u2022 Spin from ", ALL_CLUBS.length, " clubs across Europe's Top 5 leagues and jackpot teams."), /*#__PURE__*/
-      React.createElement("p", null, "\u2022 Select any player from the club you land on."), /*#__PURE__*/
-      React.createElement("p", null, "\u2022 Place them into the correct position on the pitch."), /*#__PURE__*/
-      React.createElement("p", null, "\u2022 Use your 3 rerolls wisely."), /*#__PURE__*/
-      React.createElement("p", null, "\u2022 Complete your XI and simulate a 38-match season."), /*#__PURE__*/
-      React.createElement("p", null, "\u2022 Can you go ", /*#__PURE__*/React.createElement("strong", null, "38-0"), "?")), /*#__PURE__*/
+      React.createElement("p", null, "- Spin from ", ALL_CLUBS.length, " clubs across Europe, including top leagues and jackpot teams."), /*#__PURE__*/
+      React.createElement("p", null, "- Select any player from the club you land on."), /*#__PURE__*/
+      React.createElement("p", null, "- Place them into the correct position on the pitch."), /*#__PURE__*/
+      React.createElement("p", null, "- Use your 3 rerolls wisely."), /*#__PURE__*/
+      React.createElement("p", null, "- Complete your XI and simulate a 38-match season."), /*#__PURE__*/
+      React.createElement("p", null, "- Can you go ", /*#__PURE__*/React.createElement("strong", null, "38-0"), "?")), /*#__PURE__*/
 
       React.createElement("button", {
         className: "start-button",
@@ -3712,6 +3754,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const emptySlots = FORMATION.filter(slot => !draft[slot.id]);
   const nextNeededSlot = emptySlots[0];
   const selectedOpenSlots = selectedPlayer ? FORMATION.filter(slot => !draft[slot.id] && canPlaySlot(selectedPlayer, slot.label)) : [];
+  const currentClubHasPlayablePick = currentClub ? clubHasPlayablePick(currentClub) : true;
   const bestSelectedSlot = selectedPlayer ?
   selectedOpenSlots.find(slot => {
     const positions = selectedPlayer.positions || [selectedPlayer.position];
@@ -3725,7 +3768,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   guideStep === "place" ? `Place ${selectedPlayer.name}` :
   results ? "Season complete" : "Your XI is ready";
   const guideText = guideStep === "spin" ? `Your XI is ${draftedPlayers.length}/11 complete. Use Spin Club to continue.` :
-  guideStep === "select" ? "Pick the player who best fits your empty positions." :
+  guideStep === "select" ? currentClubHasPlayablePick ? "Pick the player who best fits your empty positions." : "No player from this club fits your open slots. Take a free rescue spin." :
   guideStep === "place" ? bestSelectedSlot ? `Tap the glowing ${bestSelectedSlot.label} slot. Best fit is highlighted brighter.` : "No open natural role. Choose another player or use Transfer Lifeline." :
   results ? "Review your results, awards, table, and share card." :
   "Hit Simulate Season and chase 38-0.";
@@ -3737,7 +3780,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     saveNotice && /*#__PURE__*/React.createElement("div", { className: "save-toast" }, "Saved draft restored"),
     showTutorial && /*#__PURE__*/React.createElement("div", { className: "tutorial-overlay", role: "dialog", "aria-modal": "true" }, /*#__PURE__*/
     React.createElement("div", { className: "tutorial-card" }, /*#__PURE__*/
-    React.createElement("button", { className: "tutorial-close", type: "button", onClick: closeTutorial, "aria-label": "Close tutorial" }, "×"), /*#__PURE__*/
+    React.createElement("button", { className: "tutorial-close", type: "button", onClick: closeTutorial, "aria-label": "Close tutorial" }, "x"), /*#__PURE__*/
     React.createElement("span", { className: "tutorial-kicker" }, "First Time Guide"), /*#__PURE__*/
     React.createElement("h2", null, "Build your XI in 4 steps"), /*#__PURE__*/
     React.createElement("div", { className: "tutorial-steps" }, /*#__PURE__*/
@@ -3748,7 +3791,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("button", { className: "tutorial-start", type: "button", onClick: closeTutorial }, "Got it"))), /*#__PURE__*/
     React.createElement("section", { className: "hero" }, /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/
-    React.createElement("p", { className: "eyebrow" }, "Top 5 Leagues Draft"), /*#__PURE__*/
+    React.createElement("p", { className: "eyebrow" }, "Europe Draft"), /*#__PURE__*/
     React.createElement("h1", null, "Draft XI: Europe"), /*#__PURE__*/
     React.createElement("p", null, "Spin a European club, select any player, place them in your XI, then simulate a 38-game season.")), /*#__PURE__*/
 
@@ -3756,7 +3799,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("span", null, "XI Rating"), /*#__PURE__*/
     React.createElement("strong", null, teamRating || "--"), /*#__PURE__*/
     React.createElement("small", null, draftedPlayers.length, "/11 players"), /*#__PURE__*/
-    React.createElement("small", null, "\uD83D\uDD04 Rerolls: ", rerollsLeft),
+    React.createElement("small", null, "Rerolls: ", rerollsLeft),
     draftedPlayers.length > 0 && /*#__PURE__*/React.createElement("small", { className: "projected-level" }, getProjectedLevel(teamRating)),
     draftedPlayers.length > 0 && /*#__PURE__*/
     React.createElement("div", { className: "profile-mini" }, /*#__PURE__*/
@@ -3774,7 +3817,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     React.createElement("section", { className: `next-move-card step-${guideStep}` }, /*#__PURE__*/
     React.createElement("div", { className: "next-move-top" }, /*#__PURE__*/
-    React.createElement("span", null, "🟢 NEXT MOVE"), /*#__PURE__*/
+    React.createElement("span", null, "NEXT MOVE"), /*#__PURE__*/
     React.createElement("strong", null, draftedPlayers.length, "/11")), /*#__PURE__*/
     React.createElement("h2", null, guideTitle), /*#__PURE__*/
     React.createElement("p", null, guideText), /*#__PURE__*/
@@ -3783,10 +3826,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("small", null, nextNeededText)), /*#__PURE__*/
 
     React.createElement("section", { className: "draft-steps", "aria-label": "Draft progress" }, /*#__PURE__*/
-    React.createElement("span", { className: guideStep === "spin" ? "active" : draftedPlayers.length > 0 || currentClub || selectedPlayer ? "done" : "" }, "🎰 Spin"), /*#__PURE__*/
-    React.createElement("span", { className: guideStep === "select" ? "active" : selectedPlayer || draftedPlayers.length > 0 ? "done" : "" }, "👤 Select"), /*#__PURE__*/
-    React.createElement("span", { className: guideStep === "place" ? "active" : draftedPlayers.length > 0 ? "done" : "" }, "📍 Place"), /*#__PURE__*/
-    React.createElement("span", { className: guideStep === "simulate" ? "active" : results ? "done" : "" }, "⚽ Sim")), /*#__PURE__*/
+    React.createElement("span", { className: guideStep === "spin" ? "active" : draftedPlayers.length > 0 || currentClub || selectedPlayer ? "done" : "" }, "Spin"), /*#__PURE__*/
+    React.createElement("span", { className: guideStep === "select" ? "active" : selectedPlayer || draftedPlayers.length > 0 ? "done" : "" }, "Select"), /*#__PURE__*/
+    React.createElement("span", { className: guideStep === "place" ? "active" : draftedPlayers.length > 0 ? "done" : "" }, "Place"), /*#__PURE__*/
+    React.createElement("span", { className: guideStep === "simulate" ? "active" : results ? "done" : "" }, "Sim")), /*#__PURE__*/
 
 
 
@@ -3796,6 +3839,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     React.createElement("button", { className: "reroll", onClick: rerollClub, disabled: !currentClub || rerollsLeft <= 0 || spinning || draftedPlayers.length >= 11 },
     rerollsLeft > 0 ? `Reroll (${rerollsLeft})` : "No Rerolls"), /*#__PURE__*/
+
+    currentClub && !currentClubHasPlayablePick && !spinning && draftedPlayers.length < 11 && /*#__PURE__*/React.createElement("button", { className: "rescue-spin", onClick: rescueSpinClub }, "Rescue Spin"), /*#__PURE__*/
 
     React.createElement("button", {
       className: "transfer-lifeline",
@@ -3852,7 +3897,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       style: { "--teamColor": club.color } }, /*#__PURE__*/
 
     React.createElement("span", null, club.name), /*#__PURE__*/
-    React.createElement("small", null, club.jackpot ? `JACKPOT · ${club.season}` : club.season))))), /*#__PURE__*/
+    React.createElement("small", null, club.jackpot ? `JACKPOT - ${club.season}` : club.season))))), /*#__PURE__*/
 
 
 
@@ -3934,6 +3979,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("section", { className: "selected-banner transfer-banner" }, "Transfer Lifeline active \u2014 click one drafted player on the pitch to remove them, then spin for a replacement."),
 
 
+    currentClub && !currentClubHasPlayablePick && /*#__PURE__*/
+    React.createElement("section", { className: "selected-banner rescue-banner" }, "No eligible player fits the remaining slots. Use Rescue Spin for a free replacement club."),
 
 
     currentClub && /*#__PURE__*/
@@ -3941,7 +3988,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("div", { className: "club-header" }, /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/
     React.createElement("h2", null, currentClub.name), /*#__PURE__*/
-    React.createElement("p", null, currentClub.jackpot ? "🏆 JACKPOT · " : "", currentClub.season, " \xB7 ", currentClub.league)), /*#__PURE__*/
+    React.createElement("p", null, currentClub.jackpot ? "JACKPOT - " : "", currentClub.season, " \xB7 ", currentClub.league)), /*#__PURE__*/
 
     React.createElement("strong", null, currentClub.rating)), /*#__PURE__*/
 
@@ -4019,7 +4066,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("div", { className: "pitch-rating-strip" }, /*#__PURE__*/
     React.createElement("span", null, "XI Rating"), /*#__PURE__*/
     React.createElement("strong", null, teamRating || "--"), /*#__PURE__*/
-    React.createElement("small", null, draftedPlayers.length, "/11 · 🔄 ", rerollsLeft), /*#__PURE__*/
+    React.createElement("small", null, draftedPlayers.length, "/11 -  ", rerollsLeft), /*#__PURE__*/
     React.createElement("small", { className: "points-prediction" }, getPointsPrediction(teamRating)),
     draftedPlayers.length > 0 && /*#__PURE__*/React.createElement("small", { className: "projected-level" }, getProjectedLevel(teamRating)))), /*#__PURE__*/
     React.createElement("div", { className: "pitch" },
@@ -4091,11 +4138,11 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     React.createElement("div", { className: "share-card-panel" }, /*#__PURE__*/
     React.createElement("div", { className: "share-card-preview" }, /*#__PURE__*/
-    React.createElement("div", { className: "share-card-brand" }, "⚽ Draft XI: Europe"), /*#__PURE__*/
+    React.createElement("div", { className: "share-card-brand" }, "Draft XI: Europe"), /*#__PURE__*/
     React.createElement("strong", null, results.badge), /*#__PURE__*/
-    React.createElement("p", null, selectedFormationName, " · ", teamRating || "--", " OVR"), /*#__PURE__*/
+    React.createElement("p", null, selectedFormationName, " - ", teamRating || "--", " OVR"), /*#__PURE__*/
     React.createElement("div", { className: "share-card-record" }, results.wins, "-", results.draws, "-", results.losses), /*#__PURE__*/
-    React.createElement("small", null, results.points, " pts · ", results.gf, "-", results.ga, " goals")), /*#__PURE__*/
+    React.createElement("small", null, results.points, " pts - ", results.gf, "-", results.ga, " goals")), /*#__PURE__*/
     React.createElement("textarea", { readOnly: true, value: shareCardText, "aria-label": "Share card text" }), /*#__PURE__*/
     React.createElement("div", { className: "results-actions" }, /*#__PURE__*/
     React.createElement("button", { type: "button", onClick: copyLatestResult }, shareCopied ? "Copied!" : "Copy Share Card"))),
@@ -4169,7 +4216,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     ((_selectedMatch$scorer = selectedMatch.scorers) === null || _selectedMatch$scorer === void 0 ? void 0 : _selectedMatch$scorer.length) > 0 ?
     selectedMatch.scorers.map((scorer, index) => /*#__PURE__*/
     React.createElement("div", { key: `our_${scorer.name}_${index}`, className: "scorer-row our-goal" }, /*#__PURE__*/
-    React.createElement("span", null, "\u26BD ", scorer.minute, "'"), /*#__PURE__*/
+    React.createElement("span", null, "Goal ", scorer.minute, "'"), /*#__PURE__*/
     React.createElement("strong", null, scorer.name), /*#__PURE__*/
     React.createElement("em", null, scorer.position))) : /*#__PURE__*/
 
@@ -4186,7 +4233,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     ((_selectedMatch$oppone = selectedMatch.opponentScorers) === null || _selectedMatch$oppone === void 0 ? void 0 : _selectedMatch$oppone.length) > 0 ?
     selectedMatch.opponentScorers.map((scorer, index) => /*#__PURE__*/
     React.createElement("div", { key: `opp_${scorer.name}_${index}`, className: "scorer-row opponent-goal" }, /*#__PURE__*/
-    React.createElement("span", null, "\u26BD ", scorer.minute, "'"), /*#__PURE__*/
+    React.createElement("span", null, "Goal ", scorer.minute, "'"), /*#__PURE__*/
     React.createElement("strong", null, scorer.name), /*#__PURE__*/
     React.createElement("em", null, scorer.position))) : /*#__PURE__*/
 
@@ -4203,7 +4250,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("div", { className: "scorer-list" },
     selectedMatch.allScorers.map((scorer, index) => /*#__PURE__*/
     React.createElement("div", { key: `timeline_${scorer.name}_${index}`, className: "scorer-row timeline-goal" }, /*#__PURE__*/
-    React.createElement("span", null, "\u26BD ", scorer.minute, "'"), /*#__PURE__*/
+    React.createElement("span", null, "Goal ", scorer.minute, "'"), /*#__PURE__*/
     React.createElement("strong", null, scorer.name), /*#__PURE__*/
     React.createElement("em", null, scorer.team)))))))),
 

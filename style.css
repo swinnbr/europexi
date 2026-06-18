@@ -1,4 +1,4 @@
-/* Draft XI: Europe — Clean Replacement CSS
+/* Draft XI: Europe - Clean Replacement CSS
    Rebuilt to remove duplicate rules, pitch/player-card conflicts, mobile clutter,
    blocked move buttons, and messy collection text. */
 
@@ -1803,7 +1803,7 @@ h1 {
 }
 
 
-/* Mobile spinner hotfix — keeps reel measurements synced with JSX */
+/* Mobile spinner hotfix  keeps reel measurements synced with JSX */
 @media (max-width: 720px) {
   .spinner-card {
     padding: 14px 10px;
@@ -1854,7 +1854,7 @@ h1 {
 }
 
 /* =========================================================
-   Integrity Patch — spinner, mobile collection, formation lock
+   Integrity Patch  spinner, mobile collection, formation lock
    ========================================================= */
 
 /* Spinner now uses actual DOM measurement in JSX. These values can change
@@ -2457,7 +2457,7 @@ h1 {
 }
 
 .club-header p::after {
-  content: " · expanded pool";
+  content: " - expanded pool";
   color: rgba(141, 255, 179, 0.9);
   font-weight: 900;
 }
@@ -2657,5 +2657,39 @@ h1 {
   .slot.moving-source::after {
     bottom: -13px;
     font-size: 0.62rem;
+  }
+}
+/* Gameplay balance patch: rescue spins and real out-of-position costs */
+.controls .rescue-spin {
+  background: #b9f6ff;
+  color: #03242a;
+  border: 1px solid rgba(185, 246, 255, 0.55);
+  box-shadow: 0 12px 30px rgba(54, 218, 235, 0.2);
+}
+
+.rescue-banner {
+  border-color: rgba(185, 246, 255, 0.42);
+  background: linear-gradient(135deg, rgba(54, 218, 235, 0.18), rgba(255, 255, 255, 0.075));
+  color: #eaffff;
+}
+
+.slot.valid-slot:not(.best-slot) {
+  border-color: rgba(255, 224, 138, 0.7);
+  box-shadow: 0 0 0 1px rgba(255, 224, 138, 0.2), 0 10px 28px rgba(255, 224, 138, 0.14);
+}
+
+.slot.best-slot {
+  border-color: rgba(141, 255, 179, 0.9);
+  box-shadow: 0 0 0 2px rgba(141, 255, 179, 0.3), 0 14px 34px rgba(141, 255, 179, 0.18);
+}
+
+.player-card.position-filled,
+.player-card[aria-disabled="true"] {
+  position: relative;
+}
+
+@media (max-width: 720px) {
+  .controls .rescue-spin {
+    flex-basis: 100%;
   }
 }
