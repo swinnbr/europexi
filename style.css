@@ -1,21 +1,23 @@
-/* Draft XI: Europe - Clean Replacement CSS
+/* World Cup Draft - Primary Branding CSS
    Rebuilt to remove duplicate rules, pitch/player-card conflicts, mobile clutter,
    blocked move buttons, and messy collection text. */
 
 :root {
-  --bg-0: #020806;
-  --bg-1: #041109;
-  --bg-2: #082817;
-  --panel: rgba(255, 255, 255, 0.075);
-  --panel-strong: rgba(255, 255, 255, 0.11);
-  --panel-border: rgba(255, 255, 255, 0.14);
-  --text: #f5fff8;
-  --muted: #b9ddc5;
-  --muted-2: #ccefd7;
-  --green: #8dffb3;
-  --green-dark: #06210f;
+  --bg-0: #020617;
+  --bg-1: #06122f;
+  --bg-2: #0b1f3a;
+  --panel: rgba(255, 255, 255, 0.085);
+  --panel-strong: rgba(255, 255, 255, 0.13);
+  --panel-border: rgba(255, 255, 255, 0.16);
+  --text: #f8fbff;
+  --muted: #b8c7e6;
+  --muted-2: #d9e6ff;
+  --green: #ffd166;
+  --green-dark: #071428;
   --yellow: #ffe08a;
   --red: #ff7a7a;
+  --gold: #ffd166;
+  --blue: #1e5eff;
   --shadow: 0 22px 70px rgba(0, 0, 0, 0.28);
 }
 
@@ -41,8 +43,8 @@ body {
   min-height: 100vh;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(111, 255, 170, 0.18), transparent 35%),
-    radial-gradient(circle at bottom right, rgba(45, 212, 191, 0.12), transparent 32%),
+    radial-gradient(circle at top left, rgba(255, 209, 102, 0.22), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(30, 94, 255, 0.18), transparent 34%),
     linear-gradient(135deg, var(--bg-1), var(--bg-2) 55%, var(--bg-0));
   color: var(--text);
 }
@@ -86,8 +88,10 @@ button:disabled {
   padding: clamp(24px, 5vw, 42px);
   border-radius: 34px;
   text-align: center;
-  background: var(--panel);
-  border: 1px solid var(--panel-border);
+  background:
+    linear-gradient(145deg, rgba(255, 209, 102, 0.13), rgba(30, 94, 255, 0.08)),
+    var(--panel);
+  border: 1px solid rgba(255, 209, 102, 0.22);
   box-shadow: var(--shadow);
 }
 
@@ -6125,4 +6129,66 @@ button.collection-back-detailed {
   .collection-player {
     font-size: 12.5px !important;
   }
+}
+
+/* World Cup Draft branding polish */
+.start-eyebrow,
+.eyebrow {
+  color: var(--gold);
+}
+
+.start-card h1 {
+  text-transform: uppercase;
+  letter-spacing: -0.055em;
+}
+
+.start-logo {
+  filter: drop-shadow(0 12px 24px rgba(255, 209, 102, 0.25));
+}
+
+.mode-pill-button {
+  display: grid !important;
+  place-items: center !important;
+  line-height: 1.05 !important;
+}
+
+.mode-pill-button small {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero h1::after,
+.start-card h1::after {
+  content: "";
+  display: block;
+  width: 92px;
+  height: 5px;
+  margin: 14px auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gold), #ffffff, var(--blue));
+}
+
+.hero h1::after {
+  margin-left: 0;
+}
+
+.controls .share-draft-button,
+.results-actions .share-draft-button,
+.start-button {
+  background: linear-gradient(135deg, #ffd166, #f59e0b) !important;
+  color: #071428 !important;
+  border: 1px solid rgba(255, 209, 102, 0.5);
+}
+
+.spinner-pointer,
+.slot span,
+.record-card strong,
+.collection-percent {
+  color: var(--gold) !important;
+}
+
+.winner-team,
+.slot.can-place {
+  outline-color: var(--gold) !important;
+  box-shadow: 0 0 0 5px rgba(255, 209, 102, 0.20), 0 14px 30px rgba(0, 0, 0, 0.38) !important;
 }

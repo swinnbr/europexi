@@ -3411,17 +3411,17 @@ function makeShareCardText(results, playerSeasonStats, formationName, teamRating
   const topScorer = [...playerSeasonStats].sort((a, b) => b.goals - a.goals || b.averageRating - a.averageRating)[0];
   const mvp = [...playerSeasonStats].sort((a, b) => b.averageRating - a.averageRating || b.goals - a.goals)[0];
   const tablePosition = Array.isArray(results.table) ? (_results$table$find = results.table.find(row => row.user)) === null || _results$table$find === void 0 ? void 0 : _results$table$find.position : null;
-  const positionText = tablePosition ? `League Finish: ${tablePosition}${tablePosition === 1 ? "st" : tablePosition === 2 ? "nd" : tablePosition === 3 ? "rd" : "th"}` : "League Finish: --";
+  const positionText = results.tournamentMode ? results.badge : tablePosition ? `League Finish: ${tablePosition}${tablePosition === 1 ? "st" : tablePosition === 2 ? "nd" : tablePosition === 3 ? "rd" : "th"}` : "League Finish: --";
 
   return [
-  "Draft XI",
+  results.tournamentMode ? "World Cup Draft" : "Draft XI",
   "",
   `Formation: ${formationName}`,
   `XI Rating: ${teamRating || "--"}`,
   `Record: ${results.wins}-${results.draws}-${results.losses}`,
   `Points: ${results.points}`,
   `Goals: ${results.gf}-${results.ga}`,
-  positionText,
+  results.tournamentMode ? `Tournament Result: ${positionText}` : positionText,
   `Top Scorer: ${topScorer ? `${topScorer.name} (${topScorer.goals})` : "None"}`,
   `MVP: ${mvp ? `${mvp.name} (${mvp.averageRating} AVG)` : "None"}`,
   results.badge,
@@ -3765,14 +3765,14 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const [saveNotice, setSaveNotice] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [formationNotice, setFormationNotice] = useState(null);
-  const [gameMode, setGameMode] = useState(savedProgress.gameMode || "europe");
+  const [gameMode, setGameMode] = useState(savedProgress.gameMode || "worldcup");
   const activeClubs = gameMode === "worldcup" ? getWorldCupBoostedClubs() : ALL_CLUBS;
   const activeLeagues = gameMode === "worldcup" ? WORLD_CUP_GROUPS : TOP_FIVE_LEAGUES;
   const activeRestLabel = gameMode === "worldcup" ? "Other Groups" : "Rest of Europe";
   const allCollectiblePlayers = useMemo(() => getAllCollectiblePlayers([...ALL_CLUBS, ...WORLD_CUP_CLUBS]), []);
   const playerCollectionStats = useMemo(() => getCollectionStats(playerCollection, allCollectiblePlayers), [playerCollection, allCollectiblePlayers]);
   const discoveredPlayerIds = useMemo(() => new Set(playerCollection || []), [playerCollection]);
-  const modeTitle = gameMode === "worldcup" ? "World Cup Draft" : "Draft XI";
+  const modeTitle = gameMode === "worldcup" ? "World Cup Draft" : "Europe Draft";
   const modeSubtitle = "Build the greatest football squad ever assembled.";
 
   function closeTutorial() {
@@ -5380,8 +5380,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       React.createElement("section", { className: "start-screen" }, /*#__PURE__*/
       React.createElement("div", { className: "start-card" }, /*#__PURE__*/
       React.createElement("div", { className: "start-logo" }, "XI"), /*#__PURE__*/
-      React.createElement("h1", null, modeTitle), /*#__PURE__*/
-      React.createElement("p", { className: "start-subtitle" }, "Choose your draft mode."), /*#__PURE__*/
+      React.createElement("h1", null, "World Cup Draft"), /*#__PURE__*/
+      React.createElement("p", { className: "start-subtitle" }, "Spin nations, draft stars, and chase the trophy."), /*#__PURE__*/
       React.createElement("div", { className: "mode-pill-stack", style: { display: "flex", flexDirection: "column", gap: "42px", width: "min(340px, 92vw)", margin: "30px auto 8px" } }, /*#__PURE__*/
       React.createElement("button", {
         className: "mode-pill-button",
@@ -5400,10 +5400,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           marginBottom: "18px" },
 
         onClick: () => {
-          selectGameMode("europe");
+          selectGameMode("worldcup");
           playSound("start", soundMuted);
           setGameStarted(true);
-        } }, "Start Europe Mode"), /*#__PURE__*/
+        } }, "Start World Cup Draft"), /*#__PURE__*/
       React.createElement("button", {
         className: "mode-pill-button",
         type: "button",
@@ -5420,10 +5420,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           cursor: "pointer" },
 
         onClick: () => {
-          selectGameMode("worldcup");
+          selectGameMode("europe");
           playSound("start", soundMuted);
           setGameStarted(true);
-        } }, "Start World Cup Mode")))));
+        } }, "Europe Draft Mode")))));
 
 
 
@@ -5456,7 +5456,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   guideStep === "bench" ? `Your starting XI is complete. Spin ${BENCH_LIMIT - bench.length} more ${BENCH_LIMIT - bench.length === 1 ? "bench player" : "bench players"}.` :
   guideStep === "sub" ? selectedBenchPlayer ? `Tap an eligible starter to swap with ${selectedBenchPlayer.name}.` : "Pick one bench player, then tap an eligible starter on the pitch." :
   results ? "Review your results, awards, table, and share card." :
-  gameMode === "worldcup" ? "Hit Simulate Tournament and chase the World Cup." : "Hit Simulate Season and chase 38-0.";
+  gameMode === "worldcup" ? "Hit Simulate Tournament and chase the World Cup trophy." : "Hit Simulate Season and chase 38-0.";
   const nextNeededText = nextNeededSlot ? `Next needed: ${nextNeededSlot.label}` : benchDraftActive ? `Bench needed: ${BENCH_LIMIT - bench.length}` : "Squad complete";
   const shareCardText = results ? makeShareCardText(results, playerSeasonStats, selectedFormationName, teamRating) : "";
 
@@ -5734,16 +5734,16 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("span", { className: "tutorial-kicker" }, "First Time Guide"), /*#__PURE__*/
     React.createElement("h2", null, "Build your XI in 4 steps"), /*#__PURE__*/
     React.createElement("div", { className: "tutorial-steps" }, /*#__PURE__*/
-    React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "1. Spin"), /*#__PURE__*/React.createElement("p", null, "Land on a European club.")), /*#__PURE__*/
+    React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "1. Spin"), /*#__PURE__*/React.createElement("p", null, gameMode === "worldcup" ? "Land on a World Cup nation." : "Land on a European club.")), /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "2. Pick"), /*#__PURE__*/React.createElement("p", null, "Choose one player from that squad.")), /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "3. Place"), /*#__PURE__*/React.createElement("p", null, "Tap a glowing slot on the pitch.")), /*#__PURE__*/
-    React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "4. Sim"), /*#__PURE__*/React.createElement("p", null, "Complete 11 players and chase 38-0."))), /*#__PURE__*/
+    React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "4. Sim"), /*#__PURE__*/React.createElement("p", null, gameMode === "worldcup" ? "Complete 11 players and chase the World Cup." : "Complete 11 players and chase 38-0."))), /*#__PURE__*/
     React.createElement("button", { className: "tutorial-start", type: "button", onClick: closeTutorial }, "Got it"))), /*#__PURE__*/
     React.createElement("section", { className: "hero" }, /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/
     React.createElement("p", { className: "eyebrow" }, gameMode === "worldcup" ? "World Cup Draft" : "Europe Draft"), /*#__PURE__*/
     React.createElement("h1", null, modeTitle), /*#__PURE__*/
-    React.createElement("p", null, gameMode === "worldcup" ? "Spin a World Cup nation, select any player, place them in your XI, then simulate a full World Cup run." : "Spin a European club, select any player, place them in your XI, then simulate a 38-game season."))), /*#__PURE__*/
+    React.createElement("p", null, gameMode === "worldcup" ? "Spin a nation, draft one star, place them in your XI, then simulate a World Cup run." : "Spin a European club, select any player, place them in your XI, then simulate a 38-game season."))), /*#__PURE__*/
 
     React.createElement("section", { className: `next-move-card step-${guideStep}` }, /*#__PURE__*/
     React.createElement("div", { className: "next-move-top" }, /*#__PURE__*/
@@ -5778,7 +5778,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       type: "button",
       onClick: () => gameMode === "worldcup" ? simulateWorldCupTournament() : simulateSeason(),
       disabled: simulating || !!results },
-    simulating ? "Simulating..." : gameMode === "worldcup" ? "Sim Tournament" : "Sim Season"), /*#__PURE__*/
+    simulating ? "Simulating..." : gameMode === "worldcup" ? "Sim World Cup" : "Sim Season"), /*#__PURE__*/
     React.createElement("button", {
       className: "mobile-collection-action",
       type: "button",
@@ -5870,14 +5870,14 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
     React.createElement("p", null, gameMode === "worldcup" ? "Spinning nation..." : "Spinning club..."), /*#__PURE__*/
-    React.createElement("small", { className: "scroll-hint" }, "Landing team appears here \u2193")),
+    React.createElement("small", { className: "scroll-hint" }, gameMode === "worldcup" ? "Landing nation appears here ↓" : "Landing club appears here ↓")),
 
 
 
     simulating && liveSeason && /*#__PURE__*/
     React.createElement("section", { className: "season-sim auto-focus-section", ref: simulationRef }, /*#__PURE__*/
     React.createElement("div", { className: "season-sim-top" }, /*#__PURE__*/
-    React.createElement("span", null, "Simulating Season"), /*#__PURE__*/
+    React.createElement("span", null, gameMode === "worldcup" ? "Simulating Tournament" : "Simulating Season"), /*#__PURE__*/
     React.createElement("strong", null, gameMode === "worldcup" ? `Match ${liveSeason.week}/8` : `GW ${liveSeason.week}/38`)), /*#__PURE__*/
 
 
@@ -6150,7 +6150,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         fontWeight: 900,
         boxShadow: "0 10px 22px rgba(57,255,136,0.18)" } },
 
-    gameMode === "worldcup" ? "Sim Tournament" : "Sim Season")), /*#__PURE__*/
+    gameMode === "worldcup" ? "Sim World Cup" : "Sim Season")), /*#__PURE__*/
     React.createElement("div", { className: "pitch" },
     FORMATION.map(slot => {var _slot$mobileX, _slot$mobileY;
       const player = draft[slot.id];
@@ -6312,7 +6312,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     ((_results$table = results.table) === null || _results$table === void 0 ? void 0 : _results$table.length) > 0 && /*#__PURE__*/
     React.createElement("div", { className: "final-table-panel" }, /*#__PURE__*/
-    React.createElement("h3", null, results.tournamentMode ? "Tournament Path" : "Final League Table"), /*#__PURE__*/
+    React.createElement("h3", null, results.tournamentMode ? "World Cup Path" : "Final League Table"), /*#__PURE__*/
     React.createElement("div", { className: "mini-table" }, /*#__PURE__*/
     React.createElement("div", { className: "mini-table-row head" }, /*#__PURE__*/
     React.createElement("span", null, "#"), /*#__PURE__*/React.createElement("span", null, "Club"), /*#__PURE__*/React.createElement("span", null, "W-D-L"), /*#__PURE__*/React.createElement("span", null, "Pts")),
@@ -6331,7 +6331,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     seasonAwards.length > 0 && /*#__PURE__*/
     React.createElement("div", { className: "awards-panel" }, /*#__PURE__*/
-    React.createElement("h3", null, gameMode === "worldcup" ? "Tournament Rewards" : "Season Awards"), /*#__PURE__*/
+    React.createElement("h3", null, gameMode === "worldcup" ? "World Cup Rewards" : "Season Awards"), /*#__PURE__*/
     React.createElement("div", { className: "awards-grid" },
     seasonAwards.map((award) => /*#__PURE__*/
     React.createElement("div", { key: award.title, className: "award-card" }, /*#__PURE__*/
