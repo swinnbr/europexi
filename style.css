@@ -2204,13 +2204,7 @@ h1 {
     font-size: 11px;
   }
 
-  .club-collection-card,
-  .club-collection,
-  .database-summary {
-    max-height: 155px;
-    overflow-y: auto;
-  }
-}
+ 
 
 /* v5 Save Progress + First-Time Tutorial + Share Card */
 .save-toast {
@@ -2469,10 +2463,10 @@ h1 {
 }
 
 @media (max-width: 720px) {
-  .club-panel .player-grid {
-    max-height: 58vh;
-    padding-right: 2px;
-  }
+.club-panel .player-grid {
+  max-height: none;
+  overflow: visible;
+}
 
   .club-header p::after {
     content: "";
@@ -2702,3 +2696,697 @@ h1 {
 }
 
 .slot.best-slot {
+/* =========================================================
+   Clean Mobile UI Patch
+   Reduces clutter, gives pitch/player cards more breathing room,
+   and makes the main controls easier to reach on phones.
+   ========================================================= */
+
+/* Prevent older duplicate hover/move rules from resurfacing. */
+.move-overlay,
+.move-overlay.pitch-only {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Slightly calmer spacing across the app. */
+.club-panel,
+.pitch-wrap,
+.results,
+.spinner-card,
+.simulation-loader,
+.selected-banner,
+.formation-picker,
+.rewards-panel,
+.player-stats-panel,
+.live-table-card,
+.final-table-panel,
+.awards-panel,
+.history-panel,
+.club-collection-card,
+.collection-panel,
+.season-record-card,
+.season-sim {
+  box-shadow: 0 16px 46px rgba(0, 0, 0, 0.22);
+}
+
+/* Make pitch names less likely to cut off on all screens. */
+.slot strong {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+  line-height: 1.05;
+}
+
+@media (max-width: 720px) {
+  /* Keep the main actions visible without forcing constant scrolling. */
+  .controls {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    padding: 8px;
+    margin-bottom: 14px;
+    border-radius: 18px;
+    background: rgba(4, 17, 9, 0.94);
+    border: 1px solid rgba(141, 255, 179, 0.16);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+  }
+
+  .controls button {
+    min-height: 44px;
+    padding: 11px 16px;
+  }
+
+  /* Hide secondary info on phones so the game flow feels cleaner. */
+  .club-collection-card,
+  .collection-panel,
+  .draft-steps,
+  .profile-mini {
+    display: none !important;
+  }
+
+  .next-move-card {
+    margin-bottom: 10px;
+  }
+
+  .next-move-card h2 {
+    font-size: 21px;
+  }
+
+  .next-move-card p {
+    font-size: 12.5px;
+    line-height: 1.35;
+  }
+
+  /* Make club player cards easier to scan. */
+  .club-panel .player-grid {
+    max-height: 62vh;
+  }
+
+  .player-card {
+    min-height: 62px;
+    border-radius: 14px;
+  }
+
+  .player-name {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.08;
+  }
+
+  .player-bottom-row,
+  .inline-position-buttons {
+    scrollbar-width: none;
+  }
+
+  .player-bottom-row::-webkit-scrollbar,
+  .inline-position-buttons::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Give the formation more room without making the whole pitch huge. */
+  .pitch {
+    min-height: 670px;
+  }
+
+  .slot {
+    width: 100px;
+    min-height: 72px;
+    padding: 7px;
+  }
+
+  .slot strong {
+    font-size: 10px;
+  }
+
+  .slot small {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+
+  .pitch-rating-strip {
+    padding: 9px 11px;
+  }
+}
+
+@media (max-width: 430px) {
+  .app {
+    width: min(100% - 14px, 1180px);
+  }
+
+  .club-panel,
+  .pitch-wrap,
+  .results,
+  .spinner-card,
+  .simulation-loader,
+  .selected-banner,
+  .formation-picker,
+  .rewards-panel,
+  .player-stats-panel,
+  .live-table-card,
+  .final-table-panel,
+  .awards-panel,
+  .history-panel,
+  .season-record-card,
+  .season-sim {
+    padding: 13px;
+    border-radius: 18px;
+  }
+
+  .pitch {
+    min-height: 615px;
+    border-width: 3px;
+  }
+
+  .slot {
+    width: 92px;
+    min-height: 66px;
+    border-radius: 14px;
+    padding: 6px;
+  }
+
+  .slot span {
+    font-size: 9.5px;
+  }
+
+  .slot strong {
+    font-size: 9.5px;
+    line-height: 1.05;
+  }
+
+  .slot small {
+    width: 26px;
+    height: 26px;
+    font-size: 10.5px;
+  }
+
+  .player-card {
+    grid-template-columns: 70px minmax(0, 1fr);
+    min-height: 64px;
+  }
+
+  .player-pos {
+    min-width: 66px;
+    font-size: 8px;
+  }
+
+  .player-rating,
+  .inline-position-buttons .mini-pos-btn {
+    width: 36px;
+    min-width: 36px;
+    height: 27px;
+    font-size: 10px;
+  }
+
+  .match-list {
+    max-height: 360px;
+  }
+}
+@media (max-width: 720px) {
+  .club-panel .player-grid {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .club-collection-card,
+  .club-collection,
+  .database-summary {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .player-card {
+    min-height: 60px;
+  }
+}
+  .player-card {
+  min-height: 72px;
+}
+
+.player-name {
+  line-height: 1.15;
+}
+
+.player-rating {
+  font-weight: 700;
+}
+  /* Rating card moved into the formation/pitch section */
+.pitch-toolbar-clean {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.pitch-title-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.pitch-title-block h2 {
+  margin: 0;
+  line-height: 1;
+}
+
+.pitch-formation-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.pitch-record-card {
+  width: min(260px, 100%);
+  margin: 0 auto;
+}
+
+.pitch-record-card strong {
+  line-height: 0.95;
+}
+
+.pitch-rating-strip {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .pitch-toolbar-clean {
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .pitch-record-card {
+    width: min(230px, 96%);
+    padding: 18px 16px;
+  }
+
+  .pitch-record-card strong {
+    font-size: clamp(48px, 16vw, 66px);
+  }
+}
+/* World Cup 48 mode selector */
+.mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.mode-button {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.mode-button.active {
+  background: rgba(134, 255, 175, 0.18);
+  border-color: rgba(134, 255, 175, 0.55);
+  box-shadow: 0 0 0 3px rgba(134, 255, 175, 0.08);
+}
+/* Cleaner start-screen game mode cards */
+.mode-switch {
+  display: none;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  width: 100%;
+  margin: 22px 0 20px;
+}
+
+.mode-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  padding: 16px;
+  min-height: 138px;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at top right, rgba(134, 255, 175, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(18, 84, 47, 0.82), rgba(8, 38, 24, 0.96));
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.mode-card:hover,
+.mode-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(142, 240, 178, 0.72);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28), 0 0 0 3px rgba(142, 240, 178, 0.1);
+  outline: none;
+}
+
+.mode-card.active {
+  border-color: rgba(142, 240, 178, 0.9);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28), 0 0 0 3px rgba(142, 240, 178, 0.16);
+}
+
+.mode-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.mode-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.mode-pill {
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mode-pill.new {
+  background: rgba(142, 240, 178, 0.18);
+  border-color: rgba(142, 240, 178, 0.42);
+}
+
+.mode-card-title {
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 7px;
+}
+
+.mode-card-desc {
+  font-size: 13px;
+  line-height: 1.35;
+  opacity: 0.78;
+}
+
+@media (max-width: 640px) {
+  .mode-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .mode-card {
+    min-height: 118px;
+  }
+}
+/* Fixed World Cup/Europe start-screen mode cards
+   Add this at the VERY BOTTOM of your CSS so it overrides old button styles. */
+
+.start-screen .mode-switch,
+.start-card .mode-switch,
+.mode-switch {
+  display: none !important;
+}
+
+.start-screen .game-mode-grid,
+.start-card .game-mode-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  width: 100% !important;
+  margin: 22px 0 20px !important;
+}
+
+.start-screen button.game-mode-card,
+.start-card button.game-mode-card,
+button.game-mode-card {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: stretch !important;
+  min-height: 156px !important;
+  width: 100% !important;
+  padding: 17px !important;
+  border-radius: 24px !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background:
+    radial-gradient(circle at 86% 12%, rgba(142, 240, 178, 0.28), transparent 32%),
+    linear-gradient(180deg, rgba(20, 92, 52, 0.92), rgba(7, 34, 22, 0.98)) !important;
+  color: #f4fff7 !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28) !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  font: inherit !important;
+  line-height: 1.2 !important;
+  transform: translateY(0) !important;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease !important;
+}
+
+.start-screen button.game-mode-card:hover,
+.start-screen button.game-mode-card:focus-visible,
+.start-card button.game-mode-card:hover,
+.start-card button.game-mode-card:focus-visible {
+  transform: translateY(-3px) !important;
+  border-color: rgba(142, 240, 178, 0.85) !important;
+  box-shadow: 0 24px 52px rgba(0, 0, 0, 0.34), 0 0 0 3px rgba(142, 240, 178, 0.12) !important;
+  outline: none !important;
+}
+
+.start-screen button.game-mode-card.is-active,
+.start-card button.game-mode-card.is-active {
+  border-color: rgba(142, 240, 178, 0.95) !important;
+  box-shadow: 0 24px 52px rgba(0, 0, 0, 0.34), 0 0 0 3px rgba(142, 240, 178, 0.18) !important;
+}
+
+.start-screen .game-mode-worldcup,
+.start-card .game-mode-worldcup {
+  background:
+    radial-gradient(circle at 86% 12%, rgba(122, 214, 255, 0.28), transparent 32%),
+    linear-gradient(180deg, rgba(18, 76, 95, 0.94), rgba(6, 31, 39, 0.98)) !important;
+}
+
+.game-mode-card-glow {
+  position: absolute !important;
+  inset: auto -20% -38% -20% !important;
+  height: 80px !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+  transform: rotate(-6deg) !important;
+  pointer-events: none !important;
+}
+
+.game-mode-card-row {
+  position: relative !important;
+  z-index: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  margin-bottom: 18px !important;
+}
+
+.game-mode-icon {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.06em !important;
+}
+
+.game-mode-tag,
+.game-mode-new {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 26px !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.13) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  color: #f4fff7 !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+.game-mode-new {
+  background: rgba(142, 240, 178, 0.18) !important;
+  border-color: rgba(142, 240, 178, 0.42) !important;
+}
+
+.game-mode-title {
+  position: relative !important;
+  z-index: 1 !important;
+  margin: 0 0 8px !important;
+  color: #ffffff !important;
+  font-size: 22px !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.game-mode-desc {
+  position: relative !important;
+  z-index: 1 !important;
+  max-width: 220px !important;
+  color: rgba(244, 255, 247, 0.78) !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+  line-height: 1.35 !important;
+}
+
+.game-mode-cta {
+  position: relative !important;
+  z-index: 1 !important;
+  margin-top: 16px !important;
+  color: #8ef0b2 !important;
+  font-size: 12px !important;
+  font-weight: 950 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+@media (max-width: 640px) {
+  .start-screen .game-mode-grid,
+  .start-card .game-mode-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .start-screen button.game-mode-card,
+  .start-card button.game-mode-card {
+    min-height: 132px !important;
+    padding: 16px !important;
+  }
+
+  .game-mode-title {
+    font-size: 21px !important;
+  }
+}
+.mode-grid {
+  display: grid !important;
+  gap: 14px !important;
+  margin-top: 18px !important;
+}
+
+.mode-card,
+.mode-card.mode-card-selected {
+  width: 100% !important;
+  min-height: 56px !important;
+  padding: 0 24px !important;
+
+  border: none !important;
+  border-radius: 999px !important;
+
+  background: #86f7a8 !important;
+  color: #06180d !important;
+
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.mode-card-title {
+  font-size: 16px !important;
+  font-weight: 900 !important;
+}
+
+.mode-card-desc,
+.mode-card-badge {
+  display: none !important;
+}
+  /* Simple green pill mode buttons - place at the very bottom of CSS */
+.game-mode-grid,
+.mode-grid,
+.mode-switch {
+  display: none !important;
+}
+
+.mode-pill-stack {
+  display: grid !important;
+  gap: 14px !important;
+  width: 100% !important;
+  margin: 22px 0 4px !important;
+}
+
+.mode-pill-button,
+.start-screen .mode-pill-button,
+.start-card .mode-pill-button,
+button.mode-pill-button {
+  width: 100% !important;
+  min-height: 56px !important;
+  padding: 0 24px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #86f7a8 !important;
+  color: #06180d !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  cursor: pointer !important;
+}
+
+.mode-pill-button:hover,
+.mode-pill-button:focus-visible {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.03) !important;
+  outline: none !important;
+}
+.worldcup-round {
+  background: rgba(255,255,255,.08);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 8px 0;
+  font-weight: 700;
+}
+
+.worldcup-eliminated {
+  color: #ff8a8a;
+}
+
+.worldcup-champion {
+  color: #ffd700;
+  font-weight: 900;
+}

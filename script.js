@@ -1825,7 +1825,316 @@ const BALANCED_100_EXTRA_CLUBS = [
 
 const BALANCED_BIG_FIVE_LEAGUES = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1"];
 
-const STANDARD_CLUB_POOL = [...CLUBS, ...JACKPOT_CLUBS, ...SMALLER_CLUBS, ...EXTRA_TOP5_CLUBS, ...EXPANDED_DRAFT_CLUBS, ...BALANCED_100_EXTRA_CLUBS];
+
+
+// ─── DATABASE QUALITY PATCH v5.0 ─────────────────────────────────────────────
+// Goals: stronger club variety, fewer repeated players, better historic appeal,
+// less filler, and cleaner rating balance without touching gameplay logic.
+
+const DATABASE_PATCH_CLUBS = [
+{
+  id: "blackburn9495_patch",
+  name: "Blackburn Rovers",
+  league: "Premier League",
+  season: "1994-95",
+  color: "#0057B8",
+  rating: 84,
+  players: [
+  ["Alan Shearer", "ST", 91], ["Chris Sutton", "ST", 86], ["Tim Sherwood", "CM", 84],
+  ["Graeme Le Saux", "LB", 84], ["Colin Hendry", "CB", 84], ["Tim Flowers", "GK", 83],
+  ["Stuart Ripley", "RW", 82], ["Jason Wilcox", "LW", 82], ["Henning Berg", "RB", 82],
+  ["David Batty", "CDM", 82], ["Mike Newell", "ST", 80], ["Ian Pearce", "CB", 79]] },
+
+
+{
+  id: "newcastle9596_patch",
+  name: "Newcastle United",
+  league: "Premier League",
+  season: "1995-96",
+  color: "#241F20",
+  rating: 85,
+  players: [
+  ["Les Ferdinand", "ST", 88], ["David Ginola", "LW", 87], ["Peter Beardsley", "CAM", 86],
+  ["Faustino Asprilla", "ST", 85], ["Rob Lee", "CM", 84], ["Darren Peacock", "CB", 82],
+  ["Philippe Albert", "CB", 82], ["Warren Barton", "RB", 81], ["John Beresford", "LB", 80],
+  ["Pavel Srnicek", "GK", 80], ["Keith Gillespie", "RW", 80], ["Steve Watson", "CM", 79]] },
+
+
+{
+  id: "depor0304_patch",
+  name: "Deportivo La Coruna",
+  league: "La Liga",
+  season: "2003-04",
+  color: "#005BBB",
+  rating: 85,
+  players: [
+  ["Walter Pandiani", "ST", 84], ["Juan Carlos Valeron", "CAM", 88], ["Albert Luque", "LW", 85],
+  ["Sergio Gonzalez", "CM", 84], ["Mauro Silva", "CDM", 86], ["Fran Gonzalez", "LW", 84],
+  ["Manuel Pablo", "RB", 83], ["Joan Capdevila", "LB", 83], ["Jorge Andrade", "CB", 84],
+  ["Cesar Martin", "CB", 81], ["Jose Molina", "GK", 82], ["Victor Sanchez", "RW", 82]] },
+
+
+{
+  id: "villarreal0506_patch",
+  name: "Villarreal",
+  league: "La Liga",
+  season: "2005-06",
+  color: "#FFE667",
+  rating: 85,
+  players: [
+  ["Juan Roman Riquelme", "CAM", 91], ["Diego Forlan", "ST", 88], ["Marcos Senna", "CDM", 87],
+  ["Juan Pablo Sorin", "LB", 85], ["Santi Cazorla", "LW", 82], ["Jose Mari", "ST", 81],
+  ["Juan Manuel Pena", "CB", 82], ["Gonzalo Rodriguez", "CB", 83], ["Javi Venta", "RB", 81],
+  ["Mariano Barbosa", "GK", 80], ["Josico", "CM", 80], ["Roger Garcia", "CM", 80]] },
+
+
+{
+  id: "kaiserslautern9798_patch",
+  name: "Kaiserslautern",
+  league: "Bundesliga",
+  season: "1997-98",
+  color: "#E30613",
+  rating: 82,
+  players: [
+  ["Olaf Marschall", "ST", 86], ["Ciriaco Sforza", "CM", 85], ["Andreas Brehme", "LB", 85],
+  ["Michael Ballack", "CM", 82], ["Martin Wagner", "LW", 81], ["Harry Koch", "CB", 81],
+  ["Miroslav Kadlec", "CB", 82], ["Ratinho", "RB", 80], ["Pavel Kuka", "ST", 80],
+  ["Andreas Reinke", "GK", 81], ["Marco Reich", "RW", 79], ["Thomas Riedl", "CDM", 79]] },
+
+
+{
+  id: "bordeaux0809_patch",
+  name: "Bordeaux",
+  league: "Ligue 1",
+  season: "2008-09",
+  color: "#001B50",
+  rating: 83,
+  players: [
+  ["Yoann Gourcuff", "CAM", 87], ["Marouane Chamakh", "ST", 84], ["Alou Diarra", "CDM", 84],
+  ["Wendel", "LW", 83], ["Fernando Menegazzo", "CM", 82], ["Jaroslav Plasil", "CM", 82],
+  ["Mathieu Chalme", "RB", 80], ["Marc Planus", "CB", 81], ["Souleymane Diawara", "CB", 82],
+  ["Benoit Tremoulinas", "LB", 81], ["Ulrich Rame", "GK", 80], ["Fernando Cavenaghi", "ST", 81]] },
+
+
+{
+  id: "sampdoria9091_patch",
+  name: "Sampdoria",
+  league: "Serie A",
+  season: "1990-91",
+  color: "#1E5AA8",
+  rating: 86,
+  players: [
+  ["Gianluca Vialli", "ST", 91], ["Roberto Mancini", "CAM", 90], ["Attilio Lombardo", "RW", 84],
+  ["Toninho Cerezo", "CM", 85], ["Giuseppe Dossena", "CM", 83], ["Moreno Mannini", "RB", 83],
+  ["Luca Pellegrini", "CB", 84], ["Pietro Vierchowod", "CB", 87], ["Giovanni Invernizzi", "CDM", 81],
+  ["Gianluca Pagliuca", "GK", 86], ["Marco Lanna", "LB", 82], ["Ivano Bonetti", "CM", 80]] },
+
+
+{
+  id: "psg1920_patch",
+  name: "Paris Saint-Germain",
+  league: "Ligue 1",
+  season: "2019-20",
+  color: "#004170",
+  rating: 91,
+  players: [
+  ["Neymar", "LW", 94], ["Kylian Mbappe", "ST", 93], ["Mauro Icardi", "ST", 86],
+  ["Marco Verratti", "CM", 89], ["Idrissa Gueye", "CDM", 85], ["Leandro Paredes", "CM", 84],
+  ["Presnel Kimpembe", "CB", 85], ["Marquinhos", "CB", 89], ["Juan Bernat", "LB", 84],
+  ["Thomas Meunier", "RB", 83], ["Sergio Rico", "GK", 81], ["Pablo Sarabia", "RW", 83]] },
+
+
+{
+  id: "galacticos0102_patch",
+  name: "Real Madrid",
+  league: "La Liga",
+  season: "2001-02",
+  color: "#FEBE10",
+  rating: 93,
+  jackpot: true,
+  players: [
+  ["Zinedine Zidane", "CAM", 96], ["Raul", "ST", 92], ["Luis Figo", "RW", 94],
+  ["Fernando Hierro", "CB", 89], ["Roberto Carlos", "LB", 93], ["Iker Casillas", "GK", 88],
+  ["Fernando Morientes", "ST", 87], ["Claude Makelele", "CDM", 90], ["Michel Salgado", "RB", 86],
+  ["Ivan Helguera", "CB", 86], ["Santiago Solari", "LW", 84], ["Guti", "CM", 84]] },
+
+
+{
+  id: "bayern1213_jackpot_patch",
+  name: "Bayern Munich",
+  league: "Bundesliga",
+  season: "2012-13",
+  color: "#DC052D",
+  rating: 93,
+  jackpot: true,
+  players: [
+  ["Franck Ribery", "LW", 92], ["Mario Mandzukic", "ST", 88], ["Bastian Schweinsteiger", "CM", 91],
+  ["Javi Martinez", "CDM", 89], ["Philipp Lahm", "RB", 92], ["Dante", "CB", 88],
+  ["Holger Badstuber", "CB", 84], ["Toni Kroos", "CM", 88], ["Thomas Muller", "CAM", 89],
+  ["Manuel Neuer", "GK", 91], ["David Alaba", "LB", 88], ["Claudio Pizarro", "ST", 83]] },
+
+
+{
+  id: "manutd9899_jackpot_patch",
+  name: "Manchester United",
+  league: "Premier League",
+  season: "1998-99",
+  color: "#DA291C",
+  rating: 92,
+  jackpot: true,
+  players: [
+  ["Dwight Yorke", "ST", 89], ["Andy Cole", "ST", 88], ["David Beckham", "RM", 92],
+  ["Roy Keane", "CM", 92], ["Ryan Giggs", "LM", 90], ["Jaap Stam", "CB", 91],
+  ["Peter Schmeichel", "GK", 91], ["Gary Neville", "RB", 86], ["Denis Irwin", "LB", 87],
+  ["Ronny Johnsen", "CB", 84], ["Nicky Butt", "CDM", 84], ["Ole Gunnar Solskjaer", "ST", 85]] },
+
+
+{
+  id: "chelsea1617_patch",
+  name: "Chelsea",
+  league: "Premier League",
+  season: "2016-17",
+  color: "#034694",
+  rating: 90,
+  players: [
+  ["Eden Hazard", "LW", 92], ["Diego Costa", "ST", 89], ["N'Golo Kante", "CDM", 91],
+  ["Cesc Fabregas", "CM", 86], ["Cesar Azpilicueta", "CB", 87], ["Gary Cahill", "CB", 85],
+  ["David Luiz", "CB", 85], ["Victor Moses", "RM", 82], ["Marcos Alonso", "LM", 84],
+  ["Thibaut Courtois", "GK", 88], ["Pedro", "RW", 84], ["Nemanja Matic", "CDM", 86]] }];
+
+
+
+
+const DATABASE_REMOVE_CLUB_IDS = new Set([
+"toulouse2223_extra",
+"mainz2223_extra",
+"nice2223_extra",
+"rennes2022_small",
+"sassuolo2021_small",
+"union2223_small",
+"brentford2223_small",
+"bar0809_balanced",
+"rm1112_balanced",
+"psg1920_balanced",
+"bay1213_balanced",
+"manutd9899_balanced",
+"sampdoria9091_expanded"]);
+
+
+const DATABASE_RATING_OVERRIDES = {
+  lyon0506: 86,
+  mon1617: 86,
+  leicester1516_jackpot: 84,
+  atm1314: 89,
+  porto1011_expanded: 88,
+  val0304: 89,
+  milan8889_jackpot: 95 };
+
+
+const DATABASE_KEEP_PLAYER_AT = {
+  "Cristiano Ronaldo": "mun0708",
+  "Karim Benzema": "rm1617",
+  "Wesley Sneijder": "inter0910",
+  "Angel Di Maria": "psg1516",
+  "David Silva": "mci1112_balanced",
+  "Arjen Robben": "bayern1213_jackpot_patch",
+  "Carlos Tevez": "mun0708",
+  "Patrice Evra": "mun0708",
+  "Kylian Mbappe": "psg1920_patch",
+  "Joao Moutinho": "porto1011_expanded",
+  "Manuel Neuer": "bayern1213_jackpot_patch",
+  "N'Golo Kante": "chelsea1617_patch",
+  "Roberto Carlos": "galacticos0102_patch",
+  "Zinedine Zidane": "galacticos0102_patch",
+  "Luis Figo": "galacticos0102_patch",
+  "Ronaldo Nazario": "inter9798_balanced",
+  "Eden Hazard": "chelsea1617_patch",
+  "David Beckham": "manutd9899_jackpot_patch",
+  "Peter Schmeichel": "manutd9899_jackpot_patch",
+  "Gianluca Vialli": "sampdoria9091_patch",
+  "Roberto Mancini": "sampdoria9091_patch" };
+
+
+const DATABASE_CLUB_PRIORITY = {
+  galacticos0102_patch: 1000,
+  bar1011: 990,
+  bayern1213_jackpot_patch: 980,
+  manutd9899_jackpot_patch: 970,
+  milan8889_jackpot: 960,
+  ajax9495_jackpot: 950,
+  mun0708: 940,
+  rm1617: 930,
+  inter0910: 925,
+  chelsea1617_patch: 920,
+  ars0304: 915,
+  liv1920: 910,
+  psg1920_patch: 905,
+  porto1011_expanded: 900,
+  sampdoria9091_patch: 890,
+  villarreal0506_patch: 880,
+  depor0304_patch: 870,
+  blackburn9495_patch: 860,
+  newcastle9596_patch: 850,
+  kaiserslautern9798_patch: 840,
+  bordeaux0809_patch: 830 };
+
+
+function normalizeDatabasePlayerName(name) {
+  return String(name || "").
+  normalize("NFD").
+  replace(/[\u0300-\u036f]/g, "").
+  replace(/[’']/g, "").
+  replace(/\s+/g, " ").
+  trim().
+  toLowerCase();
+}
+
+function clubDatabasePriority(club) {
+  return DATABASE_CLUB_PRIORITY[club.id] || (club.jackpot ? 700 : 100) + (club.rating || 0);
+}
+
+function buildQualityClubPool(rawClubs) {
+  const cleaned = rawClubs.
+  filter(club => club && !DATABASE_REMOVE_CLUB_IDS.has(club.id)).
+  map(club => ({
+    ...club,
+    rating: DATABASE_RATING_OVERRIDES[club.id] || club.rating,
+    players: Array.isArray(club.players) ? club.players.slice(0, 15) : [] })).
+
+  filter(club => club.players.length >= 11);
+
+  const ordered = cleaned.slice().sort((a, b) => clubDatabasePriority(b) - clubDatabasePriority(a));
+  const usedPlayers = new Set();
+  const deduped = [];
+
+  ordered.forEach(club => {
+    const keptPlayers = [];
+
+    club.players.forEach(player => {
+      const [name] = player;
+      const forcedClubId = DATABASE_KEEP_PLAYER_AT[name];
+      if (forcedClubId && forcedClubId !== club.id) return;
+
+      const key = normalizeDatabasePlayerName(name);
+      if (!key || usedPlayers.has(key)) return;
+
+      usedPlayers.add(key);
+      keptPlayers.push(player);
+    });
+
+    if (keptPlayers.length >= 11) {
+      deduped.push({ ...club, players: keptPlayers.slice(0, 15) });
+    }
+  });
+
+  return deduped.sort((a, b) => {
+    const leagueCompare = String(a.league).localeCompare(String(b.league));
+    if (leagueCompare) return leagueCompare;
+    return String(a.name).localeCompare(String(b.name));
+  });
+}
+
+const STANDARD_CLUB_POOL = buildQualityClubPool([...CLUBS, ...JACKPOT_CLUBS, ...SMALLER_CLUBS, ...EXTRA_TOP5_CLUBS, ...EXPANDED_DRAFT_CLUBS, ...BALANCED_100_EXTRA_CLUBS, ...DATABASE_PATCH_CLUBS]);
 
 const ERA_BALANCE_META_BY_ID = {
   psg1516: { season: "All-Era Spotlight", rating: 93 },
@@ -1851,6 +2160,57 @@ STANDARD_CLUB_POOL.forEach(club => {
   club.rating = meta.rating;
 });
 const ALL_CLUBS = STANDARD_CLUB_POOL;
+const WORLD_CUP_CLUBS = [
+{ id: "wc2026_mex", name: "Mexico", league: "Group A", season: "World Cup 2026", color: "#0f7f56", rating: 86, worldCup: true, players: [["Guillermo Ochoa", "GK", 82], ["Jorge Sanchez", "RB", 80], ["Cesar Montes", "CB", 82], ["Johan Vasquez", "CB", 82], ["Jesus Gallardo", "LB", 80], ["Edson Alvarez", "CDM", 86], ["Luis Chavez", "CM", 82], ["Orbelin Pineda", "CAM", 81], ["Hirving Lozano", "RW", 84], ["Alexis Vega", "LW", 81], ["Santiago Gimenez", "ST", 84], ["Raul Jimenez", "ST", 82], ["Uriel Antuna", "RW", 79], ["Erick Sanchez", "CM", 80], ["Luis Malagon", "GK", 79]] },
+{ id: "wc2026_rsa", name: "South Africa", league: "Group A", season: "World Cup 2026", color: "#0f7f56", rating: 78, worldCup: true, players: [["Ronwen Williams", "GK", 81], ["Khuliso Mudau", "RB", 78], ["Mothobi Mvala", "CB", 77], ["Siyanda Xulu", "CB", 76], ["Aubrey Modiba", "LB", 77], ["Teboho Mokoena", "CM", 82], ["Sphephelo Sithole", "CDM", 76], ["Themba Zwane", "CAM", 80], ["Percy Tau", "RW", 81], ["Lyle Foster", "ST", 80], ["Evidence Makgopa", "ST", 77], ["Thapelo Morena", "RM", 76], ["Mihlali Mayambela", "LW", 76], ["Grant Kekana", "CB", 76], ["Nkosinathi Sibisi", "CB", 75]] },
+{ id: "wc2026_kor", name: "South Korea", league: "Group A", season: "World Cup 2026", color: "#0f7f56", rating: 85, worldCup: true, players: [["Kim Seung-gyu", "GK", 80], ["Kim Moon-hwan", "RB", 78], ["Kim Min-jae", "CB", 89], ["Kim Young-gwon", "CB", 80], ["Lee Ki-je", "LB", 77], ["Hwang In-beom", "CM", 82], ["Park Yong-woo", "CDM", 78], ["Lee Kang-in", "CAM", 85], ["Son Heung-min", "LW", 89], ["Hwang Hee-chan", "RW", 84], ["Cho Gue-sung", "ST", 80], ["Oh Hyeon-gyu", "ST", 78], ["Jeong Woo-yeong", "CAM", 78], ["Seol Young-woo", "RB", 78], ["Hong Hyun-seok", "CM", 78]] },
+{ id: "wc2026_cze", name: "Czechia", league: "Group A", season: "World Cup 2026", color: "#0f7f56", rating: 83, worldCup: true, players: [["Jindrich Stanek", "GK", 79], ["Vladimir Coufal", "RB", 81], ["Tomas Holes", "CB", 80], ["David Zima", "CB", 78], ["David Jurasek", "LB", 79], ["Tomas Soucek", "CDM", 84], ["Antonin Barak", "CM", 81], ["Alex Kral", "CM", 79], ["Vaclav Cerny", "RW", 80], ["Adam Hlozek", "LW", 81], ["Patrik Schick", "ST", 86], ["Jan Kuchta", "ST", 79], ["Lukas Provod", "LM", 79], ["Ladislav Krejci", "CB", 81], ["Matej Kovar", "GK", 78]] },
+{ id: "wc2026_can", name: "Canada", league: "Group B", season: "World Cup 2026", color: "#2374ab", rating: 84, worldCup: true, players: [["Milan Borjan", "GK", 78], ["Alistair Johnston", "RB", 80], ["Moise Bombito", "CB", 78], ["Kamal Miller", "CB", 78], ["Alphonso Davies", "LB", 88], ["Stephen Eustaquio", "CM", 82], ["Ismael Kone", "CM", 80], ["Jonathan Osorio", "CAM", 78], ["Tajon Buchanan", "RW", 82], ["Jonathan David", "ST", 86], ["Cyle Larin", "ST", 81], ["Jacob Shaffelburg", "LW", 78], ["Liam Millar", "LW", 78], ["Richie Laryea", "RB", 78], ["Maxime Crepeau", "GK", 78]] },
+{ id: "wc2026_bih", name: "Bosnia and Herzegovina", league: "Group B", season: "World Cup 2026", color: "#2374ab", rating: 81, worldCup: true, players: [["Ibrahim Sehic", "GK", 78], ["Amar Dedic", "RB", 81], ["Anel Ahmedhodzic", "CB", 82], ["Dennis Hadzikadunic", "CB", 78], ["Sead Kolasinac", "LB", 81], ["Rade Krunic", "CM", 81], ["Benjamin Tahirovic", "CDM", 78], ["Miralem Pjanic", "CM", 82], ["Haris Hajradinovic", "CAM", 78], ["Edin Dzeko", "ST", 84], ["Ermedin Demirovic", "ST", 83], ["Said Hamulic", "ST", 76], ["Amir Hadziahmetovic", "CDM", 79], ["Smail Prevljak", "ST", 76], ["Nikola Vasilj", "GK", 76]] },
+{ id: "wc2026_qat", name: "Qatar", league: "Group B", season: "World Cup 2026", color: "#2374ab", rating: 78, worldCup: true, players: [["Meshaal Barsham", "GK", 78], ["Pedro Miguel", "RB", 77], ["Boualem Khoukhi", "CB", 78], ["Tarek Salman", "CB", 76], ["Abdelkarim Hassan", "LB", 78], ["Karim Boudiaf", "CDM", 77], ["Assim Madibo", "CM", 76], ["Akram Afif", "LW", 83], ["Hassan Al-Haydos", "RW", 78], ["Almoez Ali", "ST", 80], ["Mohammed Muntari", "ST", 76], ["Homam Ahmed", "LB", 76], ["Ismail Mohamad", "RM", 76], ["Bassam Al-Rawi", "CB", 77], ["Yusuf Abdurisag", "LW", 75]] },
+{ id: "wc2026_sui", name: "Switzerland", league: "Group B", season: "World Cup 2026", color: "#2374ab", rating: 86, worldCup: true, players: [["Yann Sommer", "GK", 86], ["Silvan Widmer", "RB", 80], ["Manuel Akanji", "CB", 86], ["Nico Elvedi", "CB", 82], ["Ricardo Rodriguez", "LB", 80], ["Granit Xhaka", "CDM", 88], ["Remo Freuler", "CM", 82], ["Denis Zakaria", "CM", 82], ["Xherdan Shaqiri", "RW", 82], ["Ruben Vargas", "LW", 81], ["Breel Embolo", "ST", 82], ["Zeki Amdouni", "ST", 80], ["Noah Okafor", "LW", 81], ["Fabian Schar", "CB", 82], ["Gregor Kobel", "GK", 87]] },
+{ id: "wc2026_bra", name: "Brazil", league: "Group C", season: "World Cup 2026", color: "#9b2226", rating: 91, worldCup: true, players: [["Alisson", "GK", 90], ["Danilo", "RB", 83], ["Marquinhos", "CB", 88], ["Gabriel Magalhaes", "CB", 86], ["Renan Lodi", "LB", 82], ["Casemiro", "CDM", 86], ["Bruno Guimaraes", "CM", 86], ["Lucas Paqueta", "CAM", 85], ["Vinicius Junior", "LW", 92], ["Rodrygo", "RW", 88], ["Endrick", "ST", 84], ["Richarlison", "ST", 83], ["Raphinha", "RW", 85], ["Eder Militao", "CB", 86], ["Ederson", "GK", 89]] },
+{ id: "wc2026_mar", name: "Morocco", league: "Group C", season: "World Cup 2026", color: "#9b2226", rating: 86, worldCup: true, players: [["Yassine Bounou", "GK", 86], ["Achraf Hakimi", "RB", 88], ["Nayef Aguerd", "CB", 82], ["Romain Saiss", "CB", 80], ["Noussair Mazraoui", "LB", 84], ["Sofyan Amrabat", "CDM", 82], ["Azzedine Ounahi", "CM", 82], ["Hakim Ziyech", "RW", 84], ["Brahim Diaz", "CAM", 85], ["Sofiane Boufal", "LW", 81], ["Youssef En-Nesyri", "ST", 82], ["Amine Adli", "LW", 81], ["Amir Richardson", "CM", 78], ["Chadi Riad", "CB", 78], ["Munir Mohamedi", "GK", 77]] },
+{ id: "wc2026_hti", name: "Haiti", league: "Group C", season: "World Cup 2026", color: "#9b2226", rating: 75, worldCup: true, players: [["Johny Placide", "GK", 75], ["Carlens Arcus", "RB", 76], ["Ricardo Ade", "CB", 75], ["Mechack Jerome", "CB", 73], ["Alex Christian", "LB", 74], ["Bryan Alceus", "CDM", 74], ["Danley Jean Jacques", "CM", 76], ["Derrick Etienne", "LW", 76], ["Fafa Picault", "RW", 77], ["Duckens Nazon", "ST", 78], ["Frantzdy Pierrot", "ST", 77], ["Carnejy Antoine", "ST", 74], ["Leverton Pierre", "CM", 73], ["Steeven Saba", "CAM", 74], ["Garissone Innocent", "GK", 73]] },
+{ id: "wc2026_sco", name: "Scotland", league: "Group C", season: "World Cup 2026", color: "#9b2226", rating: 84, worldCup: true, players: [["Angus Gunn", "GK", 80], ["Aaron Hickey", "RB", 81], ["Scott McKenna", "CB", 79], ["Kieran Tierney", "CB", 84], ["Andrew Robertson", "LB", 87], ["Scott McTominay", "CM", 84], ["Billy Gilmour", "CM", 81], ["John McGinn", "CAM", 84], ["Ryan Christie", "RW", 80], ["Ryan Fraser", "LW", 78], ["Che Adams", "ST", 80], ["Lyndon Dykes", "ST", 78], ["Lewis Ferguson", "CM", 82], ["Jack Hendry", "CB", 78], ["Craig Gordon", "GK", 78]] },
+{ id: "wc2026_usa", name: "United States", league: "Group D", season: "World Cup 2026", color: "#ee9b00", rating: 86, worldCup: true, players: [["Matt Turner", "GK", 81], ["Sergino Dest", "RB", 82], ["Chris Richards", "CB", 80], ["Tim Ream", "CB", 80], ["Antonee Robinson", "LB", 84], ["Tyler Adams", "CDM", 83], ["Weston McKennie", "CM", 84], ["Yunus Musah", "CM", 81], ["Christian Pulisic", "LW", 86], ["Tim Weah", "RW", 81], ["Folarin Balogun", "ST", 83], ["Gio Reyna", "CAM", 82], ["Ricardo Pepi", "ST", 80], ["Malik Tillman", "CAM", 80], ["Cameron Carter-Vickers", "CB", 79]] },
+{ id: "wc2026_par", name: "Paraguay", league: "Group D", season: "World Cup 2026", color: "#ee9b00", rating: 80, worldCup: true, players: [["Gatito Fernandez", "GK", 78], ["Alberto Espinola", "RB", 76], ["Gustavo Gomez", "CB", 83], ["Junior Alonso", "CB", 80], ["Matias Espinoza", "LB", 76], ["Richard Sanchez", "CM", 79], ["Mathias Villasanti", "CDM", 80], ["Miguel Almiron", "CAM", 82], ["Ramon Sosa", "LW", 80], ["Julio Enciso", "RW", 82], ["Antonio Sanabria", "ST", 80], ["Adam Bareiro", "ST", 78], ["Diego Gomez", "CM", 78], ["Omar Alderete", "CB", 79], ["Carlos Coronel", "GK", 77]] },
+{ id: "wc2026_aus", name: "Australia", league: "Group D", season: "World Cup 2026", color: "#ee9b00", rating: 81, worldCup: true, players: [["Mathew Ryan", "GK", 80], ["Nathaniel Atkinson", "RB", 77], ["Harry Souttar", "CB", 80], ["Kye Rowles", "CB", 78], ["Aziz Behich", "LB", 77], ["Jackson Irvine", "CM", 80], ["Keanu Baccus", "CDM", 77], ["Ajdin Hrustic", "CAM", 79], ["Mathew Leckie", "RW", 78], ["Martin Boyle", "LW", 78], ["Mitchell Duke", "ST", 78], ["Riley McGree", "CM", 79], ["Craig Goodwin", "LW", 78], ["Cameron Burgess", "CB", 78], ["Joe Gauci", "GK", 76]] },
+{ id: "wc2026_tur", name: "Turkey", league: "Group D", season: "World Cup 2026", color: "#ee9b00", rating: 85, worldCup: true, players: [["Ugurcan Cakir", "GK", 81], ["Zeki Celik", "RB", 80], ["Merih Demiral", "CB", 82], ["Caglar Soyuncu", "CB", 81], ["Ferdi Kadioglu", "LB", 84], ["Hakan Calhanoglu", "CDM", 88], ["Orkun Kokcu", "CM", 83], ["Arda Guler", "CAM", 85], ["Cengiz Under", "RW", 81], ["Kerem Akturkoglu", "LW", 82], ["Enes Unal", "ST", 80], ["Baris Alper Yilmaz", "ST", 80], ["Yusuf Yazici", "CAM", 80], ["Ismail Yuksek", "CDM", 80], ["Altay Bayindir", "GK", 78]] },
+{ id: "wc2026_ger", name: "Germany", league: "Group E", season: "World Cup 2026", color: "#005f73", rating: 90, worldCup: true, players: [["Manuel Neuer", "GK", 88], ["Joshua Kimmich", "RB", 88], ["Antonio Rudiger", "CB", 87], ["Jonathan Tah", "CB", 85], ["David Raum", "LB", 82], ["Toni Kroos", "CM", 89], ["Ilkay Gundogan", "CM", 86], ["Jamal Musiala", "CAM", 89], ["Leroy Sane", "RW", 86], ["Florian Wirtz", "LW", 89], ["Kai Havertz", "ST", 84], ["Niclas Fullkrug", "ST", 82], ["Serge Gnabry", "RW", 84], ["Leon Goretzka", "CM", 84], ["Marc-Andre ter Stegen", "GK", 88]] },
+{ id: "wc2026_cuw", name: "Curacao", league: "Group E", season: "World Cup 2026", color: "#005f73", rating: 74, worldCup: true, players: [["Eloy Room", "GK", 76], ["Jurien Gaari", "RB", 74], ["Roshon van Eijma", "CB", 73], ["Cuco Martina", "CB", 75], ["Sherel Floranus", "LB", 75], ["Leandro Bacuna", "CM", 76], ["Juninho Bacuna", "CM", 76], ["Vurnon Anita", "CDM", 75], ["Brandley Kuwas", "RW", 76], ["Gervane Kastaneer", "LW", 74], ["Rangelo Janga", "ST", 75], ["Kenji Gorre", "LW", 74], ["Jeremy Antonisse", "RW", 73], ["Jafar Arias", "ST", 73], ["Tyrese Noslin", "ST", 77]] },
+{ id: "wc2026_civ", name: "Ivory Coast", league: "Group E", season: "World Cup 2026", color: "#005f73", rating: 84, worldCup: true, players: [["Yahia Fofana", "GK", 79], ["Serge Aurier", "RB", 80], ["Odilon Kossounou", "CB", 82], ["Evan Ndicka", "CB", 82], ["Ghislain Konan", "LB", 78], ["Ibrahim Sangare", "CDM", 82], ["Franck Kessie", "CM", 84], ["Seko Fofana", "CM", 83], ["Simon Adingra", "LW", 82], ["Nicolas Pepe", "RW", 81], ["Sebastien Haller", "ST", 82], ["Oumar Diakite", "ST", 78], ["Wilfried Zaha", "LW", 81], ["Wilfried Singo", "CB", 80], ["Jean Michael Seri", "CM", 79]] },
+{ id: "wc2026_ecu", name: "Ecuador", league: "Group E", season: "World Cup 2026", color: "#005f73", rating: 84, worldCup: true, players: [["Alexander Dominguez", "GK", 78], ["Angelo Preciado", "RB", 80], ["Piero Hincapie", "CB", 84], ["Willian Pacho", "CB", 83], ["Pervis Estupinan", "LB", 84], ["Moises Caicedo", "CDM", 86], ["Alan Franco", "CM", 78], ["Kendry Paez", "CAM", 80], ["Gonzalo Plata", "RW", 80], ["Jeremy Sarmiento", "LW", 79], ["Enner Valencia", "ST", 81], ["Kevin Rodriguez", "ST", 77], ["Carlos Gruezo", "CDM", 78], ["Felix Torres", "CB", 80], ["Hernan Galindez", "GK", 77]] },
+{ id: "wc2026_ned", name: "Netherlands", league: "Group F", season: "World Cup 2026", color: "#6a4c93", rating: 89, worldCup: true, players: [["Bart Verbruggen", "GK", 82], ["Denzel Dumfries", "RB", 84], ["Virgil van Dijk", "CB", 89], ["Matthijs de Ligt", "CB", 86], ["Nathan Ake", "LB", 84], ["Frenkie de Jong", "CM", 88], ["Tijjani Reijnders", "CM", 83], ["Xavi Simons", "CAM", 84], ["Cody Gakpo", "LW", 84], ["Donyell Malen", "RW", 82], ["Memphis Depay", "ST", 83], ["Wout Weghorst", "ST", 79], ["Jeremie Frimpong", "RB", 84], ["Jurrien Timber", "CB", 83], ["Justin Bijlow", "GK", 80]] },
+{ id: "wc2026_jpn", name: "Japan", league: "Group F", season: "World Cup 2026", color: "#6a4c93", rating: 85, worldCup: true, players: [["Zion Suzuki", "GK", 78], ["Hiroki Ito", "LB", 82], ["Ko Itakura", "CB", 82], ["Takehiro Tomiyasu", "CB", 84], ["Yukinari Sugawara", "RB", 81], ["Wataru Endo", "CDM", 83], ["Ao Tanaka", "CM", 79], ["Daichi Kamada", "CAM", 82], ["Kaoru Mitoma", "LW", 85], ["Takefusa Kubo", "RW", 85], ["Ayase Ueda", "ST", 80], ["Takumi Minamino", "CAM", 81], ["Ritsu Doan", "RW", 81], ["Daizen Maeda", "LW", 79], ["Shuichi Gonda", "GK", 77]] },
+{ id: "wc2026_swe", name: "Sweden", league: "Group F", season: "World Cup 2026", color: "#6a4c93", rating: 84, worldCup: true, players: [["Robin Olsen", "GK", 79], ["Emil Krafth", "RB", 77], ["Victor Lindelof", "CB", 81], ["Isak Hien", "CB", 80], ["Ludwig Augustinsson", "LB", 78], ["Kristoffer Olsson", "CM", 78], ["Albin Ekdal", "CDM", 78], ["Emil Forsberg", "CAM", 82], ["Dejan Kulusevski", "RW", 86], ["Anthony Elanga", "LW", 81], ["Alexander Isak", "ST", 86], ["Viktor Gyokeres", "ST", 86], ["Mattias Svanberg", "CM", 80], ["Jens Cajuste", "CDM", 79], ["Ken Sema", "LM", 79]] },
+{ id: "wc2026_tun", name: "Tunisia", league: "Group F", season: "World Cup 2026", color: "#6a4c93", rating: 78, worldCup: true, players: [["Aymen Dahmen", "GK", 77], ["Mohamed Drager", "RB", 76], ["Montassar Talbi", "CB", 78], ["Yassine Meriah", "CB", 77], ["Ali Abdi", "LB", 77], ["Ellyes Skhiri", "CDM", 81], ["Aissa Laidouni", "CM", 78], ["Hannibal Mejbri", "CAM", 78], ["Anis Ben Slimane", "LW", 77], ["Wahbi Khazri", "ST", 80], ["Youssef Msakni", "LW", 79], ["Seifeddine Jaziri", "ST", 76], ["Naim Sliti", "RW", 77], ["Ferjani Sassi", "CM", 77], ["Bechir Ben Said", "GK", 75]] },
+{ id: "wc2026_bel", name: "Belgium", league: "Group G", season: "World Cup 2026", color: "#2a9d8f", rating: 88, worldCup: true, players: [["Thibaut Courtois", "GK", 90], ["Timothy Castagne", "RB", 80], ["Wout Faes", "CB", 80], ["Jan Vertonghen", "CB", 80], ["Arthur Theate", "LB", 81], ["Amadou Onana", "CDM", 83], ["Kevin De Bruyne", "CM", 91], ["Youri Tielemans", "CM", 82], ["Jeremy Doku", "LW", 84], ["Leandro Trossard", "RW", 84], ["Romelu Lukaku", "ST", 85], ["Lois Openda", "ST", 84], ["Charles De Ketelaere", "CAM", 81], ["Koen Casteels", "GK", 84], ["Aster Vranckx", "CM", 79]] },
+{ id: "wc2026_egy", name: "Egypt", league: "Group G", season: "World Cup 2026", color: "#2a9d8f", rating: 83, worldCup: true, players: [["Mohamed El Shenawy", "GK", 79], ["Omar Kamal", "RB", 77], ["Ahmed Hegazi", "CB", 80], ["Mohamed Abdelmonem", "CB", 80], ["Ahmed Fatouh", "LB", 78], ["Mohamed Elneny", "CDM", 79], ["Hamdi Fathi", "CM", 78], ["Trezeguet", "LW", 80], ["Mohamed Salah", "RW", 90], ["Omar Marmoush", "ST", 84], ["Mostafa Mohamed", "ST", 81], ["Zizo", "CAM", 79], ["Emam Ashour", "CM", 78], ["Mahmoud Hamada", "CDM", 76], ["Mohamed Awad", "GK", 76]] },
+{ id: "wc2026_iri", name: "Iran", league: "Group G", season: "World Cup 2026", color: "#2a9d8f", rating: 80, worldCup: true, players: [["Alireza Beiranvand", "GK", 79], ["Sadegh Moharrami", "RB", 77], ["Hossein Kanaani", "CB", 77], ["Shoja Khalilzadeh", "CB", 76], ["Milad Mohammadi", "LB", 77], ["Saeid Ezatolahi", "CDM", 78], ["Saman Ghoddos", "CM", 78], ["Ali Gholizadeh", "RW", 78], ["Mehdi Taremi", "ST", 84], ["Sardar Azmoun", "ST", 82], ["Alireza Jahanbakhsh", "RW", 79], ["Mehdi Ghayedi", "LW", 77], ["Ehsan Hajsafi", "CM", 77], ["Majid Hosseini", "CB", 78], ["Payam Niazmand", "GK", 76]] },
+{ id: "wc2026_nzl", name: "New Zealand", league: "Group G", season: "World Cup 2026", color: "#2a9d8f", rating: 75, worldCup: true, players: [["Max Crocombe", "GK", 75], ["Tim Payne", "RB", 74], ["Tommy Smith", "CB", 75], ["Nando Pijnaker", "CB", 74], ["Liberato Cacace", "LB", 78], ["Joe Bell", "CM", 76], ["Marko Stamenic", "CDM", 78], ["Matthew Garbett", "CAM", 75], ["Sarpreet Singh", "RW", 77], ["Ben Waine", "ST", 74], ["Chris Wood", "ST", 80], ["Elijah Just", "LW", 74], ["Alex Greive", "ST", 73], ["Bill Tuiloma", "CB", 75], ["Michael Boxall", "CB", 74]] },
+{ id: "wc2026_esp", name: "Spain", league: "Group H", season: "World Cup 2026", color: "#bc6c25", rating: 90, worldCup: true, players: [["Unai Simon", "GK", 85], ["Dani Carvajal", "RB", 85], ["Robin Le Normand", "CB", 84], ["Aymeric Laporte", "CB", 85], ["Alejandro Balde", "LB", 82], ["Rodri", "CDM", 92], ["Pedri", "CM", 87], ["Gavi", "CM", 86], ["Nico Williams", "LW", 84], ["Lamine Yamal", "RW", 86], ["Alvaro Morata", "ST", 83], ["Dani Olmo", "CAM", 84], ["Mikel Oyarzabal", "LW", 83], ["Mikel Merino", "CM", 84], ["David Raya", "GK", 84]] },
+{ id: "wc2026_cpv", name: "Cape Verde", league: "Group H", season: "World Cup 2026", color: "#bc6c25", rating: 76, worldCup: true, players: [["Vozinha", "GK", 76], ["Steven Moreira", "RB", 76], ["Logan Costa", "CB", 79], ["Roberto Lopes", "CB", 75], ["Dylan Tavares", "LB", 75], ["Patrick Andrade", "CM", 75], ["Jamiro Monteiro", "CAM", 77], ["Kenny Rocha Santos", "CM", 75], ["Garry Rodrigues", "LW", 77], ["Ryan Mendes", "RW", 77], ["Djaniny", "ST", 76], ["Bebe", "ST", 76], ["Jovane Cabral", "LW", 77], ["Kevin Pina", "CDM", 75], ["Diney", "CB", 74]] },
+{ id: "wc2026_ksa", name: "Saudi Arabia", league: "Group H", season: "World Cup 2026", color: "#bc6c25", rating: 78, worldCup: true, players: [["Mohammed Al-Owais", "GK", 78], ["Saud Abdulhamid", "RB", 80], ["Ali Al-Bulaihi", "CB", 78], ["Hassan Tambakti", "CB", 78], ["Yasir Al-Shahrani", "LB", 77], ["Mohamed Kanno", "CM", 78], ["Abdulellah Al-Malki", "CDM", 76], ["Salem Al-Dawsari", "LW", 81], ["Sami Al-Najei", "CAM", 77], ["Firas Al-Buraikan", "ST", 78], ["Saleh Al-Shehri", "ST", 77], ["Abdulrahman Ghareeb", "LW", 77], ["Hattan Bahebri", "RW", 76], ["Nasser Al-Dawsari", "CM", 76], ["Nawaf Al-Aqidi", "GK", 76]] },
+{ id: "wc2026_uru", name: "Uruguay", league: "Group H", season: "World Cup 2026", color: "#bc6c25", rating: 88, worldCup: true, players: [["Sergio Rochet", "GK", 80], ["Nahitan Nandez", "RB", 81], ["Ronald Araujo", "CB", 88], ["Jose Maria Gimenez", "CB", 84], ["Matias Vina", "LB", 80], ["Manuel Ugarte", "CDM", 84], ["Federico Valverde", "CM", 90], ["Rodrigo Bentancur", "CM", 85], ["Darwin Nunez", "ST", 86], ["Facundo Pellistri", "RW", 80], ["Luis Suarez", "ST", 82], ["Nicolas De La Cruz", "CAM", 82], ["Giorgian De Arrascaeta", "CAM", 82], ["Maxi Araujo", "LW", 80], ["Guillermo Varela", "RB", 78]] },
+{ id: "wc2026_fra", name: "France", league: "Group I", season: "World Cup 2026", color: "#4361ee", rating: 92, worldCup: true, players: [["Mike Maignan", "GK", 88], ["Jules Kounde", "RB", 85], ["William Saliba", "CB", 88], ["Ibrahima Konate", "CB", 85], ["Theo Hernandez", "LB", 87], ["Aurelien Tchouameni", "CDM", 86], ["Eduardo Camavinga", "CM", 86], ["Antoine Griezmann", "CAM", 88], ["Kylian Mbappe", "LW", 94], ["Ousmane Dembele", "RW", 86], ["Olivier Giroud", "ST", 82], ["Marcus Thuram", "ST", 84], ["Kingsley Coman", "RW", 85], ["Adrien Rabiot", "CM", 84], ["Dayot Upamecano", "CB", 84]] },
+{ id: "wc2026_sen", name: "Senegal", league: "Group I", season: "World Cup 2026", color: "#4361ee", rating: 85, worldCup: true, players: [["Edouard Mendy", "GK", 84], ["Youssouf Sabaly", "RB", 80], ["Kalidou Koulibaly", "CB", 86], ["Abdou Diallo", "CB", 80], ["Ismail Jakobs", "LB", 79], ["Idrissa Gueye", "CDM", 81], ["Pape Matar Sarr", "CM", 82], ["Pape Gueye", "CM", 78], ["Ismaila Sarr", "RW", 81], ["Sadio Mane", "LW", 86], ["Nicolas Jackson", "ST", 82], ["Boulaye Dia", "ST", 81], ["Iliman Ndiaye", "CAM", 80], ["Habib Diallo", "ST", 80], ["Mory Diaw", "GK", 78]] },
+{ id: "wc2026_irq", name: "Iraq", league: "Group I", season: "World Cup 2026", color: "#4361ee", rating: 76, worldCup: true, players: [["Jalal Hassan", "GK", 76], ["Hussein Ali", "RB", 75], ["Saad Natiq", "CB", 75], ["Rebin Sulaka", "CB", 75], ["Ali Adnan", "LB", 77], ["Amjad Attwan", "CDM", 75], ["Osama Rashid", "CM", 76], ["Ibrahim Bayesh", "RW", 76], ["Zidane Iqbal", "CM", 78], ["Aymen Hussein", "ST", 78], ["Mohannad Ali", "ST", 76], ["Ali Jasim", "LW", 77], ["Bashar Resan", "CAM", 76], ["Mohanad Jeahze", "LB", 76], ["Fahad Talib", "GK", 74]] },
+{ id: "wc2026_nor", name: "Norway", league: "Group I", season: "World Cup 2026", color: "#4361ee", rating: 87, worldCup: true, players: [["Orjan Nyland", "GK", 79], ["Julian Ryerson", "RB", 82], ["Kristoffer Ajer", "CB", 80], ["Leo Ostigard", "CB", 79], ["Fredrik Bjorkan", "LB", 78], ["Sander Berge", "CDM", 82], ["Martin Odegaard", "CM", 89], ["Morten Thorsby", "CM", 78], ["Antonio Nusa", "LW", 80], ["Oscar Bobb", "RW", 80], ["Erling Haaland", "ST", 94], ["Alexander Sorloth", "ST", 84], ["Jorgen Strand Larsen", "ST", 81], ["Patrick Berg", "CDM", 78], ["Egil Selvik", "GK", 75]] },
+{ id: "wc2026_arg", name: "Argentina", league: "Group J", season: "World Cup 2026", color: "#7b2cbf", rating: 91, worldCup: true, players: [["Emiliano Martinez", "GK", 88], ["Nahuel Molina", "RB", 83], ["Cristian Romero", "CB", 86], ["Lisandro Martinez", "CB", 84], ["Nicolas Tagliafico", "LB", 82], ["Enzo Fernandez", "CM", 86], ["Rodrigo De Paul", "CM", 84], ["Alexis Mac Allister", "CM", 86], ["Lionel Messi", "RW", 91], ["Angel Di Maria", "RW", 84], ["Lautaro Martinez", "ST", 88], ["Julian Alvarez", "ST", 85], ["Paulo Dybala", "CAM", 84], ["Nicolas Gonzalez", "LW", 82], ["Leandro Paredes", "CDM", 81]] },
+{ id: "wc2026_dza", name: "Algeria", league: "Group J", season: "World Cup 2026", color: "#7b2cbf", rating: 82, worldCup: true, players: [["Anthony Mandrea", "GK", 77], ["Youcef Atal", "RB", 79], ["Ramy Bensebaini", "CB", 82], ["Aissa Mandi", "CB", 79], ["Rayan Ait-Nouri", "LB", 82], ["Ismael Bennacer", "CM", 84], ["Nabil Bentaleb", "CDM", 80], ["Houssem Aouar", "CM", 81], ["Riyad Mahrez", "RW", 85], ["Said Benrahma", "LW", 81], ["Islam Slimani", "ST", 79], ["Amine Gouiri", "ST", 82], ["Adam Ounas", "RW", 78], ["Mohamed Amoura", "ST", 80], ["Sofiane Feghouli", "CAM", 78]] },
+{ id: "wc2026_aut", name: "Austria", league: "Group J", season: "World Cup 2026", color: "#7b2cbf", rating: 84, worldCup: true, players: [["Heinz Lindner", "GK", 78], ["Stefan Posch", "RB", 80], ["Kevin Danso", "CB", 83], ["David Alaba", "CB", 85], ["Phillipp Mwene", "LB", 78], ["Konrad Laimer", "CDM", 84], ["Marcel Sabitzer", "CM", 84], ["Xaver Schlager", "CM", 82], ["Christoph Baumgartner", "CAM", 82], ["Michael Gregoritsch", "ST", 81], ["Marko Arnautovic", "ST", 81], ["Patrick Wimmer", "RW", 80], ["Nicolas Seiwald", "CDM", 80], ["Gernot Trauner", "CB", 80], ["Alexander Schlager", "GK", 78]] },
+{ id: "wc2026_jor", name: "Jordan", league: "Group J", season: "World Cup 2026", color: "#7b2cbf", rating: 74, worldCup: true, players: [["Yazeed Abulaila", "GK", 75], ["Ehsan Haddad", "RB", 74], ["Yazan Al-Arab", "CB", 75], ["Abdallah Nasib", "CB", 74], ["Salem Al-Ajalin", "LB", 73], ["Nizar Al-Rashdan", "CDM", 75], ["Noor Al-Rawabdeh", "CM", 74], ["Musa Al-Taamari", "RW", 79], ["Mahmoud Al-Mardi", "LW", 75], ["Ali Olwan", "ST", 76], ["Yazan Al-Naimat", "ST", 78], ["Ibrahim Sadeh", "CM", 73], ["Feras Shelbaieh", "RB", 73], ["Mohammad Abu Zrayq", "LW", 74], ["Anas Bani Yaseen", "CB", 73]] },
+{ id: "wc2026_por", name: "Portugal", league: "Group K", season: "World Cup 2026", color: "#3a5a40", rating: 91, worldCup: true, players: [["Diogo Costa", "GK", 86], ["Joao Cancelo", "RB", 86], ["Ruben Dias", "CB", 89], ["Pepe", "CB", 83], ["Nuno Mendes", "LB", 85], ["Joao Palhinha", "CDM", 85], ["Bruno Fernandes", "CAM", 89], ["Bernardo Silva", "CM", 88], ["Rafael Leao", "LW", 86], ["Cristiano Ronaldo", "ST", 86], ["Goncalo Ramos", "ST", 83], ["Diogo Jota", "RW", 85], ["Joao Felix", "CAM", 84], ["Vitinha", "CM", 86], ["Antonio Silva", "CB", 82]] },
+{ id: "wc2026_cod", name: "DR Congo", league: "Group K", season: "World Cup 2026", color: "#3a5a40", rating: 79, worldCup: true, players: [["Lionel Mpasi", "GK", 77], ["Gedeon Kalulu", "RB", 77], ["Chancel Mbemba", "CB", 82], ["Dylan Batubinsika", "CB", 78], ["Arthur Masuaku", "LB", 79], ["Samuel Moutoussamy", "CM", 78], ["Edo Kayembe", "CDM", 77], ["Gael Kakuta", "CAM", 79], ["Yoane Wissa", "LW", 82], ["Cedric Bakambu", "ST", 80], ["Silas", "RW", 80], ["Meschack Elia", "RW", 78], ["Theo Bongonda", "LW", 79], ["Simon Banza", "ST", 80], ["Dimitry Bertaud", "GK", 75]] },
+{ id: "wc2026_uzb", name: "Uzbekistan", league: "Group K", season: "World Cup 2026", color: "#3a5a40", rating: 76, worldCup: true, players: [["Utkir Yusupov", "GK", 75], ["Farrukh Sayfiev", "LB", 74], ["Rustamjon Ashurmatov", "CB", 75], ["Abdukodir Khusanov", "CB", 79], ["Khojiakbar Alijonov", "RB", 74], ["Otabek Shukurov", "CDM", 76], ["Odiljon Hamrobekov", "CM", 75], ["Jaloliddin Masharipov", "LW", 78], ["Eldor Shomurodov", "ST", 79], ["Igor Sergeev", "ST", 76], ["Abbosbek Fayzullaev", "CAM", 79], ["Azizbek Turgunboev", "RW", 75], ["Diyor Kholmatov", "CM", 74], ["Husniddin Aliqulov", "CB", 74], ["Botirali Ergashev", "GK", 73]] },
+{ id: "wc2026_col", name: "Colombia", league: "Group K", season: "World Cup 2026", color: "#3a5a40", rating: 86, worldCup: true, players: [["Camilo Vargas", "GK", 80], ["Daniel Munoz", "RB", 82], ["Davinson Sanchez", "CB", 82], ["Jhon Lucumi", "CB", 81], ["Johan Mojica", "LB", 78], ["Jefferson Lerma", "CDM", 81], ["Richard Rios", "CM", 80], ["James Rodriguez", "CAM", 84], ["Luis Diaz", "LW", 87], ["Jhon Arias", "RW", 82], ["Rafael Borre", "ST", 80], ["Jhon Duran", "ST", 82], ["Yaser Asprilla", "CAM", 80], ["Wilmar Barrios", "CDM", 80], ["David Ospina", "GK", 78]] },
+{ id: "wc2026_eng", name: "England", league: "Group L", season: "World Cup 2026", color: "#6c757d", rating: 91, worldCup: true, players: [["Jordan Pickford", "GK", 84], ["Kyle Walker", "RB", 85], ["John Stones", "CB", 86], ["Marc Guehi", "CB", 82], ["Luke Shaw", "LB", 82], ["Declan Rice", "CDM", 87], ["Jude Bellingham", "CAM", 91], ["Phil Foden", "CM", 89], ["Bukayo Saka", "RW", 88], ["Harry Kane", "ST", 90], ["Marcus Rashford", "LW", 84], ["Cole Palmer", "CAM", 86], ["Trent Alexander-Arnold", "RB", 86], ["Jack Grealish", "LW", 84], ["Kobbie Mainoo", "CM", 80]] },
+{ id: "wc2026_cro", name: "Croatia", league: "Group L", season: "World Cup 2026", color: "#6c757d", rating: 86, worldCup: true, players: [["Dominik Livakovic", "GK", 82], ["Josip Juranovic", "RB", 80], ["Josko Gvardiol", "CB", 87], ["Marin Pongracic", "CB", 80], ["Borna Sosa", "LB", 79], ["Marcelo Brozovic", "CDM", 84], ["Luka Modric", "CM", 87], ["Mateo Kovacic", "CM", 85], ["Mario Pasalic", "CAM", 80], ["Ivan Perisic", "LW", 82], ["Andrej Kramaric", "ST", 82], ["Ante Budimir", "ST", 80], ["Lovro Majer", "CAM", 80], ["Nikola Vlasic", "CAM", 79], ["Martin Erlic", "CB", 78]] },
+{ id: "wc2026_gha", name: "Ghana", league: "Group L", season: "World Cup 2026", color: "#6c757d", rating: 82, worldCup: true, players: [["Lawrence Ati-Zigi", "GK", 77], ["Alidu Seidu", "RB", 78], ["Mohammed Salisu", "CB", 81], ["Alexander Djiku", "CB", 80], ["Gideon Mensah", "LB", 77], ["Thomas Partey", "CDM", 84], ["Mohammed Kudus", "CAM", 86], ["Salis Abdul Samed", "CM", 78], ["Ernest Nuamah", "RW", 80], ["Jordan Ayew", "LW", 80], ["Inaki Williams", "ST", 82], ["Antoine Semenyo", "ST", 80], ["Kamaldeen Sulemana", "LW", 79], ["Daniel Amartey", "CB", 78], ["Andre Ayew", "CAM", 78]] },
+{ id: "wc2026_pan", name: "Panama", league: "Group L", season: "World Cup 2026", color: "#6c757d", rating: 76, worldCup: true, players: [["Orlando Mosquera", "GK", 75], ["Michael Murillo", "RB", 78], ["Andres Andrade", "CB", 76], ["Fidel Escobar", "CB", 76], ["Eric Davis", "LB", 76], ["Anibal Godoy", "CDM", 76], ["Adalberto Carrasquilla", "CM", 80], ["Edgar Barcenas", "RW", 77], ["Jose Luis Rodriguez", "LW", 76], ["Cecilio Waterman", "ST", 76], ["Ismael Diaz", "ST", 78], ["Yoel Barcenas", "LW", 76], ["Christian Martinez", "CM", 74], ["Jose Cordoba", "CB", 77], ["Luis Mejia", "GK", 74]] }];
+
+const WORLD_CUP_GROUPS = ["Group A", "Group B", "Group C", "Group D", "Group E", "Group F", "Group G", "Group H", "Group I", "Group J", "Group K", "Group L"];
 const TOP_FIVE_LEAGUES = BALANCED_BIG_FIVE_LEAGUES;
 
 function getClubTier(club) {
@@ -2342,30 +2702,31 @@ function saveStoredJson(key, value) {
   }
 }
 
-function getClubCollectionStats(collectionIds) {
-  const validClubIds = new Set(ALL_CLUBS.map(club => club.id));
+function getClubCollectionStats(collectionIds, clubPool = ALL_CLUBS, leagueList = TOP_FIVE_LEAGUES, restLabel = "Rest of Europe") {
+  const validClubIds = new Set(clubPool.map(club => club.id));
   const uniqueIds = Array.from(new Set(collectionIds || [])).filter(id => validClubIds.has(id));
   const clubs = uniqueIds.
-  map(id => ALL_CLUBS.find(club => club.id === id)).
+  map(id => clubPool.find(club => club.id === id)).
   filter(Boolean);
 
   const byLeague = [
-  ...TOP_FIVE_LEAGUES.map(league => ({
+  ...leagueList.map(league => ({
     league,
     count: clubs.filter(club => club.league === league).length })),
   {
-    league: "Rest of Europe",
-    count: clubs.filter(club => !TOP_FIVE_LEAGUES.includes(club.league)).length }];
+    league: restLabel,
+    count: clubs.filter(club => !leagueList.includes(club.league)).length }];
 
 
-  const total = Math.min(uniqueIds.length, ALL_CLUBS.length);
-  const percent = Math.min(100, Math.round(total / Math.max(ALL_CLUBS.length, 1) * 100));
+  const total = Math.min(uniqueIds.length, clubPool.length);
+  const percent = Math.min(100, Math.round(total / Math.max(clubPool.length, 1) * 100));
 
   return {
     total,
     percent,
     byLeague,
-    recent: clubs.slice(-8).reverse() };
+    recent: clubs.slice(-8).reverse(),
+    totalClubs: clubPool.length };
 
 }
 
@@ -2467,7 +2828,7 @@ function getLeagueIcon(league) {
 
 function renderClubCollectionCard(collectionStats, options = {}) {
   const { showNoRepeat = false, usedClubIds = [] } = options;
-  const totalClubs = ALL_CLUBS.length;
+  const totalClubs = collectionStats.totalClubs || ALL_CLUBS.length;
   const discoveredText = `${collectionStats.total} / ${totalClubs} clubs discovered`;
 
   return /*#__PURE__*/React.createElement(
@@ -3220,6 +3581,37 @@ function getWeightedScorer(players, preferredRoles) {
   return source[source.length - 1];
 }
 
+
+function getWeightedTeamScorer(teamName, xg) {
+  const normalize = value => String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const allTeams = [...WORLD_CUP_CLUBS, ...ALL_CLUBS];
+  const team = allTeams.find(club => normalize(club.name) === normalize(teamName));
+
+  if (!team || !Array.isArray(team.players) || team.players.length === 0) {
+    const role = getOpponentScorerRole(xg);
+    return {
+      team: teamName,
+      name: `${teamName} ${role}`,
+      position: role.split(" ").map(word => word[0]).join("") };
+
+  }
+
+  const players = team.players.map((player, index) => ({
+    id: `${team.id || team.name}_${index}_${player[0]}`,
+    name: player[0],
+    position: player[1],
+    rating: player[2],
+    finalRating: player[2] }));
+
+
+  const scorer = getWeightedScorer(players, ["ST", "LW", "RW", "CAM", "LM", "RM", "CM"]);
+  return {
+    team: teamName,
+    name: scorer.name,
+    position: scorer.position };
+
+}
+
 function getOpponentScorerRole(xg) {
   const attackingRoles = ["Striker", "Left Winger", "Right Winger", "Attacking Midfielder", "Central Midfielder"];
   const defensiveRoles = ["Centre Back", "Defensive Midfielder"];
@@ -3242,7 +3634,7 @@ function getGoalMinute() {
 function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch$allSco;
   const savedProgress = getStoredJson("draftXIProgressV4", null) || {};
   const savedFormationName = FORMATIONS[savedProgress.selectedFormationName] ? savedProgress.selectedFormationName : DEFAULT_FORMATION_NAME;
-  const [gameStarted, setGameStarted] = useState(!!savedProgress.gameStarted);
+  const [gameStarted, setGameStarted] = useState(false);
   const [selectedFormationName, setSelectedFormationName] = useState(savedFormationName);
   const [currentClub, setCurrentClub] = useState(savedProgress.currentClub || null);
   const [draft, setDraft] = useState(savedProgress.draft || {});
@@ -3286,8 +3678,14 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const [clubCollection, setClubCollection] = useState(() => savedProgress.clubCollection || getStoredJson("draftXIClubCollection", []));
   const [isMobileFormation, setIsMobileFormation] = useState(() => window.innerWidth <= 768);
   const [showTutorial, setShowTutorial] = useState(() => !getStoredJson("draftXITutorialSeen", false));
-  const [saveNotice, setSaveNotice] = useState(!!savedProgress.gameStarted);
+  const [saveNotice, setSaveNotice] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+  const [gameMode, setGameMode] = useState(savedProgress.gameMode || "europe");
+  const activeClubs = gameMode === "worldcup" ? WORLD_CUP_CLUBS : ALL_CLUBS;
+  const activeLeagues = gameMode === "worldcup" ? WORLD_CUP_GROUPS : TOP_FIVE_LEAGUES;
+  const activeRestLabel = gameMode === "worldcup" ? "Other Groups" : "Rest of Europe";
+  const modeTitle = gameMode === "worldcup" ? "World Cup XI" : "Draft XI: Europe";
+  const modeSubtitle = gameMode === "worldcup" ? "Build a squad from all 48 World Cup teams." : "Build the greatest squad in European football history.";
 
   function closeTutorial() {
     setShowTutorial(false);
@@ -3308,6 +3706,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     if (!gameStarted) return;
     const progress = {
       gameStarted,
+      gameMode,
       selectedFormationName,
       currentClub,
       draft,
@@ -3325,7 +3724,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       clubCollection };
 
     saveStoredJson("draftXIProgressV4", progress);
-  }, [gameStarted, selectedFormationName, currentClub, draft, pickedNames, lastClubId, recentClubIds, usedClubIds, results, rerollsLeft, rewards, seasonAwards, liveLeagueTable, playerSeasonStats, transferUsed, clubCollection]);
+  }, [gameStarted, gameMode, selectedFormationName, currentClub, draft, pickedNames, lastClubId, recentClubIds, usedClubIds, results, rerollsLeft, rewards, seasonAwards, liveLeagueTable, playerSeasonStats, transferUsed, clubCollection]);
 
   useEffect(() => {
     if (!saveNotice) return;
@@ -3353,7 +3752,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
   const FORMATION = FORMATIONS[selectedFormationName] || FORMATIONS[DEFAULT_FORMATION_NAME];
   const draftedPlayers = Object.values(draft);
-  const collectionStats = useMemo(() => getClubCollectionStats(clubCollection), [clubCollection]);
+  const collectionStats = useMemo(() => getClubCollectionStats(clubCollection, activeClubs, activeLeagues, activeRestLabel), [clubCollection, gameMode]);
 
   useEffect(() => {
     if (!spinning || !spinReel.length || spinTargetIndex < 0) return;
@@ -3416,6 +3815,34 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
   const availablePlayers = currentClub ? makePlayers(currentClub) : [];
 
+
+  function selectGameMode(mode) {
+    if (mode === gameMode) return;
+    setGameMode(mode);
+    setCurrentClub(null);
+    setDraft({});
+    setSelectedPlayer(null);
+    setPickedNames([]);
+    setSpinning(false);
+    setSpinWinner(null);
+    setSpinReel([]);
+    setSpinOffset(0);
+    setSpinTargetIndex(-1);
+    setLastClubId(null);
+    setRecentClubIds([]);
+    setUsedClubIds([]);
+    setResults(null);
+    setRerollsLeft(1);
+    setSelectedMatch(null);
+    setRewards([]);
+    setSeasonAwards([]);
+    setLiveLeagueTable([]);
+    setPlayerSeasonStats([]);
+    setTransferMode(false);
+    setTransferUsed(false);
+    setMovingSlotId(null);
+    setClubCollection([]);
+  }
 
   function changeFormation(name) {
     if (name === selectedFormationName) return;
@@ -3509,7 +3936,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     // Build a long shuffled reel so the spin looks random.
     for (let i = 0; i < 6; i++) {
-      reel.push(...shuffleArray(ALL_CLUBS));
+      reel.push(...shuffleArray(activeClubs));
     }
 
     // Put the winner near the end, not always as the final visible card.
@@ -3538,11 +3965,11 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     }, {});
 
     const remainingPicks = Math.max(0, 11 - draftedPlayers.length);
-    const missingTopFiveLeagues = TOP_FIVE_LEAGUES.filter(
+    const missingTopFiveLeagues = activeLeagues.filter(
     league => !draftedLeagueCounts[league]);
 
 
-    let available = ALL_CLUBS.filter(
+    let available = activeClubs.filter(
     (club) =>
     club.id !== excludeCurrentId &&
     !usedClubIds.includes(club.id) &&
@@ -3553,7 +3980,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     // Earlier in the draft, gently prefer missing leagues so runs feel more varied.
     if (missingTopFiveLeagues.length && available.length) {
       const forceMissingLeague = remainingPicks <= missingTopFiveLeagues.length;
-      const preferMissingLeague = draftedPlayers.length < TOP_FIVE_LEAGUES.length;
+      const preferMissingLeague = draftedPlayers.length < activeLeagues.length;
       const missingLeaguePool = available.filter((club) =>
       missingTopFiveLeagues.includes(club.league));
 
@@ -3565,11 +3992,11 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     // If the run-wide no-repeat rule gets exhausted, relax only the drafted-club lockout.
     if (available.length === 0) {
-      available = ALL_CLUBS.filter(club => club.id !== excludeCurrentId && clubHasPlayablePick(club));
+      available = activeClubs.filter(club => club.id !== excludeCurrentId && clubHasPlayablePick(club));
     }
 
     if (available.length === 0) {
-      available = ALL_CLUBS.filter(club => club.id !== excludeCurrentId);
+      available = activeClubs.filter(club => club.id !== excludeCurrentId);
     }
 
     // Keep the tier weighting, but apply it after no-repeat and league balancing.
@@ -3824,6 +4251,22 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     return earned;
   }
 
+
+  function returnToStartScreen() {
+    setGameStarted(false);
+    setSelectedMatch(null);
+    setSimulating(false);
+    setLiveMatch(null);
+    setLiveSeason(null);
+    setSimProgress(0);
+    setSpinning(false);
+    setSpinReady(false);
+    if (spinFallbackRef.current) {
+      window.clearTimeout(spinFallbackRef.current);
+      spinFallbackRef.current = null;
+    }
+  }
+
   function resetGame() {
     try {localStorage.removeItem("draftXIProgressV1");localStorage.removeItem("draftXIProgressV2");localStorage.removeItem("draftXIProgressV3");localStorage.removeItem("draftXIProgressV4");} catch {}
     setSaveNotice(false);
@@ -3897,7 +4340,317 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     (_navigator$clipboard = navigator.clipboard) === null || _navigator$clipboard === void 0 ? void 0 : _navigator$clipboard.writeText(text);
   }
 
+
+  function simulateWorldCupTournament() {
+    if (draftedPlayers.length < 11 || simulating) return;
+
+    playSound("season", soundMuted);
+    setSimulating(true);
+    setResults(null);
+    setTimeout(() => scrollToSection(simulationRecordRef, "center"), 120);
+    setLiveSeason({
+      week: 0,
+      wins: 0,
+      draws: 0,
+      losses: 0,
+      points: 0,
+      gf: 0,
+      ga: 0,
+      latest: "World Cup campaign starting...",
+      recent: [] });
+
+    setSimProgress(0);
+    setLiveLeagueTable([]);
+
+    const fullRating =
+    draftedPlayers.reduce((sum, player) => sum + player.finalRating, 0) / draftedPlayers.length;
+
+    const rawTeamProfile = calculateTeamProfile(draftedPlayers);
+    const teamProfile = applyFormationModifier(rawTeamProfile, selectedFormationName);
+
+    const shuffledNations = [...WORLD_CUP_CLUBS].sort(() => Math.random() - 0.5);
+    const lowerSeeds = shuffledNations.filter(team => team.rating <= Math.max(82, fullRating - 6));
+    const midSeeds = shuffledNations.filter(team => team.rating > Math.max(80, fullRating - 8) && team.rating < Math.min(90, fullRating + 2));
+    const highSeeds = shuffledNations.filter(team => team.rating >= Math.max(84, fullRating - 2));
+
+    const takeNation = (pool, fallbackIndex) => {
+      const fallback = shuffledNations[fallbackIndex % shuffledNations.length];
+      const choice = pool.find(team => !usedOpponentIds.has(team.id)) || fallback;
+      usedOpponentIds.add(choice.id);
+      return choice;
+    };
+
+    const usedOpponentIds = new Set();
+    const groupOpponents = [
+    takeNation(lowerSeeds, 0),
+    takeNation(midSeeds, 6),
+    takeNation(highSeeds, 12)];
+
+    const knockoutRounds = [
+    // Difficulty now ramps up instead of throwing elite teams at you immediately.
+    { stage: "Round of 32", pool: midSeeds },
+    { stage: "Round of 16", pool: midSeeds.length >= 3 ? midSeeds : highSeeds },
+    { stage: "Quarter Final", pool: highSeeds },
+    { stage: "Semi Final", pool: highSeeds },
+    { stage: "World Cup Final", pool: highSeeds }];
+
+    let wins = 0,draws = 0,losses = 0,gf = 0,ga = 0,groupPoints = 0;
+    const matches = [];
+
+    const playTournamentMatch = (opponent, stage, knockout = false) => {
+      const opponentName = opponent.name;
+      const opponentRating = opponent.rating + Math.floor(Math.random() * 5) - 2;
+      const opponentProfile = makeOpponentProfile(opponentName, opponentRating);
+
+      const userXg = getExpectedGoals(teamProfile, opponentProfile, fullRating, opponentRating);
+      const opponentXg = getExpectedGoals(opponentProfile, teamProfile, opponentRating, fullRating);
+
+      const tournamentBonus =
+      fullRating >= 93 ? 1.18 :
+      fullRating >= 91 ? 1.02 :
+      fullRating >= 89 ? 0.86 :
+      fullRating >= 87 ? 0.68 :
+      fullRating >= 85 ? 0.5 :
+      0.3;
+
+      // World Cup mode should feel tense, but not unfair. Strong drafted XIs get a
+      // small knockout composure boost so one unlucky roll does not end every run.
+      const stageClutchBonus = knockout ?
+      stage === "Round of 32" ? 0.3 :
+      stage === "Round of 16" ? 0.24 :
+      stage === "Quarter Final" ? 0.18 :
+      stage === "Semi Final" ? 0.12 :
+      stage === "World Cup Final" ? 0.08 :
+      0 :
+      0;
+      const eliteClutchBonus = knockout ?
+      fullRating >= 92 ? 0.28 :
+      fullRating >= 90 ? 0.22 :
+      fullRating >= 88 ? 0.16 :
+      fullRating >= 86 ? 0.1 :
+      0.04 :
+      0;
+
+      const pressureTax = knockout ? 0 : 0;
+      const adjustedUserXg = Math.max(0.3, userXg + tournamentBonus + stageClutchBonus + eliteClutchBonus - pressureTax);
+      const adjustedOpponentXg = Math.max(0.2, opponentXg * (fullRating >= 90 ? 0.76 : fullRating >= 87 ? 0.84 : 0.94));
+
+      let us = rollGoalsFromWeightedXg(adjustedUserXg, fullRating, opponentRating);
+      let them = rollGoalsFromWeightedXg(adjustedOpponentXg, opponentRating, fullRating);
+
+      if (!knockout && us < them && adjustedUserXg > adjustedOpponentXg + 0.5 && Math.random() < 0.5) {
+        us = them;
+      }
+
+      if (knockout && us < them && adjustedUserXg > adjustedOpponentXg + 0.35 && Math.random() < 0.68) {
+        // Extra-time rescue: if your XI clearly created more, give it a fair chance
+        // to force penalties instead of being instantly eliminated.
+        us = them;
+      }
+
+      if (knockout && us < them && fullRating >= opponentRating + 3 && Math.random() < 0.35) {
+        us = them;
+      }
+
+      us = clamp(us, 0, fullRating >= 93 ? 6 : 5);
+      them = clamp(them, 0, opponentRating >= 88 ? 4 : 3);
+
+      let result;
+      let decidedByPens = false;
+      let penaltyWinner = null;
+      let penaltyScore = null;
+
+      if (us > them) {
+        result = "W";
+      } else if (us < them) {
+        result = "L";
+      } else if (knockout) {
+        decidedByPens = true;
+        const penaltyChance = clamp(
+        0.56 + (fullRating - opponentRating) * 0.045 + (adjustedUserXg - adjustedOpponentXg) * 0.1,
+        0.38,
+        fullRating >= 90 ? 0.86 : 0.8);
+        const wonPens = Math.random() < penaltyChance;
+        const winningPens = 4 + Math.floor(Math.random() * 3);
+        const losingPens = Math.max(1, winningPens - (1 + Math.floor(Math.random() * 2)));
+        result = wonPens ? "W" : "L";
+        penaltyWinner = wonPens ? "Draft XI" : opponentName;
+        penaltyScore = wonPens ? `${winningPens}-${losingPens}` : `${losingPens}-${winningPens}`;
+      } else {
+        result = "D";
+      }
+
+      if (result === "W") wins++;else
+      if (result === "D") draws++;else
+      losses++;
+
+      if (!knockout) {
+        groupPoints += result === "W" ? 3 : result === "D" ? 1 : 0;
+      }
+
+      gf += us;
+      ga += them;
+
+      const scorers = [];
+      for (let goal = 0; goal < us; goal++) {
+        const scorer = getWeightedScorer(draftedPlayers, ["ST", "LW", "RW", "CAM", "LM", "RM", "CM"]);
+        scorers.push({
+          team: "Draft XI",
+          name: scorer.name,
+          position: scorer.slotLabel || scorer.position,
+          minute: getGoalMinute() });
+      }
+
+      const opponentScorers = [];
+      for (let goal = 0; goal < them; goal++) {
+        const scorer = getWeightedTeamScorer(opponentName, adjustedOpponentXg);
+        opponentScorers.push({
+          team: opponentName,
+          name: scorer.name,
+          position: scorer.position,
+          minute: getGoalMinute() });
+      }
+
+      scorers.sort((a, b) => a.minute - b.minute);
+      opponentScorers.sort((a, b) => a.minute - b.minute);
+
+      return {
+        week: matches.length + 1,
+        stage,
+        opponent: opponentName,
+        result,
+        score: `${us}-${them}`,
+        xg: `${adjustedUserXg.toFixed(1)}-${adjustedOpponentXg.toFixed(1)}`,
+        decidedByPens,
+        penaltyWinner,
+        penaltyScore,
+        scorers,
+        opponentScorers,
+        allScorers: [...scorers, ...opponentScorers].sort((a, b) => a.minute - b.minute) };
+    };
+
+    groupOpponents.forEach((opponent, index) => {
+      matches.push(playTournamentMatch(opponent, `Group Match ${index + 1}`, false));
+    });
+
+    const groupGoalDifference = gf - ga;
+    const qualifiedFromGroup =
+    groupPoints >= 5 ||
+    groupPoints === 4 && groupGoalDifference >= 0 && Math.random() < 0.78 ||
+    groupPoints === 3 && groupGoalDifference >= 2 && Math.random() < 0.36;
+
+    let eliminatedStage = qualifiedFromGroup ? null : "Group Stage";
+    let wonWorldCup = false;
+
+    if (qualifiedFromGroup) {
+      for (const round of knockoutRounds) {
+        const opponent = takeNation(round.pool, matches.length * 4 + 3);
+        const match = playTournamentMatch(opponent, round.stage, true);
+        matches.push(match);
+
+        if (match.result === "L") {
+          eliminatedStage = round.stage;
+          break;
+        }
+
+        if (round.stage === "World Cup Final") {
+          wonWorldCup = true;
+        }
+      }
+    }
+
+    const totalMatches = matches.length;
+    const matchRevealDelay = gameMode === "worldcup" ? 1350 : 650;
+    const finishDelay = gameMode === "worldcup" ? 850 : 450;
+
+    matches.forEach((match, index) => {
+      setTimeout(() => {
+        const gamesSoFar = matches.slice(0, index + 1);
+        const liveWins = gamesSoFar.filter(m => m.result === "W").length;
+        const liveDraws = gamesSoFar.filter(m => m.result === "D").length;
+        const liveLosses = gamesSoFar.filter(m => m.result === "L").length;
+        const livePoints = gamesSoFar.filter(m => m.stage && m.stage.startsWith("Group")).reduce((sum, m) => sum + (m.result === "W" ? 3 : m.result === "D" ? 1 : 0), 0);
+        const liveGf = gamesSoFar.reduce((sum, m) => sum + Number(m.score.split("-")[0]), 0);
+        const liveGa = gamesSoFar.reduce((sum, m) => sum + Number(m.score.split("-")[1]), 0);
+        const penaltyText = match.decidedByPens ? ` · ${match.penaltyWinner} win ${match.penaltyScore} on pens` : "";
+        const stageMoment =
+        match.stage.startsWith("Group") ?
+        `Group Stage Match ${index + 1}/3` :
+        match.stage === "World Cup Final" ?
+        "🏆 World Cup Final" :
+        `Knockout Drama · ${match.stage}`;
+        const resultWord = match.result === "W" ? "WIN" : match.result === "D" ? "DRAW" : "DEFEAT";
+        const impactLine = `${stageMoment}: ${resultWord} ${match.score} vs ${match.opponent}${penaltyText} · xG ${match.xg}`;
+
+        setLiveSeason({
+          week: index + 1,
+          wins: liveWins,
+          draws: liveDraws,
+          losses: liveLosses,
+          points: livePoints,
+          gf: liveGf,
+          ga: liveGa,
+          latest: impactLine,
+          recent: gamesSoFar.slice(-5) });
+
+        setSimProgress(Math.round((index + 1) / totalMatches * 100));
+      }, (index + 1) * matchRevealDelay);
+    });
+
+    setTimeout(() => {
+      const badge = wonWorldCup ? "World Cup Champions" :
+      eliminatedStage === "World Cup Final" ? "World Cup Finalists" :
+      eliminatedStage === "Semi Final" ? "World Cup Semi Finalists" :
+      eliminatedStage === "Quarter Final" ? "World Cup Quarter Finalists" :
+      eliminatedStage === "Round of 16" ? "Round of 16 Exit" :
+      eliminatedStage === "Round of 32" ? "Round of 32 Exit" :
+      "Group Stage Exit";
+
+      const summary = {
+        wins,
+        draws,
+        losses,
+        points: groupPoints,
+        gf,
+        ga,
+        badge,
+        tournamentMode: true,
+        qualifiedFromGroup,
+        eliminatedStage,
+        wonWorldCup,
+        matches,
+        table: [] };
+
+      const finalPlayerStats = createPlayerSeasonStats(draftedPlayers, matches);
+      const finalAwards = calculateSeasonAwards(summary, finalPlayerStats);
+      const historyEntry = makeHistoryEntry(summary, finalPlayerStats, selectedFormationName, teamRating);
+
+      setResults(summary);
+      setRewards(calculateRewards(summary));
+      setPlayerSeasonStats(finalPlayerStats);
+      setSeasonAwards(finalAwards);
+      setLiveLeagueTable([]);
+      setDraftHistory(prev => {
+        const next = [historyEntry, ...prev].slice(0, 8);
+        try {
+          localStorage.setItem("draftXIHistory", JSON.stringify(next));
+        } catch {}
+        return next;
+      });
+      setSimulating(false);
+      setLiveMatch(null);
+      setSimProgress(100);
+      setTimeout(() => scrollToSection(resultsRef, "start"), 80);
+    }, totalMatches * matchRevealDelay + finishDelay);
+  }
+
   function simulateSeason() {
+    // Route World Cup mode into tournament format instead of the 38-game European league.
+    if (gameMode === "worldcup") {
+      simulateWorldCupTournament();
+      return;
+    }
+
     // Allow simulation to start even if a stale saved result exists.
     // This fixes cases where localStorage restores "Season Complete" and the sim button appears dead.
     if (draftedPlayers.length < 11 || simulating) return;
@@ -4090,14 +4843,11 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
       const opponentScorers = [];
       for (let goal = 0; goal < them; goal++) {
-        const role = getOpponentScorerRole(opponentXg);
+        const scorer = getWeightedTeamScorer(opponentName, opponentXg);
         opponentScorers.push({
           team: opponentName,
-          name: `${opponentName} ${role}`,
-          position: role.
-          split(" ").
-          map(word => word[0]).
-          join(""),
+          name: scorer.name,
+          position: scorer.position,
           minute: getGoalMinute() });
       }
 
@@ -4210,22 +4960,49 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       React.createElement("section", { className: "start-screen" }, /*#__PURE__*/
       React.createElement("div", { className: "start-card" }, /*#__PURE__*/
       React.createElement("div", { className: "start-logo" }, "XI"), /*#__PURE__*/
-      React.createElement("h1", null, "Draft XI: Europe"), /*#__PURE__*/
-      React.createElement("p", { className: "start-subtitle" }, "Build the greatest squad in European football history."), /*#__PURE__*/
-      React.createElement("div", { className: "start-description" }, /*#__PURE__*/
-      React.createElement("p", null, "- Spin from ", ALL_CLUBS.length, " clubs across Europe, including top leagues and jackpot teams."), /*#__PURE__*/
-      React.createElement("p", null, "- Select any player from the club you land on."), /*#__PURE__*/
-      React.createElement("p", null, "- Place them into the correct position on the pitch."), /*#__PURE__*/
-      React.createElement("p", null, "- Use your 1 reroll wisely."), /*#__PURE__*/
-      React.createElement("p", null, "- Complete your XI and simulate a 38-match season."), /*#__PURE__*/
-      React.createElement("p", null, "- Can you go ", /*#__PURE__*/React.createElement("strong", null, "38-0"), "?")), /*#__PURE__*/
-
+      React.createElement("h1", null, modeTitle), /*#__PURE__*/
+      React.createElement("p", { className: "start-subtitle" }, "Choose your draft mode."), /*#__PURE__*/
+      React.createElement("div", { className: "mode-pill-stack" }, /*#__PURE__*/
       React.createElement("button", {
-        className: "start-button",
+        className: "mode-pill-button",
+        type: "button",
+        style: {
+          width: "100%",
+          minHeight: "56px",
+          border: "0",
+          borderRadius: "999px",
+          background: "#86f7a8",
+          color: "#06180d",
+          fontSize: "16px",
+          fontWeight: 900,
+          textAlign: "center",
+          cursor: "pointer" },
+
         onClick: () => {
+          selectGameMode("europe");
           playSound("start", soundMuted);
           setGameStarted(true);
-        } }, "Start Game"))));
+        } }, "Start Europe Mode"), /*#__PURE__*/
+      React.createElement("button", {
+        className: "mode-pill-button",
+        type: "button",
+        style: {
+          width: "100%",
+          minHeight: "56px",
+          border: "0",
+          borderRadius: "999px",
+          background: "#86f7a8",
+          color: "#06180d",
+          fontSize: "16px",
+          fontWeight: 900,
+          textAlign: "center",
+          cursor: "pointer" },
+
+        onClick: () => {
+          selectGameMode("worldcup");
+          playSound("start", soundMuted);
+          setGameStarted(true);
+        } }, "Start World Cup Mode")))));
 
 
 
@@ -4275,24 +5052,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("section", { className: "hero" }, /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/
     React.createElement("p", { className: "eyebrow" }, "Europe Draft"), /*#__PURE__*/
-    React.createElement("h1", null, "Draft XI: Europe"), /*#__PURE__*/
-    React.createElement("p", null, "Spin a European club, select any player, place them in your XI, then simulate a 38-game season.")), /*#__PURE__*/
-
-    React.createElement("div", { className: "record-card" }, /*#__PURE__*/
-    React.createElement("span", null, "XI Rating"), /*#__PURE__*/
-    React.createElement("strong", null, teamRating || "--"), /*#__PURE__*/
-    React.createElement("small", null, draftedPlayers.length, "/11 players"), /*#__PURE__*/
-    React.createElement("small", null, "Rerolls: ", rerollsLeft),
-    draftedPlayers.length > 0 && /*#__PURE__*/React.createElement("small", { className: "projected-level" }, getProjectedLevel(teamRating)),
-    draftedPlayers.length > 0 && /*#__PURE__*/
-    React.createElement("div", { className: "profile-mini" }, /*#__PURE__*/
-    React.createElement("span", null, "ATK ", calculateTeamProfile(draftedPlayers).attack), /*#__PURE__*/
-    React.createElement("span", null, "MID ", calculateTeamProfile(draftedPlayers).midfield), /*#__PURE__*/
-    React.createElement("span", null, "DEF ", calculateTeamProfile(draftedPlayers).defense)))), /*#__PURE__*/
-
-
-
-
+    React.createElement("h1", null, modeTitle), /*#__PURE__*/
+    React.createElement("p", null, gameMode === "worldcup" ? "Spin a World Cup nation, select any player, place them in your XI, then simulate a full World Cup run." : "Spin a European club, select any player, place them in your XI, then simulate a 38-game season."))), /*#__PURE__*/
 
     renderClubCollectionCard(collectionStats, { showNoRepeat: true, usedClubIds }), /*#__PURE__*/
 
@@ -4333,9 +5094,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     transferUsed ? "Transfer Used" : transferMode ? "Cancel Transfer" : "Transfer Lifeline"), /*#__PURE__*/
 
     !results && /*#__PURE__*/React.createElement("button", { className: guideStep === "simulate" ? "guide-pulse" : "", onClick: simulateSeason, disabled: draftedPlayers.length < 11 || simulating },
-    simulating ? "Simulating..." : "Simulate Season"), /*#__PURE__*/
+    simulating ? gameMode === "worldcup" ? "Simulating Tournament..." : "Simulating..." : gameMode === "worldcup" ? "Simulate Tournament" : "Simulate Season"), /*#__PURE__*/
 
     React.createElement("button", { className: "ghost", onClick: resetGame }, "Reset"), /*#__PURE__*/
+    React.createElement("button", { className: "ghost change-mode-button", type: "button", onClick: returnToStartScreen, disabled: spinning || simulating }, "Change Mode"), /*#__PURE__*/
     React.createElement("button", {
       className: "sound-toggle",
       onClick: () => setSoundMuted(prev => !prev) },
@@ -4394,7 +5156,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("section", { className: "season-sim auto-focus-section", ref: simulationRef }, /*#__PURE__*/
     React.createElement("div", { className: "season-sim-top" }, /*#__PURE__*/
     React.createElement("span", null, "Simulating Season"), /*#__PURE__*/
-    React.createElement("strong", null, "GW ", liveSeason.week, "/38")), /*#__PURE__*/
+    React.createElement("strong", null, gameMode === "worldcup" ? `Match ${liveSeason.week}/8` : `GW ${liveSeason.week}/38`)), /*#__PURE__*/
 
 
     React.createElement("div", { className: "season-record-card", ref: simulationRecordRef }, /*#__PURE__*/
@@ -4542,15 +5304,21 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
     React.createElement("section", { className: "pitch-wrap auto-focus-section", ref: pitchRef }, /*#__PURE__*/
-    React.createElement("div", { className: "pitch-toolbar" }, /*#__PURE__*/
-    React.createElement("div", null, /*#__PURE__*/
+    React.createElement("div", { className: "pitch-toolbar pitch-toolbar-clean" }, /*#__PURE__*/
+    React.createElement("div", { className: "pitch-title-block" }, /*#__PURE__*/
     React.createElement("span", { className: "pitch-formation-pill" }, selectedFormationName), /*#__PURE__*/
     React.createElement("h2", null, "Your XI")), /*#__PURE__*/
-    React.createElement("div", { className: "pitch-rating-strip" }, /*#__PURE__*/
+    React.createElement("div", { className: "record-card pitch-record-card" }, /*#__PURE__*/
     React.createElement("span", null, "XI Rating"), /*#__PURE__*/
     React.createElement("strong", null, teamRating || "--"), /*#__PURE__*/
-    React.createElement("small", null, draftedPlayers.length, "/11 -  ", rerollsLeft), /*#__PURE__*/
-    draftedPlayers.length > 0 && /*#__PURE__*/React.createElement("small", { className: "projected-level" }, getProjectedLevel(teamRating)))), /*#__PURE__*/
+    React.createElement("small", null, draftedPlayers.length, "/11 players"), /*#__PURE__*/
+    React.createElement("small", null, "Rerolls: ", rerollsLeft),
+    draftedPlayers.length > 0 && /*#__PURE__*/React.createElement("small", { className: "projected-level" }, getProjectedLevel(teamRating)),
+    draftedPlayers.length > 0 && /*#__PURE__*/
+    React.createElement("div", { className: "profile-mini" }, /*#__PURE__*/
+    React.createElement("span", null, "ATK ", calculateTeamProfile(draftedPlayers).attack), /*#__PURE__*/
+    React.createElement("span", null, "MID ", calculateTeamProfile(draftedPlayers).midfield), /*#__PURE__*/
+    React.createElement("span", null, "DEF ", calculateTeamProfile(draftedPlayers).defense)))), /*#__PURE__*/
     React.createElement("div", { className: "pitch" },
     FORMATION.map(slot => {var _slot$mobileX, _slot$mobileY;
       const player = draft[slot.id];
@@ -4620,25 +5388,17 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.wins), /*#__PURE__*/React.createElement("span", null, "Wins")), /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.draws), /*#__PURE__*/React.createElement("span", null, "Draws")), /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.losses), /*#__PURE__*/React.createElement("span", null, "Losses")), /*#__PURE__*/
-    React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.points), /*#__PURE__*/React.createElement("span", null, "Points")), /*#__PURE__*/
+    React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.points), /*#__PURE__*/React.createElement("span", null, results.tournamentMode ? "Group Pts" : "Points")), /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.gf, "-", results.ga), /*#__PURE__*/React.createElement("span", null, "Goals"))), /*#__PURE__*/
 
 
-    React.createElement("div", { className: "share-card-panel" }, /*#__PURE__*/
-    React.createElement("div", { className: "share-card-preview" }, /*#__PURE__*/
-    React.createElement("div", { className: "share-card-brand" }, "Draft XI: Europe"), /*#__PURE__*/
-    React.createElement("strong", null, results.badge), /*#__PURE__*/
-    React.createElement("p", null, selectedFormationName, " - ", teamRating || "--", " OVR"), /*#__PURE__*/
-    React.createElement("div", { className: "share-card-record" }, results.wins, "-", results.draws, "-", results.losses), /*#__PURE__*/
-    React.createElement("small", null, results.points, " pts - ", results.gf, "-", results.ga, " goals")), /*#__PURE__*/
-    React.createElement("textarea", { readOnly: true, value: shareCardText, "aria-label": "Share card text" }), /*#__PURE__*/
     React.createElement("div", { className: "results-actions" }, /*#__PURE__*/
-    React.createElement("button", { type: "button", onClick: copyLatestResult }, shareCopied ? "Copied!" : "Copy Share Card"))),
+    React.createElement("button", { type: "button", onClick: copyLatestResult }, shareCopied ? "Copied!" : "Copy Share Card")),
 
 
     ((_results$table = results.table) === null || _results$table === void 0 ? void 0 : _results$table.length) > 0 && /*#__PURE__*/
     React.createElement("div", { className: "final-table-panel" }, /*#__PURE__*/
-    React.createElement("h3", null, "Final League Table"), /*#__PURE__*/
+    React.createElement("h3", null, results.tournamentMode ? "Tournament Path" : "Final League Table"), /*#__PURE__*/
     React.createElement("div", { className: "mini-table" }, /*#__PURE__*/
     React.createElement("div", { className: "mini-table-row head" }, /*#__PURE__*/
     React.createElement("span", null, "#"), /*#__PURE__*/React.createElement("span", null, "Club"), /*#__PURE__*/React.createElement("span", null, "W-D-L"), /*#__PURE__*/React.createElement("span", null, "Pts")),
@@ -4677,9 +5437,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       style: { animationDelay: `${match.week * 0.035}s` },
       onClick: () => setSelectedMatch(match) }, /*#__PURE__*/
 
-    React.createElement("span", null, "GW ", match.week), /*#__PURE__*/
+    React.createElement("span", null, results.tournamentMode ? match.stage || `Match ${match.week}` : `GW ${match.week}`), /*#__PURE__*/
     React.createElement("strong", null, match.result), /*#__PURE__*/
-    React.createElement("p", null, match.score, " vs ", match.opponent)))),
+    React.createElement("p", null, match.score, match.decidedByPens ? ` (${match.penaltyScore} pens)` : "", " vs ", match.opponent)))),
 
 
 
@@ -4691,9 +5451,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
 
-    React.createElement("h3", null, "GW ", selectedMatch.week, " vs ", selectedMatch.opponent), /*#__PURE__*/
+    React.createElement("h3", null, selectedMatch.stage || `GW ${selectedMatch.week}`, " vs ", selectedMatch.opponent), /*#__PURE__*/
     React.createElement("strong", { className: `match-detail-score ${selectedMatch.result}` },
-    selectedMatch.result, " \xB7 ", selectedMatch.score), /*#__PURE__*/
+    selectedMatch.result, " \xB7 ", selectedMatch.score, selectedMatch.decidedByPens ? ` (${selectedMatch.penaltyScore} pens)` : ""), /*#__PURE__*/
+    selectedMatch.decidedByPens && /*#__PURE__*/React.createElement("small", { className: "xg-pill penalty-pill" }, "Penalties: ", selectedMatch.penaltyWinner, " won ", selectedMatch.penaltyScore), /*#__PURE__*/
     selectedMatch.xg && /*#__PURE__*/React.createElement("small", { className: "xg-pill" }, "xG ", selectedMatch.xg), /*#__PURE__*/
 
 
