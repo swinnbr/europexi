@@ -2230,6 +2230,23 @@ const WORLD_CUP_CLUBS = [
 { id: "wc2026_pan", name: "Panama", league: "Group L", season: "World Cup 2026", color: "#6c757d", rating: 76, worldCup: true, players: [["Orlando Mosquera", "GK", 75], ["Michael Murillo", "RB", 78], ["Andres Andrade", "CB", 76], ["Fidel Escobar", "CB", 76], ["Eric Davis", "LB", 76], ["Anibal Godoy", "CDM", 76], ["Adalberto Carrasquilla", "CM", 80], ["Edgar Barcenas", "RW", 77], ["Jose Luis Rodriguez", "LW", 76], ["Cecilio Waterman", "ST", 76], ["Ismael Diaz", "ST", 78], ["Yoel Barcenas", "LW", 76], ["Christian Martinez", "CM", 74], ["Jose Cordoba", "CB", 77], ["Luis Mejia", "GK", 74]] }];
 
 const WORLD_CUP_GROUPS = ["Group A", "Group B", "Group C", "Group D", "Group E", "Group F", "Group G", "Group H", "Group I", "Group J", "Group K", "Group L"];
+
+const WORLD_CUP_TOP_NATION_BOOST = new Set([
+"Argentina", "Brazil", "France", "England", "Portugal", "Spain",
+"Germany", "Netherlands", "Belgium", "Uruguay", "Croatia", "Italy"]);
+
+
+function getWorldCupBoostedClubs() {
+  // Same spinner logic, slightly better World Cup pool.
+  // Top nations get one extra entry, making them a little more likely without dominating the mode.
+  const boosted = [];
+  WORLD_CUP_CLUBS.forEach(club => {
+    boosted.push(club);
+    if (WORLD_CUP_TOP_NATION_BOOST.has(club.name)) boosted.push(club);
+  });
+  return boosted;
+}
+
 const TOP_FIVE_LEAGUES = BALANCED_BIG_FIVE_LEAGUES;
 
 function getClubTier(club) {
@@ -3744,7 +3761,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const [shareCopied, setShareCopied] = useState(false);
   const [formationNotice, setFormationNotice] = useState(null);
   const [gameMode, setGameMode] = useState(savedProgress.gameMode || "europe");
-  const activeClubs = gameMode === "worldcup" ? WORLD_CUP_CLUBS : ALL_CLUBS;
+  const activeClubs = gameMode === "worldcup" ? getWorldCupBoostedClubs() : ALL_CLUBS;
   const activeLeagues = gameMode === "worldcup" ? WORLD_CUP_GROUPS : TOP_FIVE_LEAGUES;
   const activeRestLabel = gameMode === "worldcup" ? "Other Groups" : "Rest of Europe";
   const allCollectiblePlayers = useMemo(() => getAllCollectiblePlayers([...ALL_CLUBS, ...WORLD_CUP_CLUBS]), []);
@@ -5814,7 +5831,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     React.createElement("button", {
       className: "sticky-sim-button",
-      onClick: () => gameMode === "worldcup" ? simulateTournament() : simulateSeason(),
+      onClick: () => gameMode === "worldcup" ? simulateWorldCupTournament() : simulateSeason(),
       disabled: !fullSquadReady || simulating || !!results,
       style: {
         border: "0",
