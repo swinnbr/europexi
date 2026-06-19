@@ -4268,6 +4268,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
   function selectPlayer(player) {
+    if (transferMode) return;
     if (pickedNames.includes(player.name)) return;
 
     if (benchDraftActive) {
@@ -4306,6 +4307,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
   function placePlayer(slotId) {
+    if (transferMode) return;
     if (!selectedPlayer || draft[slotId]) return;
     if (pickedNames.includes(selectedPlayer.name)) return;
 
@@ -4616,8 +4618,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setMovingSlotId(null);
     setTransferMode(false);
     setTransferUsed(true);
-    setCurrentClub(null);
-    setSpinWinner(null);
+    // Keep the currently spun club/nation visible if the transfer lifeline is used
+    // while the player options are still open. This prevents the player grid from
+    // disappearing and lets the user pick from the spin they already earned.
     setResults(null);
     playSound("reroll", soundMuted);
     setTimeout(() => scrollToSection(pitchRef, "center"), 80);
@@ -4655,7 +4658,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
   function getUnusedLifelines() {
     const unused = [];
-    if (rerollsLeft > 0) unused.push(`${rerollsLeft} reroll${rerollsLeft === 1 ? "" : "s"}`);
+    // Reroll is intentionally excluded from the sim warning. Once the XI and bench
+    // are complete, reroll cannot be used because there is no active spin to reroll.
     if (!transferUsed) unused.push("transfer lifeline");
     if (bench.length >= BENCH_LIMIT && !substituteUsed) unused.push("substitute lifeline");
     return unused;
@@ -6127,7 +6131,12 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     React.createElement("button", {
       className: "transfer-lifeline",
-      onClick: () => setTransferMode(prev => !prev),
+      onClick: () => {
+        setSelectedPlayer(null);
+        setMovingSlotId(null);
+        setSubstituteMode(false);
+        setTransferMode(prev => !prev);
+      },
       disabled: draftedPlayers.length < 6 || transferUsed || spinning || simulating || !!results || benchDraftActive || substituteMode,
       style: {
         border: "0",
