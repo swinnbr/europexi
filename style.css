@@ -6340,3 +6340,223 @@ button.collection-back-detailed {
 .next-move-card.lifeline-warning .squad-progress {
   margin-top: 8px !important;
 }
+/* =========================================================
+   Draft XI — Save Squad Image Button CSS
+   Paste at the BOTTOM of your current CSS.
+   ========================================================= */
+
+.save-squad-image-button {
+  border-radius: 999px;
+  padding: 11px 16px;
+  background: linear-gradient(135deg, var(--green, #8dffb3), #22c55e);
+  color: var(--green-dark, #06210f);
+  font-weight: 1000;
+  border: 1px solid rgba(141, 255, 179, 0.45);
+  box-shadow: 0 12px 30px rgba(57, 255, 136, 0.18);
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.save-squad-image-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+.saving-squad-image {
+  overflow: visible !important;
+}
+
+.saving-squad-image .formation-sticky-lifelines,
+.saving-squad-image .save-squad-image-button,
+.saving-squad-image .move-overlay,
+.saving-squad-image button {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  .pitch-toolbar-clean,
+  .pitch-toolbar {
+    gap: 10px;
+  }
+
+  .save-squad-image-button {
+    width: 100%;
+    padding: 13px 16px;
+    font-size: 14px;
+  }
+}
+/* =========================================================
+   Draft XI — Save Squad Image CSS
+   Paste this at the VERY BOTTOM of your CSS file.
+   ========================================================= */
+
+.save-squad-image-button {
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, var(--green, #8dffb3), #22c55e);
+  color: var(--green-dark, #06210f);
+  font-weight: 1000;
+  border: 1px solid rgba(141, 255, 179, 0.45);
+  box-shadow: 0 12px 30px rgba(57, 255, 136, 0.18);
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.save-squad-image-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+.saving-squad-image {
+  overflow: visible !important;
+}
+
+.saving-squad-image .formation-sticky-lifelines,
+.saving-squad-image .save-squad-image-button,
+.saving-squad-image .move-overlay,
+.saving-squad-image button {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  .save-squad-image-button {
+    width: 100%;
+    padding: 13px 16px;
+    font-size: 14px;
+  }
+}
+/* =========================================================
+   Draft XI — Cool Save Squad Card Button
+   Paste this at the VERY BOTTOM of your CSS file.
+   ========================================================= */
+
+.save-squad-image-button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 44px;
+  padding: 12px 18px;
+
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.85), transparent 22%),
+    linear-gradient(135deg, #f7d774 0%, #ffd700 28%, #fff4b0 52%, #ffd700 74%, #c99a00 100%);
+
+  color: #111;
+  font-size: 14px;
+  font-weight: 1000;
+  letter-spacing: 0.45px;
+  text-transform: uppercase;
+
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 10px 24px rgba(255, 215, 0, 0.32),
+    0 0 34px rgba(255, 215, 0, 0.22);
+
+  cursor: pointer;
+  transform: translateZ(0);
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.save-squad-image-button::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.75) 45%,
+      transparent 70%
+    );
+
+  transform: translateX(-130%) skewX(-18deg);
+  transition: transform 0.75s ease;
+}
+
+.save-squad-image-button::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: -2;
+
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent 55%);
+  pointer-events: none;
+}
+
+.save-squad-image-button:hover::before {
+  transform: translateX(130%) skewX(-18deg);
+}
+
+.save-squad-image-button:hover {
+  transform: translateY(-2px) scale(1.035);
+  filter: brightness(1.05) saturate(1.05);
+  box-shadow:
+    0 14px 30px rgba(255, 215, 0, 0.42),
+    0 0 46px rgba(255, 215, 0, 0.3);
+}
+
+.save-squad-image-button:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.save-squad-icon {
+  font-size: 17px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.5));
+}
+
+.save-squad-text {
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.save-squad-spark {
+  font-size: 14px;
+  line-height: 1;
+  animation: draftXIButtonSpark 1.45s ease-in-out infinite;
+}
+
+@keyframes draftXIButtonSpark {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(0.85) rotate(0deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15) rotate(18deg);
+  }
+}
+
+.saving-squad-image {
+  overflow: visible !important;
+}
+
+.saving-squad-image .formation-sticky-lifelines,
+.saving-squad-image .save-squad-image-button,
+.saving-squad-image .move-overlay,
+.saving-squad-image button {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  .save-squad-image-button {
+    width: 100%;
+    min-height: 48px;
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+}

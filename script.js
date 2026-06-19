@@ -6528,3 +6528,333 @@ if (rootElement && typeof ReactDOM !== "undefined") {
     ReactDOM.render(app, rootElement);
   }
 }
+
+/* =========================================================
+   Draft XI — Premium Export Squad Card Button
+   Added directly to this JSX file.
+   It auto-adds a detailed button to the pitch toolbar and
+   saves/shares the visible squad card on desktop + mobile.
+   ========================================================= */
+(function DraftXIPremiumExportSquadCardPatch() {
+  if (window.__draftXIPremiumExportSquadCardPatchLoaded) return;
+  window.__draftXIPremiumExportSquadCardPatchLoaded = true;
+
+  function injectExportButtonStyles() {
+    if (document.getElementById("draftxi-premium-export-button-styles")) return;
+
+    const style = document.createElement("style");
+    style.id = "draftxi-premium-export-button-styles";
+    style.textContent = `
+      .save-squad-image-button.draftxi-premium-export {
+        position: relative !important;
+        isolation: isolate !important;
+        overflow: hidden !important;
+
+        display: grid !important;
+        grid-template-columns: 42px minmax(0, 1fr) auto !important;
+        align-items: center !important;
+        gap: 10px !important;
+
+        min-height: 64px !important;
+        min-width: 245px !important;
+        padding: 10px 13px !important;
+
+        border-radius: 20px !important;
+        border: 1px solid rgba(255, 255, 255, 0.22) !important;
+
+        background:
+          radial-gradient(circle at 12% 8%, rgba(255, 255, 255, 0.26), transparent 22%),
+          radial-gradient(circle at 92% 18%, rgba(255, 215, 0, 0.30), transparent 26%),
+          repeating-linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.045) 0px,
+            rgba(255, 255, 255, 0.045) 2px,
+            transparent 2px,
+            transparent 9px
+          ),
+          linear-gradient(135deg, #05351d 0%, #0b6b3a 44%, #17b765 100%) !important;
+
+        color: #ffffff !important;
+        text-align: left !important;
+        cursor: pointer !important;
+
+        box-shadow:
+          0 16px 36px rgba(0, 0, 0, 0.34),
+          0 0 0 1px rgba(141, 255, 179, 0.16),
+          inset 0 1px 0 rgba(255, 255, 255, 0.24),
+          inset 0 -18px 28px rgba(0, 0, 0, 0.18) !important;
+
+        transform: translateZ(0) !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
+      }
+
+      .save-squad-image-button.draftxi-premium-export::before {
+        content: "" !important;
+        position: absolute !important;
+        top: -80% !important;
+        left: -45% !important;
+        z-index: -1 !important;
+        width: 70% !important;
+        height: 240% !important;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent) !important;
+        transform: rotate(24deg) translateX(-75%) !important;
+        transition: transform 0.8s ease !important;
+      }
+
+      .save-squad-image-button.draftxi-premium-export::after {
+        content: "WORLD CUP DRAFT" !important;
+        position: absolute !important;
+        right: 12px !important;
+        bottom: 7px !important;
+        font-size: 8px !important;
+        font-weight: 1000 !important;
+        letter-spacing: 1.2px !important;
+        color: rgba(255, 255, 255, 0.42) !important;
+      }
+
+      .save-squad-image-button.draftxi-premium-export:hover {
+        transform: translateY(-3px) scale(1.018) !important;
+        filter: brightness(1.06) saturate(1.08) !important;
+        box-shadow:
+          0 20px 42px rgba(0, 0, 0, 0.42),
+          0 0 28px rgba(57, 255, 136, 0.22),
+          0 0 44px rgba(255, 215, 0, 0.18),
+          inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+      }
+
+      .save-squad-image-button.draftxi-premium-export:hover::before {
+        transform: rotate(24deg) translateX(270%) !important;
+      }
+
+      .save-squad-image-button.draftxi-premium-export:active {
+        transform: translateY(0) scale(0.98) !important;
+      }
+
+      .draftxi-export-icon-wrap {
+        width: 42px !important;
+        height: 42px !important;
+        border-radius: 15px !important;
+        display: grid !important;
+        place-items: center !important;
+        background:
+          radial-gradient(circle at 35% 25%, #fff8bd, #ffd84d 45%, #b8860b 100%) !important;
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.55),
+          0 8px 18px rgba(255, 215, 0, 0.28) !important;
+      }
+
+      .draftxi-export-icon {
+        font-size: 22px !important;
+        line-height: 1 !important;
+        filter: drop-shadow(0 2px 1px rgba(0,0,0,0.2)) !important;
+      }
+
+      .draftxi-export-copy {
+        min-width: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 3px !important;
+      }
+
+      .draftxi-export-title {
+        font-size: 13px !important;
+        line-height: 1 !important;
+        font-weight: 1000 !important;
+        letter-spacing: 0.7px !important;
+        text-transform: uppercase !important;
+        color: #ffffff !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.35) !important;
+        white-space: nowrap !important;
+      }
+
+      .draftxi-export-subtitle {
+        font-size: 11px !important;
+        line-height: 1.1 !important;
+        font-weight: 800 !important;
+        color: rgba(226, 255, 235, 0.78) !important;
+        white-space: nowrap !important;
+      }
+
+      .draftxi-export-badge {
+        align-self: start !important;
+        border-radius: 999px !important;
+        padding: 5px 7px !important;
+        background: rgba(3, 20, 9, 0.46) !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        color: #ffe08a !important;
+        font-size: 10px !important;
+        font-weight: 1000 !important;
+        letter-spacing: 0.4px !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12) !important;
+      }
+
+      .draftxi-export-spark {
+        position: absolute !important;
+        top: 8px !important;
+        right: 11px !important;
+        color: #ffe08a !important;
+        font-size: 13px !important;
+        animation: draftXIExportSpark 1.45s ease-in-out infinite !important;
+      }
+
+      @keyframes draftXIExportSpark {
+        0%, 100% { opacity: 0.45; transform: scale(0.82) rotate(0deg); }
+        50% { opacity: 1; transform: scale(1.18) rotate(18deg); }
+      }
+
+      .saving-squad-image {
+        overflow: visible !important;
+      }
+
+      .saving-squad-image .formation-sticky-lifelines,
+      .saving-squad-image .save-squad-image-button,
+      .saving-squad-image .move-overlay,
+      .saving-squad-image button {
+        display: none !important;
+      }
+
+      @media (max-width: 720px) {
+        .save-squad-image-button.draftxi-premium-export {
+          width: 100% !important;
+          min-width: 100% !important;
+          grid-template-columns: 40px minmax(0, 1fr) auto !important;
+          min-height: 62px !important;
+          border-radius: 18px !important;
+        }
+
+        .draftxi-export-title {
+          font-size: 12px !important;
+        }
+
+        .draftxi-export-subtitle {
+          font-size: 10px !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function loadHtml2CanvasScript() {
+    return new Promise((resolve, reject) => {
+      if (window.html2canvas) {
+        resolve(window.html2canvas);
+        return;
+      }
+
+      const existing = document.querySelector('script[data-html2canvas="true"]');
+      if (existing) {
+        existing.addEventListener("load", () => resolve(window.html2canvas));
+        existing.addEventListener("error", reject);
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+      script.async = true;
+      script.dataset.html2canvas = "true";
+      script.onload = () => resolve(window.html2canvas);
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  async function saveWorldCupDraftSquadCard() {
+    const squad =
+    document.querySelector(".pitch-wrap") ||
+    document.querySelector(".auto-focus-section") ||
+    document.querySelector(".squad-share-card");
+
+    if (!squad) {
+      alert("Draft your squad first, then export the squad card.");
+      return;
+    }
+
+    try {
+      const html2canvas = await loadHtml2CanvasScript();
+      squad.classList.add("saving-squad-image");
+
+      const canvas = await html2canvas(squad, {
+        backgroundColor: "#041109",
+        scale: Math.min(3, window.devicePixelRatio || 2),
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        scrollX: 0,
+        scrollY: -window.scrollY,
+        windowWidth: document.documentElement.scrollWidth,
+        windowHeight: document.documentElement.scrollHeight });
+
+
+      squad.classList.remove("saving-squad-image");
+
+      canvas.toBlob(async blob => {
+        if (!blob) {
+          alert("Could not create squad card.");
+          return;
+        }
+
+        const fileName = "world-cup-draft-squad-card.png";
+        const file = new File([blob], fileName, { type: "image/png" });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+          await navigator.share({
+            files: [file],
+            title: "World Cup Draft Squad",
+            text: "My World Cup Draft squad from 2026worldcupdraft.com" });
+
+          return;
+        }
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }, "image/png");
+    } catch (error) {
+      console.error("Export squad card failed:", error);
+      const active = document.querySelector(".saving-squad-image");
+      if (active) active.classList.remove("saving-squad-image");
+      alert("Squad card export failed. Try again after the squad fully loads.");
+    }
+  }
+
+  function addExportButton() {
+    injectExportButtonStyles();
+
+    const toolbar =
+    document.querySelector(".pitch-toolbar-clean") ||
+    document.querySelector(".pitch-toolbar") ||
+    document.querySelector(".formation-sticky-lifelines");
+
+    if (!toolbar) return;
+    if (document.querySelector(".save-squad-image-button")) return;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "save-squad-image-button draftxi-premium-export";
+    button.innerHTML = `
+      <span class="draftxi-export-icon-wrap"><span class="draftxi-export-icon">🏆</span></span>
+      <span class="draftxi-export-copy">
+        <span class="draftxi-export-title">Export Squad Card</span>
+        <span class="draftxi-export-subtitle">Share your team with friends</span>
+      </span>
+      <span class="draftxi-export-badge">PNG</span>
+      <span class="draftxi-export-spark">✦</span>
+    `;
+    button.addEventListener("click", saveWorldCupDraftSquadCard);
+
+    toolbar.appendChild(button);
+  }
+
+  addExportButton();
+
+  const observer = new MutationObserver(addExportButton);
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  window.addEventListener("load", addExportButton);
+  window.addEventListener("resize", addExportButton);
+})();
