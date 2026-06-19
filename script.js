@@ -2912,14 +2912,6 @@ function renderClubCollectionCard(collectionStats, options = {}) {
   React.createElement("div", {
     className: "collection-fill",
     style: CLUB_COLLECTION_STYLES.fill(collectionStats.percent) })),
-  /*#__PURE__*/
-
-  React.createElement("div", { className: "league-collection-mini", style: CLUB_COLLECTION_STYLES.leagueGrid },
-  collectionStats.byLeague.map(item => /*#__PURE__*/React.createElement(
-  "span",
-  { key: item.league, style: CLUB_COLLECTION_STYLES.leaguePill }, /*#__PURE__*/
-  React.createElement("span", null, getLeagueIcon(item.league)), /*#__PURE__*/
-  React.createElement("strong", { style: CLUB_COLLECTION_STYLES.leagueCount }, item.count)))),
 
 
   showNoRepeat && usedClubIds.length > 0 && /*#__PURE__*/React.createElement(
@@ -3427,7 +3419,7 @@ function makeShareCardText(results, playerSeasonStats, formationName, teamRating
   results.badge,
   "",
   "Can you beat my XI?",
-  "Play at https://draftxi.xyz"].
+  "Play at https://2026worldcupdraft.com"].
   join("\n");
 }
 
@@ -3765,6 +3757,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const [saveNotice, setSaveNotice] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [formationNotice, setFormationNotice] = useState(null);
+  const [simulationWarning, setSimulationWarning] = useState(null);
   const [gameMode, setGameMode] = useState(savedProgress.gameMode || "worldcup");
   const activeClubs = gameMode === "worldcup" ? getWorldCupBoostedClubs() : ALL_CLUBS;
   const activeLeagues = gameMode === "worldcup" ? WORLD_CUP_GROUPS : TOP_FIVE_LEAGUES;
@@ -4639,9 +4632,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
   async function shareDraftXI() {var _navigator$clipboard2;
-    const shareUrl = "https://draftxi.xyz";
-    const shareTitle = "Draft XI";
-    const shareText = results ? makeShareCardText(results, playerSeasonStats, selectedFormationName, teamRating) : "Play Draft XI and build the ultimate football draft team.";
+    const shareUrl = "https://2026worldcupdraft.com";
+    const shareTitle = "World Cup Draft";
+    const shareText = results ? makeShareCardText(results, playerSeasonStats, selectedFormationName, teamRating) : "Play World Cup Draft and build the ultimate 2026 tournament squad.";
 
     try {
       if (navigator.share) {
@@ -4660,8 +4653,35 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
 
+  function getUnusedLifelines() {
+    const unused = [];
+    if (rerollsLeft > 0) unused.push(`${rerollsLeft} reroll${rerollsLeft === 1 ? "" : "s"}`);
+    if (!transferUsed) unused.push("transfer lifeline");
+    if (bench.length >= BENCH_LIMIT && !substituteUsed) unused.push("substitute lifeline");
+    return unused;
+  }
+
+  function startSimulationWithLifelineWarning(force = false) {
+    if (!fullSquadReady || simulating || results) return;
+
+    const unused = getUnusedLifelines();
+    if (!force && unused.length > 0) {
+      setSimulationWarning({ unused });
+      setTimeout(() => scrollToSection(controlsRef, "center"), 60);
+      return;
+    }
+
+    setSimulationWarning(null);
+    if (gameMode === "worldcup") {
+      simulateWorldCupTournament();
+    } else {
+      simulateSeason();
+    }
+  }
+
   function simulateWorldCupTournament() {
     if (!fullSquadReady || simulating) return;
+    setSimulationWarning(null);
 
     playSound("season", soundMuted);
     setSimulating(true);
@@ -4964,6 +4984,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   }
 
   function simulateSeason() {
+    setSimulationWarning(null);
     // Route World Cup mode into tournament format instead of the 38-game European league.
     if (gameMode === "worldcup") {
       simulateWorldCupTournament();
@@ -5767,22 +5788,14 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("button", {
       className: "mobile-play-again-action ready",
       type: "button",
-      onClick: resetGame }, "Play Again"), /*#__PURE__*/
-    React.createElement("button", {
-      className: "mobile-collection-action",
-      type: "button",
-      onClick: () => setShowPlayerCollection(true) }, "Collection ", playerCollectionStats.found, "/", playerCollectionStats.total)) :
+      onClick: resetGame }, "Play Again")) :
     fullSquadReady ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/
     React.createElement("button", {
       className: !simulating ? "mobile-sim-action ready" : "mobile-sim-action",
       type: "button",
-      onClick: () => gameMode === "worldcup" ? simulateWorldCupTournament() : simulateSeason(),
+      onClick: () => startSimulationWithLifelineWarning(),
       disabled: simulating || !!results },
-    simulating ? "Simulating..." : gameMode === "worldcup" ? "Sim World Cup" : "Sim Season"), /*#__PURE__*/
-    React.createElement("button", {
-      className: "mobile-collection-action",
-      type: "button",
-      onClick: () => setShowPlayerCollection(true) }, "Collection ", playerCollectionStats.found, "/", playerCollectionStats.total)) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/
+    simulating ? "Simulating..." : gameMode === "worldcup" ? "Sim World Cup" : "Sim Season")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/
     React.createElement("button", {
       className: (guideStep === "spin" || guideStep === "bench") && !spinning ? "guide-pulse mobile-spin-action" : "mobile-spin-action",
       type: "button",
@@ -5794,11 +5807,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       type: "button",
       onClick: rerollClub,
       disabled: !currentClub || rerollsLeft <= 0 || spinning || fullSquadReady || substituteMode },
-    rerollsLeft > 0 ? `Reroll ${rerollsLeft}` : "Reroll"), /*#__PURE__*/
-    React.createElement("button", {
-      className: "mobile-collection-action",
-      type: "button",
-      onClick: () => setShowPlayerCollection(true) }, "Collection ", playerCollectionStats.found, "/", playerCollectionStats.total))), /*#__PURE__*/
+    rerollsLeft > 0 ? `Reroll ${rerollsLeft}` : "Reroll"))), /*#__PURE__*/
 
 
 
@@ -5807,13 +5816,28 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     React.createElement("button", { className: "ghost", onClick: resetGame }, "Reset"), /*#__PURE__*/
     React.createElement("button", { className: "ghost change-mode-button", type: "button", onClick: returnToStartScreen, disabled: spinning || simulating }, "Change Mode"), /*#__PURE__*/
-    React.createElement("button", { className: "share-draft-button", type: "button", onClick: shareDraftXI }, shareCopied ? "Link Copied!" : "Share Draft XI"), /*#__PURE__*/
-    React.createElement("button", { className: "ghost", type: "button", onClick: () => setShowPlayerCollection(true) }, "Collection ", playerCollectionStats.found, "/", playerCollectionStats.total), /*#__PURE__*/
+    React.createElement("button", { className: "share-draft-button", type: "button", onClick: shareDraftXI }, shareCopied ? "Link Copied!" : "Share World Cup Draft"), /*#__PURE__*/
     React.createElement("button", {
       className: "sound-toggle",
       onClick: () => setSoundMuted(prev => !prev) },
 
     soundMuted ? "Sound Off" : "Sound On")), /*#__PURE__*/
+
+
+
+    simulationWarning && !results && /*#__PURE__*/React.createElement("section", { className: "next-move-card lifeline-warning" }, /*#__PURE__*/
+    React.createElement("div", { className: "next-move-top" }, /*#__PURE__*/
+    React.createElement("span", null, "NEXT MOVE"), /*#__PURE__*/
+    React.createElement("strong", null, simulationWarning.unused.length, " unused")), /*#__PURE__*/
+    React.createElement("h2", null, "You still have lifelines available"), /*#__PURE__*/
+    React.createElement("p", null, "Unused: ", simulationWarning.unused.join(", "), ". Simulating now will lock your squad."), /*#__PURE__*/
+    React.createElement("div", { className: "squad-progress lifeline-warning-progress" }, /*#__PURE__*/
+    React.createElement("div", { className: "squad-progress-bar" }, /*#__PURE__*/
+    React.createElement("span", { style: { width: "100%" } })), /*#__PURE__*/
+    React.createElement("small", null, "Warning")), /*#__PURE__*/
+    React.createElement("div", { className: "controls lifeline-warning-actions" }, /*#__PURE__*/
+    React.createElement("button", { type: "button", onClick: () => startSimulationWithLifelineWarning(true) }, gameMode === "worldcup" ? "Sim World Cup Anyway" : "Sim Season Anyway"), /*#__PURE__*/
+    React.createElement("button", { className: "ghost", type: "button", onClick: () => setSimulationWarning(null) }, "Use Lifelines First"))), /*#__PURE__*/
 
 
 
@@ -6139,7 +6163,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     React.createElement("button", {
       className: "sticky-sim-button",
-      onClick: () => gameMode === "worldcup" ? simulateWorldCupTournament() : simulateSeason(),
+      onClick: () => startSimulationWithLifelineWarning(),
       disabled: !fullSquadReady || simulating || !!results,
       style: {
         border: "0",
@@ -6307,7 +6331,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     React.createElement("div", { className: "results-actions" }, /*#__PURE__*/
     React.createElement("button", { type: "button", onClick: copyLatestResult }, shareCopied ? "Copied!" : "Copy Share Card"), /*#__PURE__*/
-    React.createElement("button", { className: "share-draft-button", type: "button", onClick: shareDraftXI }, "Share Draft XI")),
+    React.createElement("button", { className: "share-draft-button", type: "button", onClick: shareDraftXI }, "Share World Cup Draft")),
 
 
     ((_results$table = results.table) === null || _results$table === void 0 ? void 0 : _results$table.length) > 0 && /*#__PURE__*/

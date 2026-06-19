@@ -6192,3 +6192,151 @@ button.collection-back-detailed {
   outline-color: var(--gold) !important;
   box-shadow: 0 0 0 5px rgba(255, 209, 102, 0.20), 0 14px 30px rgba(0, 0, 0, 0.38) !important;
 }
+
+
+/* Lifeline warning before simulation */
+.lifeline-warning {
+  margin: 0 0 22px;
+  padding: 22px 24px 18px;
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(104, 255, 159, 0.13), rgba(30, 94, 255, 0.10)),
+    rgba(255, 255, 255, 0.065);
+  border: 1px solid rgba(121, 242, 164, 0.42);
+  box-shadow: var(--shadow);
+}
+
+.lifeline-warning-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.lifeline-warning-kicker {
+  color: #7cffad;
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.lifeline-warning-pill {
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: rgba(121, 242, 164, 0.18);
+  color: #eafff1;
+  font-size: 13px;
+  font-weight: 1000;
+}
+
+.lifeline-warning h2 {
+  margin: 0 0 8px;
+  color: #ffffff;
+  font-size: clamp(26px, 4vw, 34px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.lifeline-warning p {
+  margin: 0 0 14px;
+  color: #dfffea;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.lifeline-warning-progress {
+  width: 100%;
+  height: 10px;
+  margin: 0 0 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.10);
+}
+
+.lifeline-warning-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #56d778, #8effb7);
+}
+
+.lifeline-warning-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lifeline-warning button {
+  border-radius: 999px;
+  padding: 11px 16px;
+  font-weight: 1000;
+  background: var(--green);
+  color: var(--green-dark);
+  box-shadow: 0 12px 30px rgba(57, 255, 136, 0.16);
+}
+
+.lifeline-warning button.ghost {
+  background: rgba(255, 255, 255, 0.10);
+  color: var(--text);
+  border: 1px solid var(--panel-border);
+  box-shadow: none;
+}
+
+/* Removed mini league/nation counter pills from the collection tracker. */
+.league-collection-mini {
+  display: none !important;
+}
+
+
+/* Final lifeline warning polish: reuse the same Next Move card/button system. */
+.next-move-card.lifeline-warning {
+  margin: 0 0 22px !important;
+  padding: 18px 20px !important;
+  border-radius: 24px !important;
+}
+.next-move-card.lifeline-warning .next-move-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+.next-move-card.lifeline-warning h2 {
+  margin: 0 0 8px !important;
+  color: #f5fff8 !important;
+  font-size: clamp(24px, 4vw, 32px) !important;
+  line-height: 1.05 !important;
+}
+.next-move-card.lifeline-warning p {
+  margin: 0 0 12px !important;
+  color: #dfffea !important;
+  font-weight: 800 !important;
+}
+.next-move-card.lifeline-warning .lifeline-warning-actions {
+  margin: 12px 0 0 !important;
+  display: flex !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+}
+.next-move-card.lifeline-warning .lifeline-warning-actions button {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  padding: 14px 22px !important;
+  background: var(--green) !important;
+  color: var(--green-dark) !important;
+  font-weight: 900 !important;
+  box-shadow: 0 12px 30px rgba(57, 255, 136, 0.18) !important;
+}
+.next-move-card.lifeline-warning .lifeline-warning-actions button.ghost {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #f4fff7 !important;
+  border: 1px solid var(--panel-border) !important;
+  box-shadow: none !important;
+}
+.next-move-card.lifeline-warning .squad-progress {
+  margin-top: 8px !important;
+}
