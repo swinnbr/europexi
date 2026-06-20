@@ -2196,7 +2196,7 @@ const WORLD_CUP_CLUBS = [
 { id: "wc2026_par", name: "Paraguay", league: "Group D", season: "World Cup 2026", color: "#ee9b00", rating: 80, worldCup: true, players: [["Gatito Fernandez", "GK", 78], ["Alberto Espinola", "RB", 76], ["Gustavo Gomez", "CB", 83], ["Junior Alonso", "CB", 80], ["Matias Espinoza", "LB", 76], ["Richard Sanchez", "CM", 79], ["Mathias Villasanti", "CDM", 80], ["Miguel Almiron", "CAM", 82], ["Ramon Sosa", "LW", 80], ["Julio Enciso", "RW", 82], ["Antonio Sanabria", "ST", 80], ["Adam Bareiro", "ST", 78], ["Diego Gomez", "CM", 78], ["Omar Alderete", "CB", 79], ["Carlos Coronel", "GK", 77]] },
 { id: "wc2026_aus", name: "Australia", league: "Group D", season: "World Cup 2026", color: "#ee9b00", rating: 81, worldCup: true, players: [["Mathew Ryan", "GK", 80], ["Nathaniel Atkinson", "RB", 77], ["Harry Souttar", "CB", 80], ["Kye Rowles", "CB", 78], ["Aziz Behich", "LB", 77], ["Jackson Irvine", "CM", 80], ["Keanu Baccus", "CDM", 77], ["Ajdin Hrustic", "CAM", 79], ["Mathew Leckie", "RW", 78], ["Martin Boyle", "LW", 78], ["Mitchell Duke", "ST", 78], ["Riley McGree", "CM", 79], ["Craig Goodwin", "LW", 78], ["Cameron Burgess", "CB", 78], ["Joe Gauci", "GK", 76]] },
 { id: "wc2026_tur", name: "Turkey", league: "Group D", season: "World Cup 2026", color: "#ee9b00", rating: 85, worldCup: true, players: [["Ugurcan Cakir", "GK", 81], ["Zeki Celik", "RB", 80], ["Merih Demiral", "CB", 82], ["Caglar Soyuncu", "CB", 81], ["Ferdi Kadioglu", "LB", 84], ["Hakan Calhanoglu", "CDM", 88], ["Orkun Kokcu", "CM", 83], ["Arda Guler", "CAM", 85], ["Cengiz Under", "RW", 81], ["Kerem Akturkoglu", "LW", 82], ["Enes Unal", "ST", 80], ["Baris Alper Yilmaz", "ST", 80], ["Yusuf Yazici", "CAM", 80], ["Ismail Yuksek", "CDM", 80], ["Altay Bayindir", "GK", 78]] },
-{ id: "wc2026_ger", name: "Germany", league: "Group E", season: "World Cup 2026", color: "#005f73", rating: 90, worldCup: true, players: [["Manuel Neuer", "GK", 88], ["Joshua Kimmich", "RB", 88], ["Antonio Rudiger", "CB", 87], ["Jonathan Tah", "CB", 85], ["David Raum", "LB", 82], ["Ilkay Gundogan", "CM", 86], ["Jamal Musiala", "CAM", 89], ["Leroy Sane", "RW", 86], ["Florian Wirtz", "LW", 89], ["Kai Havertz", "ST", 84], ["Niclas Fullkrug", "ST", 82], ["Serge Gnabry", "RW", 84], ["Leon Goretzka", "CM", 84], ["Marc-Andre ter Stegen", "GK", 88]] },
+{ id: "wc2026_ger", name: "Germany", league: "Group E", season: "World Cup 2026", color: "#005f73", rating: 90, worldCup: true, players: [["Manuel Neuer", "GK", 88], ["Joshua Kimmich", "RB", 88], ["Antonio Rudiger", "CB", 87], ["Jonathan Tah", "CB", 85], ["David Raum", "LB", 82], ["Toni Kroos", "CM", 89], ["Ilkay Gundogan", "CM", 86], ["Jamal Musiala", "CAM", 89], ["Leroy Sane", "RW", 86], ["Florian Wirtz", "LW", 89], ["Kai Havertz", "ST", 84], ["Niclas Fullkrug", "ST", 82], ["Serge Gnabry", "RW", 84], ["Leon Goretzka", "CM", 84], ["Marc-Andre ter Stegen", "GK", 88]] },
 { id: "wc2026_cuw", name: "Curacao", league: "Group E", season: "World Cup 2026", color: "#005f73", rating: 74, worldCup: true, players: [["Eloy Room", "GK", 76], ["Jurien Gaari", "RB", 74], ["Roshon van Eijma", "CB", 73], ["Cuco Martina", "CB", 75], ["Sherel Floranus", "LB", 75], ["Leandro Bacuna", "CM", 76], ["Juninho Bacuna", "CM", 76], ["Vurnon Anita", "CDM", 75], ["Brandley Kuwas", "RW", 76], ["Gervane Kastaneer", "LW", 74], ["Rangelo Janga", "ST", 75], ["Kenji Gorre", "LW", 74], ["Jeremy Antonisse", "RW", 73], ["Jafar Arias", "ST", 73], ["Tyrese Noslin", "ST", 77]] },
 { id: "wc2026_civ", name: "Ivory Coast", league: "Group E", season: "World Cup 2026", color: "#005f73", rating: 84, worldCup: true, players: [["Yahia Fofana", "GK", 79], ["Serge Aurier", "RB", 80], ["Odilon Kossounou", "CB", 82], ["Evan Ndicka", "CB", 82], ["Ghislain Konan", "LB", 78], ["Ibrahim Sangare", "CDM", 82], ["Franck Kessie", "CM", 84], ["Seko Fofana", "CM", 83], ["Simon Adingra", "LW", 82], ["Nicolas Pepe", "RW", 81], ["Sebastien Haller", "ST", 82], ["Oumar Diakite", "ST", 78], ["Wilfried Zaha", "LW", 81], ["Wilfried Singo", "CB", 80], ["Jean Michael Seri", "CM", 79]] },
 { id: "wc2026_ecu", name: "Ecuador", league: "Group E", season: "World Cup 2026", color: "#005f73", rating: 84, worldCup: true, players: [["Alexander Dominguez", "GK", 78], ["Angelo Preciado", "RB", 80], ["Piero Hincapie", "CB", 84], ["Willian Pacho", "CB", 83], ["Pervis Estupinan", "LB", 84], ["Moises Caicedo", "CDM", 86], ["Alan Franco", "CM", 78], ["Kendry Paez", "CAM", 80], ["Gonzalo Plata", "RW", 80], ["Jeremy Sarmiento", "LW", 79], ["Enner Valencia", "ST", 81], ["Kevin Rodriguez", "ST", 77], ["Carlos Gruezo", "CDM", 78], ["Felix Torres", "CB", 80], ["Hernan Galindez", "GK", 77]] },
@@ -3757,8 +3757,34 @@ function WorldCupBracket({ matches = [], qualifiedFromGroup = null, title = "Wor
 }
 
 
+
+function getDraftGrade(teamRating, draftedPlayers = [], bench = [], results = null) {
+  const starters = draftedPlayers || [];
+  const benchPlayers = bench || [];
+  const rating = Number(teamRating) || 0;
+  const benchAverage = benchPlayers.length ?
+  benchPlayers.reduce((sum, player) => sum + (Number(player.finalRating || player.rating) || 0), 0) / benchPlayers.length :
+  0;
+  const hasFullXI = starters.length >= 11;
+  const hasFullBench = benchPlayers.length >= 3;
+  const wonBonus = results && (results.wonWorldCup || results.wonLeague) ? 2 : 0;
+  const unbeatenBonus = results && results.losses === 0 ? 1 : 0;
+  const benchBonus = hasFullBench && benchAverage >= 84 ? 1 : 0;
+  const squadPenalty = hasFullXI ? 0 : 4;
+  const score = rating + wonBonus + unbeatenBonus + benchBonus - squadPenalty;
+
+  if (score >= 94) return { grade: "S+", label: "All-time draft", note: "Elite rating, strong depth, and a real trophy threat." };
+  if (score >= 91) return { grade: "S", label: "World class", note: "This squad should scare every opponent." };
+  if (score >= 88) return { grade: "A+", label: "Contender", note: "A deep run should be expected." };
+  if (score >= 85) return { grade: "A", label: "Strong draft", note: "Balanced enough to beat top teams." };
+  if (score >= 82) return { grade: "B", label: "Competitive", note: "Good squad, but it needs a few stars." };
+  if (score >= 78) return { grade: "C", label: "Risky build", note: "Could make noise with lucky matchups." };
+  return { grade: "D", label: "Rebuild needed", note: "Spin again and chase a cleaner squad." };
+}
+
 function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch$allSco;
   const savedProgress = getStoredJson("draftXIProgressV5", null) || getStoredJson("draftXIProgressV4", null) || {};
+  const hasSavedProgress = !!(savedProgress && (savedProgress.gameStarted || Object.keys(savedProgress.draft || {}).length || (savedProgress.bench || []).length || savedProgress.results));
   const savedFormationName = FORMATIONS[savedProgress.selectedFormationName] ? savedProgress.selectedFormationName : DEFAULT_FORMATION_NAME;
   const [gameStarted, setGameStarted] = useState(false);
   const [selectedFormationName, setSelectedFormationName] = useState(savedFormationName);
@@ -3909,6 +3935,30 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         behavior: "smooth",
         block });
 
+    });
+  }
+
+
+  function scrollToPlacedSlot(slotId, behavior = "auto") {
+    if (!slotId || typeof window === "undefined" || typeof document === "undefined") return;
+
+    const focusSlot = () => {
+      const safeSlotId = String(slotId).replace(/"/g, '\\"');
+      const slotElement = document.querySelector(`[data-slot-id="${safeSlotId}"]`);
+      if (!slotElement) return;
+
+      const rect = slotElement.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 700;
+      const targetTop = Math.max(0, window.scrollY + rect.top - viewportHeight * 0.42 + rect.height / 2);
+
+      window.scrollTo({
+        top: targetTop,
+        behavior });
+
+    };
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(focusSlot);
     });
   }
 
@@ -4379,6 +4429,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     const slotLabel = getSlotLabel(slotId);
     if (!canPlaySlot(selectedPlayer, slotLabel)) return;
 
+    // Focus the exact clicked formation spot before the player list collapses.
+    // This prevents the browser from anchoring the viewport to the bottom first.
+    scrollToPlacedSlot(slotId, "auto");
+
     const penalty = getPenalty(selectedPlayer, slotId);
     const placedPlayer = {
       ...selectedPlayer,
@@ -4401,8 +4455,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setLastPlacedSlot(slotId);
     setResults(null);
 
-    setTimeout(() => scrollToSection(controlsRef, "start"), 140);
-    setTimeout(() => setLastPlacedSlot(null), 700);
+    scrollToPlacedSlot(slotId, "auto");
+    setTimeout(() => scrollToPlacedSlot(slotId, "auto"), 90);
+    setTimeout(() => setLastPlacedSlot(null), 1100);
   }
 
   function movePlayerToSlot(targetSlotId) {
@@ -4438,8 +4493,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setLastPlacedSlot(targetSlotId);
     setResults(null);
 
-    setTimeout(() => scrollToSection(pitchRef, "center"), 100);
-    setTimeout(() => setLastPlacedSlot(null), 700);
+    scrollToPlacedSlot(targetSlotId, "auto");
+    setTimeout(() => scrollToPlacedSlot(targetSlotId, "auto"), 90);
+    setTimeout(() => setLastPlacedSlot(null), 1100);
   }
 
   function swapPlayersWithSlot(targetSlotId) {
@@ -4482,8 +4538,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setLastPlacedSlot(targetSlotId);
     setResults(null);
 
-    setTimeout(() => scrollToSection(pitchRef, "center"), 100);
-    setTimeout(() => setLastPlacedSlot(null), 700);
+    scrollToPlacedSlot(targetSlotId, "auto");
+    setTimeout(() => scrollToPlacedSlot(targetSlotId, "auto"), 90);
+    setTimeout(() => setLastPlacedSlot(null), 1100);
   }
 
 
@@ -4534,8 +4591,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setResults(null);
     setLastPlacedSlot(slotId);
     playSound("move", soundMuted);
-    setTimeout(() => scrollToSection(pitchRef, "center"), 80);
-    setTimeout(() => setLastPlacedSlot(null), 700);
+    scrollToPlacedSlot(slotId, "auto");
+    setTimeout(() => scrollToPlacedSlot(slotId, "auto"), 90);
+    setTimeout(() => setLastPlacedSlot(null), 1100);
   }
 
   function calculateRewards(summary) {var _summary$table$find;
@@ -4622,7 +4680,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
   function resetGame() {
-    try {localStorage.removeItem("draftXIProgressV1");localStorage.removeItem("draftXIProgressV2");localStorage.removeItem("draftXIProgressV3");localStorage.removeItem("draftXIProgressV4");} catch {}
+    try {localStorage.removeItem("draftXIProgressV1");localStorage.removeItem("draftXIProgressV2");localStorage.removeItem("draftXIProgressV3");localStorage.removeItem("draftXIProgressV4");localStorage.removeItem("draftXIProgressV5");} catch {}
     setSaveNotice(false);
     setCurrentClub(null);
     setDraft({});
@@ -4655,6 +4713,13 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setSubstituteUsed(false);
     setSelectedBenchId(null);
     setMovingSlotId(null);
+    setFormationNotice(null);
+    setSimulationWarning(null);
+  }
+
+  function confirmResetDraft() {
+    if (typeof window !== "undefined" && !window.confirm("Reset this draft and start over?")) return;
+    resetGame();
   }
 
 
@@ -5478,7 +5543,27 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       React.createElement("div", { className: "start-logo" }, "XI"), /*#__PURE__*/
       React.createElement("h1", null, "World Cup Draft"), /*#__PURE__*/
       React.createElement("p", { className: "start-subtitle" }, "Spin nations, draft stars, and chase the trophy."), /*#__PURE__*/
-      React.createElement("div", { className: "mode-pill-stack", style: { display: "flex", flexDirection: "column", gap: "42px", width: "min(340px, 92vw)", margin: "30px auto 8px" } }, /*#__PURE__*/
+      React.createElement("div", { className: "mode-pill-stack", style: { display: "flex", flexDirection: "column", gap: "18px", width: "min(340px, 92vw)", margin: "30px auto 8px" } }, /*#__PURE__*/
+      hasSavedProgress && /*#__PURE__*/React.createElement("button", {
+        className: "mode-pill-button continue-draft-button",
+        type: "button",
+        style: {
+          width: "100%",
+          minHeight: "56px",
+          border: "0",
+          borderRadius: "999px",
+          background: "linear-gradient(135deg, #ffd166, #86f7a8)",
+          color: "#06180d",
+          fontSize: "16px",
+          fontWeight: 1000,
+          textAlign: "center",
+          cursor: "pointer",
+          boxShadow: "0 14px 32px rgba(255,209,102,.22)" },
+        onClick: () => {
+          playSound("start", soundMuted);
+          setSaveNotice(true);
+          setGameStarted(true);
+        } }, "Continue Saved Draft"), /*#__PURE__*/
       React.createElement("button", {
         className: "mode-pill-button",
         type: "button",
@@ -5492,8 +5577,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           fontSize: "16px",
           fontWeight: 900,
           textAlign: "center",
-          cursor: "pointer",
-          marginBottom: "18px" },
+          cursor: "pointer" },
 
         onClick: () => {
           selectGameMode("worldcup");
@@ -5555,6 +5639,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   gameMode === "worldcup" ? "Hit Simulate Tournament and chase the World Cup trophy." : "Hit Simulate Season and chase 38-0.";
   const nextNeededText = nextNeededSlot ? `Next needed: ${nextNeededSlot.label}` : benchDraftActive ? `Bench needed: ${BENCH_LIMIT - bench.length}` : "Squad complete";
   const shareCardText = results ? makeShareCardText(results, playerSeasonStats, selectedFormationName, teamRating) : "";
+  const draftGrade = getDraftGrade(teamRating, draftedPlayers, bench, results);
 
   return /*#__PURE__*/(
     React.createElement("main", { className: "app" },
@@ -5712,9 +5797,36 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       }
       @media (max-width: 768px) {
         .world-cup-bracket-card {
-          margin: 14px -4px;
-          padding: 14px;
+          margin: 10px -4px 14px;
+          padding: 12px;
           border-radius: 20px;
+        }
+        .season-sim > .world-cup-bracket-card,
+        .results > .world-cup-bracket-card {
+          position: static;
+          top: auto;
+          z-index: auto;
+          max-height: none;
+          overflow: visible;
+          margin-bottom: 18px;
+          padding-bottom: 14px;
+        }
+        .season-sim > .world-cup-bracket-card .bracket-header,
+        .results > .world-cup-bracket-card .bracket-header {
+          margin-bottom: 8px;
+        }
+        .season-sim > .world-cup-bracket-card .bracket-rounds,
+        .results > .world-cup-bracket-card .bracket-rounds,
+        .season-sim > .world-cup-bracket-card .bracket-grid,
+        .results > .world-cup-bracket-card .bracket-grid {
+          max-height: none;
+          overflow: visible;
+          padding-bottom: 8px;
+        }
+
+        .season-sim > .world-cup-bracket-card h3,
+        .results > .world-cup-bracket-card h3 {
+          font-size: 17px;
         }
         .bracket-header {
           align-items: flex-start;
@@ -5754,6 +5866,107 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           width: 100%;
           text-align: center;
         }
+
+        .slot {
+          scroll-margin-top: 42vh;
+          scroll-margin-bottom: 34vh;
+        }
+      }
+
+      .draft-grade-card {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 14px;
+        margin: 16px 0 18px;
+        padding: 16px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, rgba(255,209,102,.18), rgba(134,247,168,.10));
+        border: 1px solid rgba(255,209,102,.28);
+        box-shadow: 0 18px 42px rgba(0,0,0,.22);
+        animation: gradePop .42s cubic-bezier(.2,.9,.2,1) both;
+      }
+      .draft-grade-badge {
+        width: 76px;
+        height: 76px;
+        display: grid;
+        place-items: center;
+        border-radius: 22px;
+        background: #ffd166;
+        color: #06180d;
+        font-size: 28px;
+        font-weight: 1000;
+        box-shadow: inset 0 -5px 0 rgba(0,0,0,.16), 0 12px 28px rgba(255,209,102,.22);
+      }
+      .draft-grade-copy span {
+        color: #9feeb8;
+        font-size: 11px;
+        font-weight: 1000;
+        letter-spacing: .12em;
+      }
+      .draft-grade-copy strong {
+        display: block;
+        color: #fff;
+        font-size: 20px;
+        margin: 3px 0;
+      }
+      .draft-grade-copy p {
+        margin: 0;
+        color: #dfffea;
+        font-weight: 700;
+      }
+      .player-card.selected,
+      .winner-team,
+      .reward-badge,
+      .award-card {
+        animation-duration: .48s;
+        animation-timing-function: cubic-bezier(.2,.9,.2,1);
+      }
+
+
+      html,
+      body,
+      .app,
+      .club-panel,
+      .pitch-wrap,
+      .pitch {
+        overflow-anchor: none;
+      }
+
+      /* Player placement polish:
+         keep the card locked on its formation spot and breathe in place.
+         This avoids the bad mobile jump caused by animations that overwrite
+         the slot's required translate(-50%, -50%) positioning transform. */
+      .slot.placed {
+        transform: translate(-50%, -50%);
+        animation: slotBreath 1.35s ease-in-out 3 both !important;
+        box-shadow:
+          0 0 0 4px rgba(141, 255, 179, 0.42),
+          0 0 24px rgba(141, 255, 179, 0.38);
+      }
+
+      @media (max-width: 768px) {
+        .slot.placed {
+          animation: slotBreath 1.45s ease-in-out 3 both !important;
+        }
+      }
+
+      .continue-draft-button {
+        animation: premiumPulse 1.7s ease-in-out infinite alternate;
+      }
+      @keyframes slotBreath {
+        0% { transform: translate(-50%, -50%) scale(1); filter: brightness(1); }
+        38% { transform: translate(-50%, -50%) scale(1.055); filter: brightness(1.08); }
+        70% { transform: translate(-50%, -50%) scale(0.99); filter: brightness(1.03); }
+        100% { transform: translate(-50%, -50%) scale(1); filter: brightness(1); }
+      }
+      @keyframes premiumPulse {
+        from { transform: translateY(0) scale(1); filter: brightness(1); }
+        to { transform: translateY(-1px) scale(1.015); filter: brightness(1.06); }
+      }
+      @keyframes gradePop {
+        from { opacity: 0; transform: translateY(10px) scale(.96); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
       }
 
       .start-screen {
@@ -6127,7 +6340,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     gameMode === "worldcup" ? "Sim World Cup" : "Sim Season"), /*#__PURE__*/
     currentClub && !currentClubHasPlayablePick && !spinning && !fullSquadReady && /*#__PURE__*/React.createElement("button", { className: "rescue-spin", onClick: rescueSpinClub }, "Rescue Spin"), /*#__PURE__*/
 
-    React.createElement("button", { className: "ghost", onClick: resetGame }, "Reset"), /*#__PURE__*/
+    React.createElement("button", { className: "ghost", onClick: confirmResetDraft }, "Reset"), /*#__PURE__*/
     React.createElement("button", { className: "ghost change-mode-button", type: "button", onClick: returnToStartScreen, disabled: spinning || simulating }, "Change Mode"), /*#__PURE__*/
     React.createElement("button", { className: "share-draft-button", type: "button", onClick: shareDraftXI }, shareCopied ? "Link Copied!" : "Share World Cup Draft"), /*#__PURE__*/
     React.createElement("button", {
@@ -6187,6 +6400,12 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       disabled: !fullSquadReady || spinning || simulating || !!results },
     gameMode === "worldcup" ? "Sim" : "Sim"), /*#__PURE__*/
     React.createElement("div", { className: "mobile-mode-row" }, /*#__PURE__*/
+    React.createElement("button", {
+      type: "button",
+      className: "mobile-reset-action",
+      onClick: confirmResetDraft,
+      disabled: spinning || simulating },
+    "Reset Draft"), /*#__PURE__*/
     React.createElement("button", {
       type: "button",
       className: "mobile-change-mode-action",
@@ -6275,6 +6494,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("strong", null, gameMode === "worldcup" ? `Match ${liveSeason.week}/${liveSeason.totalMatches || 8}` : `GW ${liveSeason.week}/38`)), /*#__PURE__*/
 
 
+    gameMode === "worldcup" && /*#__PURE__*/
+    React.createElement(WorldCupBracket, { matches: liveSeason.allMatches || [], title: "Live World Cup Bracket" }), /*#__PURE__*/
+
+
     React.createElement("div", { className: "season-record-card", ref: simulationRecordRef }, /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, liveSeason.wins), /*#__PURE__*/React.createElement("span", null, "W")), /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, liveSeason.draws), /*#__PURE__*/React.createElement("span", null, "D")), /*#__PURE__*/
@@ -6285,10 +6508,6 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("div", { className: "season-latest" }, /*#__PURE__*/
     React.createElement("small", null, "Latest Result"), /*#__PURE__*/
     React.createElement("p", null, liveSeason.latest)), /*#__PURE__*/
-
-
-    gameMode === "worldcup" && /*#__PURE__*/
-    React.createElement(WorldCupBracket, { matches: liveSeason.allMatches || [], title: "Live World Cup Bracket" }), /*#__PURE__*/
 
 
     React.createElement("div", { className: "season-form" },
@@ -6469,6 +6688,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           key: `${slot.id}_${player ? player.id || player.name : "empty"}_${player ? player.renderKey || player.benchId || "" : ""}_${substitutionRefreshKey}`,
           role: "button",
           tabIndex: 0,
+          "data-slot-id": slot.id,
           className: `slot ${(selectedPlayer || movingSlotId) && !player ? "can-place" : ""} ${slotPlayable ? "valid-slot" : ""} ${slotBest ? "best-slot" : ""} ${slotInvalid ? "invalid-slot" : ""} ${moveTarget ? "move-target" : ""} ${moveBlocked ? "move-blocked" : ""} ${moveSource ? "moving-source" : ""} ${swapTarget ? "swap-target" : ""} ${swapBlocked ? "swap-blocked" : ""} ${transferMode && player ? "transfer-remove" : ""} ${subTarget ? "sub-target" : ""} ${subBlocked ? "sub-blocked" : ""} ${lastPlacedSlot === slot.id ? "placed" : ""}`,
           style: { left: `${isMobileFormation ? (_slot$mobileX = slot.mobileX) !== null && _slot$mobileX !== void 0 ? _slot$mobileX : slot.x : slot.x}%`, top: `${isMobileFormation ? (_slot$mobileY = slot.mobileY) !== null && _slot$mobileY !== void 0 ? _slot$mobileY : slot.y : slot.y}%` },
           onClick: () => {
@@ -6596,6 +6816,11 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     results && /*#__PURE__*/
     React.createElement("section", { className: "results auto-focus-section", ref: resultsRef }, /*#__PURE__*/
     React.createElement("h2", null, results.badge), /*#__PURE__*/
+
+
+    results.tournamentMode && /*#__PURE__*/
+    React.createElement(WorldCupBracket, { matches: results.matches || [], qualifiedFromGroup: results.qualifiedFromGroup, title: "Final World Cup Bracket" }),
+
     React.createElement("div", { className: "result-stats" }, /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.wins), /*#__PURE__*/React.createElement("span", null, "Wins")), /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.draws), /*#__PURE__*/React.createElement("span", null, "Draws")), /*#__PURE__*/
@@ -6603,15 +6828,17 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.points), /*#__PURE__*/React.createElement("span", null, results.tournamentMode ? "Group Pts" : "Points")), /*#__PURE__*/
     React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, results.gf, "-", results.ga), /*#__PURE__*/React.createElement("span", null, "Goals"))), /*#__PURE__*/
 
+    React.createElement("div", { className: "draft-grade-card" }, /*#__PURE__*/
+    React.createElement("div", { className: "draft-grade-badge" }, draftGrade.grade), /*#__PURE__*/
+    React.createElement("div", { className: "draft-grade-copy" }, /*#__PURE__*/
+    React.createElement("span", null, "DRAFT GRADE"), /*#__PURE__*/
+    React.createElement("strong", null, draftGrade.label), /*#__PURE__*/
+    React.createElement("p", null, draftGrade.note))), /*#__PURE__*/
+
 
     React.createElement("div", { className: "results-actions" }, /*#__PURE__*/
     React.createElement("button", { type: "button", onClick: copyLatestResult }, shareCopied ? "Copied!" : "Copy Share Card"), /*#__PURE__*/
     React.createElement("button", { className: "share-draft-button", type: "button", onClick: shareDraftXI }, "Share World Cup Draft")),
-
-
-    results.tournamentMode && /*#__PURE__*/
-    React.createElement(WorldCupBracket, { matches: results.matches || [], qualifiedFromGroup: results.qualifiedFromGroup, title: "Final World Cup Bracket" }),
-
 
     ((_results$table = results.table) === null || _results$table === void 0 ? void 0 : _results$table.length) > 0 && /*#__PURE__*/
     React.createElement("div", { className: "final-table-panel" }, /*#__PURE__*/

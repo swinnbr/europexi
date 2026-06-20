@@ -7485,3 +7485,143 @@ button.collection-back-detailed {
     padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+/* =========================================================
+   World Cup Draft — App Store Readiness Patch
+   Adds Continue Draft, Draft Grade, mobile Reset, and premium motion polish.
+   ========================================================= */
+
+.continue-draft-card {
+  width: min(420px, 94%);
+  margin: 22px auto 4px;
+  padding: 14px 16px;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(141, 255, 179, 0.26);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+}
+
+.continue-draft-card strong {
+  font-size: 15px;
+  color: #f8fbff;
+}
+
+.continue-draft-card span {
+  color: var(--muted-2, #d9e6ff);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.continue-draft-button {
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--green, #ffd166), #22c55e);
+  color: var(--green-dark, #071428);
+  font-weight: 1000;
+  box-shadow: 0 12px 28px rgba(57, 255, 136, 0.18);
+}
+
+.draft-grade-card {
+  margin: 18px auto 4px;
+  width: min(420px, 100%);
+  padding: 18px;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  border-radius: 26px;
+  background: linear-gradient(145deg, rgba(255, 209, 102, 0.18), rgba(141, 255, 179, 0.10));
+  border: 1px solid rgba(255, 209, 102, 0.34);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
+  animation: gradePop 0.42s cubic-bezier(.2, 1.25, .3, 1) both;
+}
+
+.draft-grade-card span {
+  color: var(--muted-2, #d9e6ff);
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.draft-grade-card strong {
+  font-size: clamp(54px, 12vw, 82px);
+  line-height: .88;
+  color: var(--gold, #ffd166);
+  text-shadow: 0 10px 28px rgba(0, 0, 0, .28);
+}
+
+.draft-grade-card b {
+  color: #f8fbff;
+  font-size: 18px;
+}
+
+.draft-grade-card small {
+  color: var(--muted-2, #d9e6ff);
+  font-weight: 800;
+}
+
+.mobile-reset-action {
+  background: #d63031 !important;
+  color: white !important;
+}
+
+.slot.placed,
+.bench-card.selected,
+.player-card.selected {
+  animation-name: tactilePop;
+  animation-duration: .28s;
+  animation-timing-function: cubic-bezier(.2, 1.35, .3, 1);
+}
+
+.reel-team.winner-team,
+.results h2,
+.award-card {
+  animation: softPrizePop .42s cubic-bezier(.2, 1.25, .3, 1) both;
+}
+
+@keyframes tactilePop {
+  0% { transform: translate(-50%, -50%) scale(.94); }
+  70% { transform: translate(-50%, -50%) scale(1.05); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+.player-card.selected,
+.bench-card.selected {
+  animation-name: cardTactilePop;
+}
+
+@keyframes cardTactilePop {
+  0% { transform: scale(.97); }
+  70% { transform: scale(1.025); }
+  100% { transform: scale(1); }
+}
+
+@keyframes softPrizePop {
+  0% { opacity: 0; transform: translateY(8px) scale(.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes gradePop {
+  0% { opacity: 0; transform: translateY(12px) scale(.9); }
+  70% { opacity: 1; transform: translateY(-2px) scale(1.035); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 768px) {
+  .mobile-quick-actions .mobile-mode-row {
+    gap: 8px !important;
+  }
+
+  .mobile-quick-actions .mobile-reset-action,
+  .mobile-quick-actions .mobile-change-mode-action {
+    width: min(150px, 42vw) !important;
+  }
+
+  .draft-grade-card {
+    padding: 16px;
+    border-radius: 22px;
+  }
+}
