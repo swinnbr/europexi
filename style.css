@@ -6681,3 +6681,807 @@ button.collection-back-detailed {
 .player-selector-grid {
   gap: 10px;
 }
+
+/* =========================================================
+   World Cup Draft Mobile 5.0 — iOS app readiness patch
+   Focus: fixed thumb controls, less scroll, faster animation, fewer expensive mobile effects.
+   ========================================================= */
+
+:root {
+  --ios-dock-height: 82px;
+}
+
+.ios-bottom-dock {
+  display: none;
+}
+
+.match-history-details {
+  margin: 18px 0 0;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.match-history-details > summary {
+  list-style: none;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  color: #f8fbff;
+  font-weight: 1000;
+  letter-spacing: -0.01em;
+}
+
+.match-history-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.match-history-details > summary::after {
+  content: "Tap to expand";
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 209, 102, 0.15);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.match-history-details[open] > summary::after {
+  content: "Hide";
+}
+
+.match-history-details .match-list {
+  padding: 0 14px 14px;
+}
+
+@media (max-width: 768px) {
+  html,
+  body {
+    overscroll-behavior-y: none;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    padding-bottom: calc(var(--ios-dock-height) + env(safe-area-inset-bottom));
+  }
+
+  .app {
+    width: min(100% - 18px, 680px);
+    padding-top: 14px;
+    padding-bottom: calc(110px + env(safe-area-inset-bottom));
+  }
+
+  .hero {
+    margin-bottom: 12px;
+  }
+
+  .hero h1,
+  .start-card h1,
+  h1 {
+    font-size: clamp(34px, 11vw, 52px);
+    letter-spacing: -0.055em;
+  }
+
+  .hero p:not(.eyebrow) {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .next-move-card,
+  .club-panel,
+  .pitch-wrap,
+  .results,
+  .spinner-card,
+  .formation-picker,
+  .club-collection-card,
+  .collection-panel,
+  .rewards-panel,
+  .player-stats-panel,
+  .live-table-card,
+  .final-table-panel,
+  .awards-panel,
+  .history-panel,
+  .season-record-card,
+  .season-sim {
+    border-radius: 22px;
+    padding: 14px;
+    margin-bottom: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+  }
+
+  .controls.sticky-draft-controls,
+  .mobile-quick-actions {
+    display: none !important;
+  }
+
+  .ios-bottom-dock {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    z-index: 9999;
+    min-height: var(--ios-dock-height);
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    border-radius: 26px;
+    background: rgba(3, 12, 28, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  .dock-action {
+    min-width: 0;
+    min-height: 58px;
+    border-radius: 18px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 3px;
+    padding: 8px 5px;
+    color: #f8fbff;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .dock-action span {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .dock-action strong {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 11px;
+    line-height: 1;
+    font-weight: 1000;
+  }
+
+  .dock-spin,
+  .dock-sim.ready,
+  .dock-lifeline.active {
+    background: linear-gradient(135deg, var(--gold), #22c55e);
+    color: #071428;
+    border-color: rgba(255, 209, 102, 0.45);
+  }
+
+  .dock-reroll:not(:disabled) {
+    background: linear-gradient(135deg, #ffe08a, #ffd166);
+    color: #201600;
+  }
+
+  .dock-action:disabled {
+    opacity: 0.44;
+    filter: grayscale(0.35);
+  }
+
+  .spinner-window {
+    height: 82px;
+    border-radius: 20px;
+  }
+
+  .reel-spinner {
+    gap: 8px;
+    padding: 15px 0;
+    will-change: transform;
+  }
+
+  .reel-spinner.spin-active {
+    animation-duration: 1.3s !important;
+  }
+
+  .reel-team {
+    width: 150px;
+    height: 52px;
+    flex-basis: 150px;
+    border-radius: 15px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.32);
+  }
+
+  .reel-team span {
+    font-size: 12px;
+  }
+
+  .reel-team small {
+    font-size: 9px;
+  }
+
+  .pitch {
+    max-width: 430px;
+    min-height: 548px;
+    border-radius: 24px;
+    border-width: 3px;
+    box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.03);
+  }
+
+  .slot {
+    width: 88px;
+    min-height: 62px;
+    padding: 6px;
+    border-radius: 14px;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .slot:hover {
+    transform: translate(-50%, -50%);
+  }
+
+  .slot strong {
+    font-size: 9px;
+  }
+
+  .slot span,
+  .slot em {
+    font-size: 9px;
+  }
+
+  .slot small {
+    width: 25px;
+    height: 25px;
+    font-size: 10px;
+  }
+
+  .slot.placed,
+  .slot.can-place,
+  .reel-team.jackpot-team {
+    animation: none !important;
+    box-shadow: 0 0 0 2px rgba(141, 255, 179, 0.28) !important;
+  }
+
+  .move-overlay {
+    display: none !important;
+  }
+
+  .player-card {
+    min-height: 64px;
+    grid-template-columns: 74px minmax(0, 1fr);
+    border-radius: 15px;
+    padding: 10px;
+  }
+
+  .player-name {
+    font-size: 14px;
+  }
+
+  .inline-position-buttons .mini-pos-btn,
+  .player-rating {
+    min-width: 40px;
+    width: 40px;
+    height: 32px;
+  }
+
+  .formation-sticky-lifelines {
+    position: static !important;
+    width: 100% !important;
+    border-radius: 20px !important;
+    display: none !important;
+  }
+
+  .pitch-toolbar-clean {
+    gap: 10px;
+  }
+
+  .pitch-record-card {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .world-cup-bracket-card,
+  .worldcup-bracket {
+    max-height: 360px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .bracket-scroll,
+  .bracket-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .match-history-details {
+    border-radius: 20px;
+  }
+
+  .match-history-details:not([open]) {
+    box-shadow: none;
+  }
+
+  .match-list .match {
+    animation-duration: 0.18s !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .pitch {
+    min-height: 520px;
+  }
+
+  .slot {
+    width: 80px;
+    min-height: 58px;
+  }
+
+  .dock-action strong {
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Mobile 5.0 cleanup: remove duplicate top/mid-page action buttons on phones.
+   The iOS bottom dock is now the only Spin/Reroll/Transfer/Sim control surface. */
+@media (max-width: 768px) {
+  .mobile-quick-actions,
+  .formation-sticky-lifelines {
+    display: none !important;
+  }
+
+  .pitch-wrap {
+    padding-top: 16px;
+  }
+}
+
+/* Mobile 5.0 CleanDock hotfix
+   Removes duplicate Spin/Reroll/Transfer/Sim button strips.
+   The iOS bottom dock remains the only draft action control. */
+.mobile-quick-actions,
+.formation-sticky-lifelines {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 768px) {
+  .mobile-quick-actions,
+  .formation-sticky-lifelines {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .pitch-toolbar-clean {
+    margin-bottom: 10px !important;
+  }
+}
+
+
+/* Final Mobile 5.0 hotfix: hide the old pitch action strip everywhere. */
+.formation-sticky-lifelines,
+.legacy-pitch-actions-hidden,
+.mobile-quick-actions {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.formation-sticky-lifelines button,
+.legacy-pitch-actions-hidden button,
+.mobile-quick-actions button {
+  display: none !important;
+}
+
+
+/* Mobile 5.0 ACTUAL CLEAN: remove the old duplicate quick-action strip completely. */
+.mobile-quick-actions,
+.mobile-spin-action,
+.mobile-reroll-action,
+.mobile-sim-action,
+.mobile-play-again-action {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+/* World Cup Draft Mobile 5.0 - duplicate button strip removal guard */
+/* This is a safety patch only. The JSX file already removes the duplicate Spin/Reroll/Transfer/Sim blocks. */
+
+.ios-bottom-dock,
+.mobile-quick-actions,
+.formation-sticky-lifelines,
+.legacy-pitch-actions-hidden {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.ios-bottom-dock button,
+.mobile-quick-actions button,
+.formation-sticky-lifelines button,
+.legacy-pitch-actions-hidden button {
+  display: none !important;
+}
+/* Mobile 5.0 controls safety patch */
+
+@media (max-width: 768px) {
+  .formation-sticky-lifelines {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .formation-sticky-lifelines button {
+    display: none !important;
+  }
+
+  .mobile-quick-actions {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px) !important;
+    z-index: 3000 !important;
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+    padding: 9px !important;
+    border-radius: 20px !important;
+    background: rgba(3, 20, 9, 0.96) !important;
+    border: 1px solid rgba(141, 255, 179, 0.2) !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,.36) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+  }
+
+  .mobile-quick-actions button {
+    min-height: 46px !important;
+    border: 0 !important;
+    border-radius: 15px !important;
+    padding: 8px 5px !important;
+    font-size: 11px !important;
+    line-height: 1.05 !important;
+    font-weight: 950 !important;
+  }
+}
+/* Mobile 5.0 controls safety patch */
+
+@media (max-width: 768px) {
+  .formation-sticky-lifelines {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .formation-sticky-lifelines button {
+    display: none !important;
+  }
+
+  .mobile-quick-actions {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px) !important;
+    z-index: 3000 !important;
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+    padding: 9px !important;
+    border-radius: 20px !important;
+    background: rgba(3, 20, 9, 0.96) !important;
+    border: 1px solid rgba(141, 255, 179, 0.2) !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,.36) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+  }
+
+  .mobile-quick-actions button {
+    min-height: 46px !important;
+    border: 0 !important;
+    border-radius: 15px !important;
+    padding: 8px 5px !important;
+    font-size: 11px !important;
+    line-height: 1.05 !important;
+    font-weight: 950 !important;
+  }
+}
+
+
+/* Desktop/mobile control split fix */
+.mobile-quick-actions {
+  display: none !important;
+}
+
+@media (min-width: 769px) {
+  .desktop-draft-controls {
+    display: flex !important;
+    flex-wrap: wrap !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-draft-controls {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .mobile-quick-actions {
+    display: grid !important;
+  }
+}
+/* Mobile 5.0 desktop/mobile controls split fix */
+
+.mobile-quick-actions {
+  display: none !important;
+}
+
+@media (min-width: 769px) {
+  .mobile-quick-actions {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .sticky-draft-controls.desktop-draft-controls,
+  section.controls.desktop-draft-controls,
+  .controls.sticky-draft-controls.desktop-draft-controls {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .sticky-draft-controls.desktop-draft-controls,
+  section.controls.desktop-draft-controls,
+  .controls.sticky-draft-controls.desktop-draft-controls {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .mobile-quick-actions {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px) !important;
+    z-index: 3000 !important;
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+    padding: 9px !important;
+    border-radius: 20px !important;
+    background: rgba(3, 20, 9, 0.96) !important;
+    border: 1px solid rgba(141, 255, 179, 0.2) !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,.36) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+  }
+
+  .mobile-quick-actions button {
+    min-height: 46px !important;
+    border: 0 !important;
+    border-radius: 15px !important;
+    padding: 8px 5px !important;
+    font-size: 11px !important;
+    line-height: 1.05 !important;
+    font-weight: 950 !important;
+  }
+}
+/* Final controls split fix: desktop top controls, mobile bottom dock */
+
+@media (min-width: 769px) {
+  .mobile-quick-actions {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .sticky-draft-controls.desktop-draft-controls,
+  section.controls.desktop-draft-controls,
+  .controls.sticky-draft-controls.desktop-draft-controls {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .sticky-draft-controls.desktop-draft-controls,
+  section.controls.desktop-draft-controls,
+  .controls.sticky-draft-controls.desktop-draft-controls {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .mobile-quick-actions {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px) !important;
+    z-index: 3000 !important;
+    display: grid !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    padding: 9px !important;
+    border-radius: 20px !important;
+    background: rgba(3, 20, 9, 0.96) !important;
+    border: 1px solid rgba(141, 255, 179, 0.2) !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,.36) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+  }
+
+  .mobile-quick-actions button {
+    min-height: 46px !important;
+    border-radius: 15px !important;
+    font-size: 11px !important;
+    font-weight: 950 !important;
+  }
+}
+/* FINAL CONTROL SPLIT FIX */
+
+.ios-bottom-dock {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .controls.sticky-draft-controls {
+    display: flex !important;
+  }
+
+  .ios-bottom-dock,
+  .mobile-quick-actions,
+  .formation-sticky-lifelines {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .controls.sticky-draft-controls,
+  .mobile-quick-actions,
+  .formation-sticky-lifelines {
+    display: none !important;
+  }
+
+  .ios-bottom-dock {
+    display: grid !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  .ios-bottom-dock button {
+    display: grid !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+}
+  /* Mobile Change Mode Fix */
+
+@media (max-width: 768px) {
+  .controls.sticky-draft-controls {
+    display: flex !important;
+    justify-content: center !important;
+    margin: 10px 0 14px !important;
+  }
+
+  .controls.sticky-draft-controls > button:not(.change-mode-button) {
+    display: none !important;
+  }
+
+  .controls.sticky-draft-controls .change-mode-button {
+    display: inline-flex !important;
+    width: 100% !important;
+    min-height: 46px !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+  /* Mobile Mode Button Fix
+   Desktop: top controls stay visible.
+   Mobile: top controls hidden, bottom dock visible with Mode button. */
+
+@media (min-width: 769px) {
+  .mobile-quick-actions {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .sticky-draft-controls.desktop-draft-controls,
+  section.controls.desktop-draft-controls,
+  .controls.sticky-draft-controls.desktop-draft-controls {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .sticky-draft-controls.desktop-draft-controls,
+  section.controls.desktop-draft-controls,
+  .controls.sticky-draft-controls.desktop-draft-controls {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .mobile-quick-actions {
+    position: fixed !important;
+    left: 8px !important;
+    right: 8px !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px) !important;
+    z-index: 9999 !important;
+    display: grid !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    padding: 8px !important;
+    border-radius: 20px !important;
+    background: rgba(3, 20, 9, 0.96) !important;
+    border: 1px solid rgba(141, 255, 179, 0.2) !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,.36) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+  }
+
+  .mobile-quick-actions button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 46px !important;
+    padding: 8px 3px !important;
+    border-radius: 14px !important;
+    font-size: 10px !important;
+    line-height: 1.05 !important;
+    font-weight: 950 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .mobile-change-mode-action {
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #f8fbff !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  }
+
+  body, .app {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}

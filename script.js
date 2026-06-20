@@ -1,4 +1,4 @@
-// Draft XI World Cup v4.0  fresh JSX with 20-team table, expanded variety, no repeats, and no generic players
+// Draft XI World Cup Mobile 5.0  iOS-focused performance and mobile UI patch
 // Draft XI: World Cup v2.0  integrated CodePen JSX
 // Includes expanded teams, contextual alternate positions, fair spinner, reroll, locked players, smarter greying, live simulation, bracket tracking, and Play Again.
 function setMobileViewportHeight() {
@@ -3758,7 +3758,7 @@ function WorldCupBracket({ matches = [], qualifiedFromGroup = null, title = "Wor
 
 
 function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch$allSco;
-  const savedProgress = getStoredJson("draftXIProgressV4", null) || {};
+  const savedProgress = getStoredJson("draftXIProgressV5", null) || getStoredJson("draftXIProgressV4", null) || {};
   const savedFormationName = FORMATIONS[savedProgress.selectedFormationName] ? savedProgress.selectedFormationName : DEFAULT_FORMATION_NAME;
   const [gameStarted, setGameStarted] = useState(false);
   const [selectedFormationName, setSelectedFormationName] = useState(savedFormationName);
@@ -3871,7 +3871,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       substituteUsed,
       clubCollection };
 
-    saveStoredJson("draftXIProgressV4", progress);
+    saveStoredJson("draftXIProgressV5", progress);
   }, [gameStarted, gameMode, selectedFormationName, currentClub, draft, pickedNames, lastClubId, recentClubIds, usedClubIds, results, rerollsLeft, rewards, seasonAwards, liveLeagueTable, playerSeasonStats, transferUsed, bench, substituteUsed, clubCollection]);
 
   useEffect(() => {
@@ -3962,7 +3962,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     spinFallbackRef.current = window.setTimeout(() => {
       finishSpin(spinWinner);
-    }, 2900);
+    }, 1800);
 
     return () => {
       if (spinFallbackRef.current) {
@@ -5560,7 +5560,34 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("main", { className: "app" },
     /*#__PURE__*/React.createElement("style", null, `
       .mobile-quick-actions {
-        display: none;
+        display: none !important;
+      }
+      @media (min-width: 769px) {
+        .mobile-quick-actions {
+          display: none !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
+        }
+        .sticky-draft-controls.desktop-draft-controls,
+        section.controls.desktop-draft-controls {
+          display: flex !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+        }
+      }
+      @media (max-width: 768px) {
+        .sticky-draft-controls.desktop-draft-controls,
+        section.controls.desktop-draft-controls,
+        .controls.sticky-draft-controls.desktop-draft-controls {
+          display: none !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
+          height: 0 !important;
+          min-height: 0 !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          overflow: hidden !important;
+        }
       }
       .world-cup-bracket-card {
         margin: 18px 0;
@@ -5616,7 +5643,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       .group-route-pill.L { opacity: .72; border-color: rgba(255,117,117,.32); }
       .group-route-pill small, .group-route-pill span {
         color: #ccefd7;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 800;
       }
       .group-route-pill strong {
@@ -5846,31 +5873,36 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       }
       @media (max-width: 768px) {
         .app {
-          padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 92px) !important;
+          padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 132px) !important;
         }
         .mobile-quick-actions {
-          position: fixed;
-          left: 10px;
-          right: 10px;
-          bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
-          z-index: 2000;
-          display: grid;
-          grid-template-columns: 1.15fr .85fr .95fr;
-          gap: 8px;
-          padding: 9px;
-          border-radius: 20px;
-          background: rgba(3, 20, 9, 0.96);
-          border: 1px solid rgba(141, 255, 179, 0.2);
-          box-shadow: 0 14px 34px rgba(0,0,0,.36);
-          backdrop-filter: blur(14px);
-          -webkit-backdrop-filter: blur(14px);
+          position: fixed !important;
+          left: 10px !important;
+          right: 10px !important;
+          bottom: calc(env(safe-area-inset-bottom, 0px) + 8px) !important;
+          z-index: 3000 !important;
+          display: grid !important;
+          grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+          gap: 8px !important;
+          padding: 9px !important;
+          border-radius: 20px !important;
+          background: rgba(3, 20, 9, 0.96) !important;
+          border: 1px solid rgba(141, 255, 179, 0.2) !important;
+          box-shadow: 0 14px 34px rgba(0,0,0,.36) !important;
+          backdrop-filter: blur(14px) !important;
+          -webkit-backdrop-filter: blur(14px) !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+          height: auto !important;
+          min-height: 0 !important;
+          overflow: visible !important;
         }
         .mobile-quick-actions button {
           min-height: 46px;
           border: 0;
           border-radius: 15px;
-          padding: 8px 9px;
-          font-size: 12px;
+          padding: 8px 6px;
+          font-size: 11px;
           line-height: 1.05;
           font-weight: 950;
           color: #06210f;
@@ -5890,6 +5922,28 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           background: rgba(255,255,255,.12);
           box-shadow: none;
         }
+
+        .mobile-quick-actions .mobile-mode-row {
+          grid-column: 1 / -1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-top: 2px;
+        }
+        .mobile-quick-actions .mobile-change-mode-action {
+          width: min(150px, 54vw);
+          min-height: 42px;
+          border-radius: 999px;
+          background: #4b5563 !important;
+          color: #ffffff !important;
+          border: 1px solid #6b7280 !important;
+          box-shadow: none !important;
+        }
+        .mobile-quick-actions .mobile-change-mode-action:disabled {
+          background: rgba(107, 114, 128, 0.48) !important;
+          color: rgba(255,255,255,.68) !important;
+          border-color: rgba(255,255,255,.12) !important;
+        }
         .mobile-quick-actions .mobile-reroll-action {
           background: var(--yellow, #ffe08a);
           color: #201600;
@@ -5898,13 +5952,23 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           color: rgba(255,255,255,.72);
           background: rgba(255,255,255,.12);
         }
+        .mobile-quick-actions .mobile-transfer-action,
+        .mobile-quick-actions .mobile-sub-action {
+          background: rgba(255,255,255,.14);
+          color: white;
+          box-shadow: none;
+        }
+        .mobile-quick-actions .mobile-transfer-action:not(:disabled),
+        .mobile-quick-actions .mobile-sub-action:not(:disabled) {
+          border: 1px solid rgba(141,255,179,.22);
+        }
         .mobile-quick-actions .mobile-sim-action {
           background: rgba(255,255,255,.14);
           color: white;
         }
         .mobile-quick-actions.mobile-sim-ready,
         .mobile-quick-actions.mobile-results-ready {
-          grid-template-columns: 1.35fr 1fr;
+          grid-template-columns: repeat(5, minmax(0, 1fr));
         }
         .mobile-quick-actions .mobile-sim-action.ready,
         .mobile-quick-actions .mobile-play-again-action.ready {
@@ -5922,26 +5986,12 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           display: none !important;
         }
         .formation-sticky-lifelines {
-          position: static !important;
-          display: grid !important;
-          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-          gap: 8px !important;
-          width: 100% !important;
-          max-width: 440px !important;
-          margin: 10px auto 14px !important;
-          padding: 10px !important;
-          border-radius: 18px !important;
-          background: rgba(3, 20, 9, 0.92) !important;
-          box-shadow: 0 12px 34px rgba(0,0,0,.24) !important;
+          display: none !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
         }
         .formation-sticky-lifelines button {
-          width: 100% !important;
-          min-height: 42px !important;
-          padding: 9px 10px !important;
-          border-radius: 14px !important;
-          font-size: 12px !important;
-          line-height: 1.05 !important;
-          white-space: normal !important;
+          display: none !important;
         }
         .collection-panel.club-collection-card {
           padding: 14px !important;
@@ -6032,35 +6082,49 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("span", { className: guideStep === "bench" ? "active" : bench.length >= BENCH_LIMIT ? "done" : "" }, "Bench"), /*#__PURE__*/
     React.createElement("span", { className: guideStep === "simulate" ? "active" : results ? "done" : "" }, "Sim")), /*#__PURE__*/
 
-    React.createElement("section", { className: `mobile-quick-actions ${results ? "mobile-results-ready" : fullSquadReady ? "mobile-sim-ready" : "mobile-draft-ready"}`, "aria-label": "Mobile draft actions" },
-    results ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/
+    /* Mobile 5.0: removed duplicate top quick action strip. Bottom iOS dock handles Spin/Reroll/Transfer/Sim. */
+
+    React.createElement("section", { className: "controls sticky-draft-controls desktop-draft-controls", ref: controlsRef }, /*#__PURE__*/
     React.createElement("button", {
-      className: "mobile-play-again-action ready",
-      type: "button",
-      onClick: resetGame }, "Play Again")) :
-    fullSquadReady ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/
-    React.createElement("button", {
-      className: !simulating ? "mobile-sim-action ready" : "mobile-sim-action",
-      type: "button",
-      onClick: () => startSimulationWithLifelineWarning(),
-      disabled: simulating || !!results },
-    simulating ? "Simulating..." : gameMode === "worldcup" ? "Sim World Cup" : "Sim Season")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/
-    React.createElement("button", {
-      className: (guideStep === "spin" || guideStep === "bench") && !spinning ? "guide-pulse mobile-spin-action" : "mobile-spin-action",
-      type: "button",
+      className: guideStep === "spin" ? "guide-pulse" : "",
       onClick: spinClub,
-      disabled: spinning || !!currentClub || fullSquadReady || substituteMode },
-    spinning ? "Spinning..." : currentClub ? "Pick Player" : benchDraftActive ? `Spin Bench (${BENCH_LIMIT - bench.length})` : gameMode === "worldcup" ? "Spin Nation" : "Spin Club"), /*#__PURE__*/
+      disabled: fullSquadReady || spinning || !!currentClub || substituteMode || simulating || !!results },
+    gameMode === "worldcup" ? "Spin Nation" : "Spin Club"), /*#__PURE__*/
     React.createElement("button", {
-      className: "mobile-reroll-action",
-      type: "button",
+      className: "reroll",
       onClick: rerollClub,
-      disabled: !currentClub || rerollsLeft <= 0 || spinning || fullSquadReady || substituteMode },
-    rerollsLeft > 0 ? `Reroll ${rerollsLeft}` : "Reroll"))), /*#__PURE__*/
-
-
-
-    React.createElement("section", { className: "controls sticky-draft-controls", ref: controlsRef }, /*#__PURE__*/
+      disabled: !currentClub || rerollsLeft <= 0 || spinning || fullSquadReady || substituteMode || simulating || !!results },
+    "Reroll (", rerollsLeft, ")"), /*#__PURE__*/
+    React.createElement("button", {
+      className: transferMode ? "transfer-lifeline active" : "transfer-lifeline",
+      onClick: () => {
+        if (transferUsed || spinning || simulating || results || draftedPlayers.length === 0) return;
+        setTransferMode(prev => !prev);
+        setSubstituteMode(false);
+        setSelectedBenchId(null);
+        setSelectedPlayer(null);
+        setMovingSlotId(null);
+        setTimeout(() => scrollToSection(pitchRef, "center"), 60);
+      },
+      disabled: transferUsed || spinning || simulating || !!results || draftedPlayers.length === 0 },
+    transferMode ? "Cancel Transfer" : transferUsed ? "Transfer Used" : "Transfer"), /*#__PURE__*/
+    React.createElement("button", {
+      className: substituteMode ? "substitute-lifeline active" : "substitute-lifeline",
+      onClick: () => {
+        if (!fullSquadReady || substituteUsed || spinning || simulating || results) return;
+        setSubstituteMode(prev => !prev);
+        setTransferMode(false);
+        setSelectedPlayer(null);
+        setMovingSlotId(null);
+        setTimeout(() => scrollToSection(pitchRef, "center"), 60);
+      },
+      disabled: !fullSquadReady || substituteUsed || spinning || simulating || !!results },
+    substituteMode ? "Cancel Sub" : substituteUsed ? "Sub Used" : "Sub"), /*#__PURE__*/
+    React.createElement("button", {
+      className: fullSquadReady && !results ? "sticky-sim-button guide-pulse" : "sticky-sim-button",
+      onClick: () => startSimulationWithLifelineWarning(false),
+      disabled: !fullSquadReady || spinning || simulating || !!results },
+    gameMode === "worldcup" ? "Sim World Cup" : "Sim Season"), /*#__PURE__*/
     currentClub && !currentClubHasPlayablePick && !spinning && !fullSquadReady && /*#__PURE__*/React.createElement("button", { className: "rescue-spin", onClick: rescueSpinClub }, "Rescue Spin"), /*#__PURE__*/
 
     React.createElement("button", { className: "ghost", onClick: resetGame }, "Reset"), /*#__PURE__*/
@@ -6072,6 +6136,63 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
     soundMuted ? "Sound Off" : "Sound On")), /*#__PURE__*/
 
+    /* Mobile 5.0: gameplay controls in a 5-button top row with Mode centered below. */
+    React.createElement("section", {
+      className: `mobile-quick-actions ${fullSquadReady && !results ? "mobile-sim-ready" : ""} ${results ? "mobile-results-ready" : ""}`,
+      "aria-label": "Mobile gameplay controls" },
+    /*#__PURE__*/
+    React.createElement("button", {
+      type: "button",
+      className: "mobile-spin-action",
+      onClick: spinClub,
+      disabled: fullSquadReady || spinning || !!currentClub || substituteMode || simulating || !!results },
+    gameMode === "worldcup" ? "Spin" : "Spin"), /*#__PURE__*/
+    React.createElement("button", {
+      type: "button",
+      className: "mobile-reroll-action",
+      onClick: rerollClub,
+      disabled: !currentClub || rerollsLeft <= 0 || spinning || fullSquadReady || substituteMode || simulating || !!results },
+    "Reroll"), /*#__PURE__*/
+    React.createElement("button", {
+      type: "button",
+      className: "mobile-transfer-action",
+      onClick: () => {
+        if (transferUsed || spinning || simulating || results || draftedPlayers.length === 0) return;
+        setTransferMode(prev => !prev);
+        setSubstituteMode(false);
+        setSelectedBenchId(null);
+        setSelectedPlayer(null);
+        setMovingSlotId(null);
+        setTimeout(() => scrollToSection(pitchRef, "center"), 60);
+      },
+      disabled: transferUsed || spinning || simulating || !!results || draftedPlayers.length === 0 },
+    transferMode ? "Cancel" : "Transfer"), /*#__PURE__*/
+    React.createElement("button", {
+      type: "button",
+      className: "mobile-sub-action",
+      onClick: () => {
+        if (!fullSquadReady || substituteUsed || spinning || simulating || results) return;
+        setSubstituteMode(prev => !prev);
+        setTransferMode(false);
+        setSelectedPlayer(null);
+        setMovingSlotId(null);
+        setTimeout(() => scrollToSection(pitchRef, "center"), 60);
+      },
+      disabled: !fullSquadReady || substituteUsed || spinning || simulating || !!results },
+    substituteMode ? "Cancel" : "Sub"), /*#__PURE__*/
+    React.createElement("button", {
+      type: "button",
+      className: `mobile-sim-action ${fullSquadReady && !results ? "ready" : ""}`,
+      onClick: () => startSimulationWithLifelineWarning(false),
+      disabled: !fullSquadReady || spinning || simulating || !!results },
+    gameMode === "worldcup" ? "Sim" : "Sim"), /*#__PURE__*/
+    React.createElement("div", { className: "mobile-mode-row" }, /*#__PURE__*/
+    React.createElement("button", {
+      type: "button",
+      className: "mobile-change-mode-action",
+      onClick: returnToStartScreen,
+      disabled: spinning || simulating },
+    "Mode"))), /*#__PURE__*/
 
 
     simulationWarning && !results && /*#__PURE__*/React.createElement("section", { className: "next-move-card lifeline-warning" }, /*#__PURE__*/
@@ -6328,111 +6449,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("span", null, "ATK ", calculateTeamProfile(draftedPlayers).attack), /*#__PURE__*/
     React.createElement("span", null, "MID ", calculateTeamProfile(draftedPlayers).midfield), /*#__PURE__*/
     React.createElement("span", null, "DEF ", calculateTeamProfile(draftedPlayers).defense)))), /*#__PURE__*/
-    React.createElement("div", {
-      className: "formation-sticky-lifelines",
-      style: {
-        position: "sticky",
-        top: "10px",
-        zIndex: 80,
-        display: "flex",
-        justifyContent: "center",
-        flexWrap: "wrap",
-        gap: "10px",
-        margin: "12px auto 18px",
-        padding: "10px",
-        width: "fit-content",
-        maxWidth: "100%",
-        borderRadius: "999px",
-        background: "rgba(3, 20, 9, 0.84)",
-        border: "1px solid rgba(141, 255, 179, 0.22)",
-        boxShadow: "0 14px 32px rgba(0, 0, 0, 0.24)",
-        backdropFilter: "blur(10px)" } },
-    /*#__PURE__*/
-    React.createElement("button", {
-      className: (guideStep === "spin" || guideStep === "bench") && !spinning ? "guide-pulse sticky-spin-button" : "sticky-spin-button",
-      onClick: spinClub,
-      disabled: spinning || !!currentClub || fullSquadReady || substituteMode,
-      style: {
-        border: "0",
-        borderRadius: "999px",
-        padding: "10px 18px",
-        background: "linear-gradient(135deg, var(--green, #8dffb3), #22c55e)",
-        color: "var(--green-dark, #06210f)",
-        fontWeight: 900,
-        boxShadow: "0 10px 22px rgba(57,255,136,0.2)" } },
-
-    spinning ? "Spinning..." : currentClub ? "Pick Player" : benchDraftActive ? `Spin Bench (${BENCH_LIMIT - bench.length})` : gameMode === "worldcup" ? "Spin Nation" : "Spin Club"), /*#__PURE__*/
-
-    React.createElement("button", {
-      className: "reroll",
-      onClick: rerollClub,
-      disabled: !currentClub || rerollsLeft <= 0 || spinning || fullSquadReady || substituteMode,
-      style: {
-        border: "0",
-        borderRadius: "999px",
-        padding: "10px 16px",
-        background: rerollsLeft > 0 ? "var(--yellow, #ffe08a)" : "rgba(255,255,255,0.14)",
-        color: rerollsLeft > 0 ? "#201600" : "rgba(255,255,255,0.65)",
-        fontWeight: 900,
-        boxShadow: "0 10px 22px rgba(0,0,0,0.18)" } },
-
-    rerollsLeft > 0 ? `Reroll (${rerollsLeft})` : "No Rerolls"), /*#__PURE__*/
-
-    React.createElement("button", {
-      className: "transfer-lifeline",
-      onClick: () => {
-        setSelectedPlayer(null);
-        setMovingSlotId(null);
-        setSubstituteMode(false);
-        setTransferMode(prev => !prev);
-      },
-      disabled: draftedPlayers.length < 6 || transferUsed || spinning || simulating || !!results || benchDraftActive || substituteMode,
-      style: {
-        border: "0",
-        borderRadius: "999px",
-        padding: "10px 16px",
-        background: transferMode ? "var(--yellow, #ffe08a)" : "linear-gradient(135deg, var(--green, #8dffb3), #22c55e)",
-        color: transferMode ? "#201600" : "var(--green-dark, #06210f)",
-        fontWeight: 900,
-        boxShadow: "0 10px 22px rgba(57,255,136,0.18)" } },
-
-    transferUsed ? "Transfer Used" : transferMode ? "Cancel Transfer" : "Transfer Lifeline"), /*#__PURE__*/
-
-    React.createElement("button", {
-      className: "substitute-lifeline",
-      onClick: () => {
-        setSubstituteMode(prev => !prev);
-        setTransferMode(false);
-        setSelectedPlayer(null);
-        setMovingSlotId(null);
-        setSelectedBenchId(null);
-      },
-      disabled: !fullSquadReady || substituteUsed || spinning || simulating || !!results,
-      style: {
-        border: "0",
-        borderRadius: "999px",
-        padding: "10px 16px",
-        background: substituteMode ? "var(--yellow, #ffe08a)" : "linear-gradient(135deg, var(--green, #8dffb3), #22c55e)",
-        color: substituteMode ? "#201600" : "var(--green-dark, #06210f)",
-        fontWeight: 900,
-        boxShadow: "0 10px 22px rgba(57,255,136,0.18)" } },
-
-    substituteUsed ? "Sub Used" : substituteMode ? "Cancel Sub" : "Substitute Lifeline"), /*#__PURE__*/
-
-    React.createElement("button", {
-      className: "sticky-sim-button",
-      onClick: () => startSimulationWithLifelineWarning(),
-      disabled: !fullSquadReady || simulating || !!results,
-      style: {
-        border: "0",
-        borderRadius: "999px",
-        padding: "10px 16px",
-        background: "linear-gradient(135deg, var(--green, #8dffb3), #22c55e)",
-        color: "var(--green-dark, #06210f)",
-        fontWeight: 900,
-        boxShadow: "0 10px 22px rgba(57,255,136,0.18)" } },
-
-    gameMode === "worldcup" ? "Sim World Cup" : "Sim Season")), /*#__PURE__*/
+    /* Mobile 5.0 cleanup: legacy pitch Spin/Reroll/Transfer/Sim strip removed. */
     React.createElement("div", { className: "pitch" },
     FORMATION.map(slot => {var _slot$mobileX, _slot$mobileY;
       const player = draft[slot.id];
@@ -6629,17 +6646,19 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
 
 
 
+    React.createElement("details", { className: "match-history-details" }, /*#__PURE__*/
+    React.createElement("summary", null, results.tournamentMode ? "Tournament Results" : "Match Results"), /*#__PURE__*/
     React.createElement("div", { className: "match-list" },
     results.matches.map((match) => /*#__PURE__*/
     React.createElement("div", {
       key: match.week,
       className: `match ${match.result}`,
-      style: { animationDelay: `${match.week * 0.035}s` },
+      style: { animationDelay: `${Math.min(match.week, 12) * 0.02}s` },
       onClick: () => setSelectedMatch(match) }, /*#__PURE__*/
 
     React.createElement("span", null, results.tournamentMode ? match.stage || `Match ${match.week}` : `GW ${match.week}`), /*#__PURE__*/
     React.createElement("strong", null, match.result), /*#__PURE__*/
-    React.createElement("p", null, match.score, match.decidedByPens ? ` (${match.penaltyScore} pens)` : "", " vs ", match.opponent)))),
+    React.createElement("p", null, match.score, match.decidedByPens ? ` (${match.penaltyScore} pens)` : "", " vs ", match.opponent))))),
 
 
 
