@@ -1,6 +1,6 @@
 // Draft XI World Cup v4.0  fresh JSX with 20-team table, expanded variety, no repeats, and no generic players
 // Draft XI: World Cup v2.0  integrated CodePen JSX
-// Includes expanded teams, contextual alternate positions, fair spinner, reroll, locked players, smarter greying, live simulation, and Play Again.
+// Includes expanded teams, contextual alternate positions, fair spinner, reroll, locked players, smarter greying, live simulation, bracket tracking, and Play Again.
 function setMobileViewportHeight() {
   if (typeof window === "undefined" || typeof document === "undefined") return;
 
@@ -436,11 +436,11 @@ const CLUBS = [
   color: "#0055A4",
   rating: 88,
   players: [
-  ["Juninho Pernambucano", "CAM", 91], ["Michael Essien", "CM", 90], ["Florent Malouda", "LW", 87],
+  ["Juninho Pernambucano", "CAM", 91], ["Florent Malouda", "LW", 87], ["Tiago", "CM", 86],
   ["Cris", "CB", 87], ["Gregory Coupet", "GK", 87], ["Mahamadou Diarra", "CDM", 87],
   ["Eric Abidal", "LB", 86], ["Sylvain Wiltord", "RW", 85], ["Fred", "ST", 84],
-  ["Tiago", "CM", 84], ["Anthony Reveillere", "RB", 83], ["Claudio Cacapa", "CB", 83],
-  ["Sidney Govou", "RW", 82], ["Jeremy Toulalan", "CDM", 82], ["Karim Benzema", "ST", 80]] },
+  ["John Carew", "ST", 84], ["Anthony Reveillere", "RB", 83], ["Claudio Cacapa", "CB", 83],
+  ["Sidney Govou", "RW", 82], ["Francois Clerc", "RB", 81], ["Karim Benzema", "ST", 80]] },
 
 
 {
@@ -777,7 +777,7 @@ const EXTRA_TOP5_CLUBS = [
   ["Gabriel Batistuta", "ST", 91], ["Rui Costa", "CAM", 89], ["Francesco Toldo", "GK", 87],
   ["Moreno Torricelli", "RB", 82], ["Jorg Heinrich", "LB", 82], ["Luis Oliveira", "ST", 82],
   ["Angelo Di Livio", "RM", 83], ["Stefan Schwarz", "CDM", 82], ["Aldo Firicano", "CB", 80],
-  ["Emiliano Bigica", "CM", 79], ["Heinrich", "CB", 79]] },
+  ["Emiliano Bigica", "CM", 79], ["Pasquale Padalino", "CB", 80]] },
 
 
 {
@@ -984,8 +984,8 @@ const EXTRA_TOP5_CLUBS = [
   color: "#E20613",
   rating: 80,
   players: [
-  ["Samuel Eto'o", "ST", 84], ["Dani Guiza", "ST", 82], ["Juan Carlos Valeron", "CAM", 83],
-  ["Ariel Ibagaza", "CAM", 82], ["Lauren", "RB", 81], ["Miguel Angel Nadal", "CB", 82],
+  ["Dani Garcia", "ST", 83], ["Ariel Ibagaza", "CAM", 82], ["Juan Carlos Valeron", "CAM", 83],
+  ["Lauren", "RB", 81], ["Miguel Angel Nadal", "CB", 82],
   ["Marcelino Elena", "CB", 80], ["Jovan Stankovic", "LW", 79], ["Vicente Engonga", "CDM", 80],
   ["Miquel Soler", "LB", 78], ["Carlos Roa", "GK", 81]] },
 
@@ -3700,6 +3700,63 @@ function getGoalMinute() {
 }
 
 
+const WORLD_CUP_BRACKET_STAGES = ["Round of 32", "Round of 16", "Quarterfinal", "Semifinal", "World Cup Final"];
+
+function formatBracketScore(match) {
+  if (!match) return "TBD";
+  if (match.decidedByPens) return `${match.score} · pens ${match.penaltyScore}`;
+  return match.score;
+}
+
+function parseBracketScore(match) {
+  if (!match || !match.score) return { us: "-", them: "-" };
+  const [us = "-", them = "-"] = String(match.score).split("-");
+  return { us: us.trim(), them: them.trim() };
+}
+
+function WorldCupBracket({ matches = [], qualifiedFromGroup = null, title = "World Cup Bracket" }) {
+  const groupMatches = matches.filter(match => match.stage && match.stage.startsWith("Group"));
+  const knockoutMatches = matches.filter(match => WORLD_CUP_BRACKET_STAGES.includes(match.stage));
+  const revealedStages = new Set(knockoutMatches.map(match => match.stage));
+  const eliminatedMatch = knockoutMatches.find(match => match.result === "L");
+
+  return /*#__PURE__*/React.createElement("section", { className: "world-cup-bracket-card" }, /*#__PURE__*/
+  React.createElement("div", { className: "bracket-header" }, /*#__PURE__*/
+  React.createElement("div", null, /*#__PURE__*/
+  React.createElement("span", { className: "bracket-eyebrow" }, "Tournament Tracker"), /*#__PURE__*/
+  React.createElement("h3", null, title)), /*#__PURE__*/
+  React.createElement("strong", { className: "bracket-status" }, eliminatedMatch ? `Out: ${eliminatedMatch.stage}` : qualifiedFromGroup === false ? "Group Exit" : revealedStages.has("World Cup Final") ? "Final Reached" : "Live")), /*#__PURE__*/
+
+  React.createElement("div", { className: "group-route-strip" },
+  [0, 1, 2].map(index => {
+    const match = groupMatches[index];
+    return /*#__PURE__*/React.createElement("div", { key: `group_${index}`, className: `group-route-pill ${match ? match.result : "pending"}` }, /*#__PURE__*/
+    React.createElement("small", null, `Group Match ${index + 1}`), /*#__PURE__*/
+    React.createElement("strong", null, match ? `${match.result} ${match.score}` : "TBD"), /*#__PURE__*/
+    React.createElement("span", null, match ? `vs ${match.opponent}` : "Waiting"));
+  })), /*#__PURE__*/
+
+  React.createElement("div", { className: "bracket-scroll" }, /*#__PURE__*/
+  React.createElement("div", { className: "bracket-lanes" },
+  WORLD_CUP_BRACKET_STAGES.map(stage => {
+    const match = knockoutMatches.find(item => item.stage === stage);
+    const stageLocked = qualifiedFromGroup === false || eliminatedMatch && !revealedStages.has(stage);
+    const stageClass = match ? match.result : stageLocked ? "locked" : "pending";
+    const bracketScore = parseBracketScore(match);
+    return /*#__PURE__*/React.createElement("div", { key: stage, className: `bracket-round ${stageClass}` }, /*#__PURE__*/
+    React.createElement("small", null, stage), /*#__PURE__*/
+    React.createElement("div", { className: "bracket-match" }, /*#__PURE__*/
+    React.createElement("div", { className: "bracket-team you" }, /*#__PURE__*/
+    React.createElement("span", null, "Draft XI"), /*#__PURE__*/
+    React.createElement("b", null, bracketScore.us)), /*#__PURE__*/
+    React.createElement("div", { className: "bracket-team" }, /*#__PURE__*/
+    React.createElement("span", null, match ? match.opponent : stageLocked ? "Locked" : "TBD"), /*#__PURE__*/
+    React.createElement("b", null, bracketScore.them))), /*#__PURE__*/
+    React.createElement("em", null, match ? `${match.result === "W" ? "Advanced" : "Eliminated"} · ${formatBracketScore(match)}` : stageLocked ? "Not reached" : "Awaiting result"));
+  }))));
+}
+
+
 function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone, _selectedMatch$allSco;
   const savedProgress = getStoredJson("draftXIProgressV4", null) || {};
   const savedFormationName = FORMATIONS[savedProgress.selectedFormationName] ? savedProgress.selectedFormationName : DEFAULT_FORMATION_NAME;
@@ -3752,14 +3809,22 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const [clubCollection, setClubCollection] = useState(() => savedProgress.clubCollection || getStoredJson("draftXIClubCollection", []));
   const [playerCollection, setPlayerCollection] = useState(() => getStoredJson(PLAYER_COLLECTION_KEY, []));
   const [showPlayerCollection, setShowPlayerCollection] = useState(false);
-  const [isMobileFormation, setIsMobileFormation] = useState(() => window.innerWidth <= 768);
+  const [isMobileFormation, setIsMobileFormation] = useState(() => typeof window !== "undefined" ? window.innerWidth <= 768 : false);
   const [showTutorial, setShowTutorial] = useState(() => !getStoredJson("draftXITutorialSeen", false));
   const [saveNotice, setSaveNotice] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [formationNotice, setFormationNotice] = useState(null);
   const [simulationWarning, setSimulationWarning] = useState(null);
   const [gameMode, setGameMode] = useState(savedProgress.gameMode || "worldcup");
-  const activeClubs = gameMode === "worldcup" ? getWorldCupBoostedClubs() : ALL_CLUBS;
+  const activeClubs = useMemo(
+  () => gameMode === "worldcup" ? getWorldCupBoostedClubs() : ALL_CLUBS,
+  [gameMode]);
+
+  // Keep the World Cup spinner boosted, but make collection progress count only the real 48 nations.
+  const collectionClubPool = useMemo(
+  () => gameMode === "worldcup" ? WORLD_CUP_CLUBS : ALL_CLUBS,
+  [gameMode]);
+
   const activeLeagues = gameMode === "worldcup" ? WORLD_CUP_GROUPS : TOP_FIVE_LEAGUES;
   const activeRestLabel = gameMode === "worldcup" ? "Other Groups" : "Rest of Europe";
   const allCollectiblePlayers = useMemo(() => getAllCollectiblePlayers([...ALL_CLUBS, ...WORLD_CUP_CLUBS]), []);
@@ -3853,7 +3918,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
   const benchDraftActive = !results && draftedPlayers.length >= 11 && bench.length < BENCH_LIMIT;
   const fullSquadReady = draftedPlayers.length >= 11 && bench.length >= BENCH_LIMIT;
   const selectedBenchPlayer = bench.find(player => player.benchId === selectedBenchId) || null;
-  const collectionStats = useMemo(() => getClubCollectionStats(clubCollection, activeClubs, activeLeagues, activeRestLabel), [clubCollection, gameMode]);
+  const collectionStats = useMemo(() => getClubCollectionStats(clubCollection, collectionClubPool, activeLeagues, activeRestLabel), [clubCollection, gameMode]);
 
   useEffect(() => {
     if (!spinning || !spinReel.length || spinTargetIndex < 0) return;
@@ -4485,9 +4550,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         earned.push("World Champion");
       } else if (summary.eliminatedStage === "World Cup Final") {
         earned.push("World Cup Runner-Up");
-      } else if (summary.eliminatedStage === "Semi Final") {
+      } else if (summary.eliminatedStage === "Semifinal") {
         earned.push("Semi-Finalist");
-      } else if (summary.eliminatedStage === "Quarter Final") {
+      } else if (summary.eliminatedStage === "Quarterfinal") {
         earned.push("Quarter-Finalist");
       } else if (summary.qualifiedFromGroup) {
         earned.push("Knockout Qualifier");
@@ -4700,7 +4765,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       gf: 0,
       ga: 0,
       latest: "World Cup campaign starting...",
-      recent: [] });
+      recent: [],
+      allMatches: [],
+      totalMatches: 8 });
 
     setSimProgress(0);
     setLiveLeagueTable([]);
@@ -4733,8 +4800,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     // Difficulty now ramps up instead of throwing elite teams at you immediately.
     { stage: "Round of 32", pool: midSeeds },
     { stage: "Round of 16", pool: midSeeds.length >= 3 ? midSeeds : highSeeds },
-    { stage: "Quarter Final", pool: highSeeds },
-    { stage: "Semi Final", pool: highSeeds },
+    { stage: "Quarterfinal", pool: highSeeds },
+    { stage: "Semifinal", pool: highSeeds },
     { stage: "World Cup Final", pool: highSeeds }];
 
     let wins = 0,draws = 0,losses = 0,gf = 0,ga = 0,groupPoints = 0;
@@ -4761,8 +4828,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       const stageClutchBonus = knockout ?
       stage === "Round of 32" ? 0.3 :
       stage === "Round of 16" ? 0.24 :
-      stage === "Quarter Final" ? 0.18 :
-      stage === "Semi Final" ? 0.12 :
+      stage === "Quarterfinal" ? 0.18 :
+      stage === "Semifinal" ? 0.12 :
       stage === "World Cup Final" ? 0.08 :
       0 :
       0;
@@ -4913,8 +4980,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
         const liveDraws = gamesSoFar.filter(m => m.result === "D").length;
         const liveLosses = gamesSoFar.filter(m => m.result === "L").length;
         const livePoints = gamesSoFar.filter(m => m.stage && m.stage.startsWith("Group")).reduce((sum, m) => sum + (m.result === "W" ? 3 : m.result === "D" ? 1 : 0), 0);
-        const liveGf = gamesSoFar.reduce((sum, m) => sum + Number(m.score.split("-")[0]), 0);
-        const liveGa = gamesSoFar.reduce((sum, m) => sum + Number(m.score.split("-")[1]), 0);
+        const liveGf = gamesSoFar.reduce((sum, m) => sum + Number(parseBracketScore(m).us || 0), 0);
+        const liveGa = gamesSoFar.reduce((sum, m) => sum + Number(parseBracketScore(m).them || 0), 0);
         const penaltyText = match.decidedByPens ? ` · ${match.penaltyWinner} win ${match.penaltyScore} on pens` : "";
         const stageMoment =
         match.stage.startsWith("Group") ?
@@ -4934,7 +5001,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           gf: liveGf,
           ga: liveGa,
           latest: impactLine,
-          recent: gamesSoFar.slice(-5) });
+          recent: gamesSoFar.slice(-5),
+          allMatches: gamesSoFar,
+          totalMatches });
 
         setSimProgress(Math.round((index + 1) / totalMatches * 100));
       }, (index + 1) * matchRevealDelay);
@@ -4943,8 +5012,8 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     setTimeout(() => {
       const badge = wonWorldCup ? "World Cup Champions" :
       eliminatedStage === "World Cup Final" ? "World Cup Finalists" :
-      eliminatedStage === "Semi Final" ? "World Cup Semi Finalists" :
-      eliminatedStage === "Quarter Final" ? "World Cup Quarter Finalists" :
+      eliminatedStage === "Semifinal" ? "World Cup Semifinalists" :
+      eliminatedStage === "Quarterfinal" ? "World Cup Quarterfinalists" :
       eliminatedStage === "Round of 16" ? "Round of 16 Exit" :
       eliminatedStage === "Round of 32" ? "Round of 32 Exit" :
       "Group Stage Exit";
@@ -5012,7 +5081,9 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       gf: 0,
       ga: 0,
       latest: "Season starting...",
-      recent: [] });
+      recent: [],
+      allMatches: [],
+      totalMatches: 38 });
 
     setSimProgress(0);
     const aiSeasonSeed = Math.floor(Math.random() * 1000000000);
@@ -5491,6 +5562,173 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
       .mobile-quick-actions {
         display: none;
       }
+      .world-cup-bracket-card {
+        margin: 18px 0;
+        padding: 18px;
+        border-radius: 24px;
+        background: rgba(3, 20, 9, 0.74);
+        border: 1px solid rgba(141, 255, 179, 0.22);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 48px rgba(0,0,0,.22);
+      }
+      .bracket-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+      .bracket-header h3 {
+        margin: 2px 0 0;
+        color: #f5fff8;
+        font-size: 22px;
+      }
+      .bracket-eyebrow {
+        color: #9feeb8;
+        font-size: 11px;
+        font-weight: 1000;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+      .bracket-status {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(141, 255, 179, 0.13);
+        color: #d9ffe4;
+        border: 1px solid rgba(141, 255, 179, 0.22);
+        white-space: nowrap;
+      }
+      .group-route-strip {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .group-route-pill {
+        display: grid;
+        gap: 3px;
+        padding: 11px 12px;
+        border-radius: 16px;
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.10);
+      }
+      .group-route-pill.W { border-color: rgba(141,255,179,.42); }
+      .group-route-pill.D { border-color: rgba(255,221,113,.36); }
+      .group-route-pill.L { opacity: .72; border-color: rgba(255,117,117,.32); }
+      .group-route-pill small, .group-route-pill span {
+        color: #ccefd7;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .group-route-pill strong {
+        color: #fff;
+        font-size: 15px;
+      }
+      .bracket-scroll {
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+      .bracket-lanes {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(165px, 1fr));
+        gap: 12px;
+        min-width: 860px;
+      }
+      .bracket-round {
+        position: relative;
+        display: grid;
+        gap: 10px;
+        padding: 13px;
+        border-radius: 18px;
+        background: rgba(255,255,255,.065);
+        border: 1px solid rgba(255,255,255,.10);
+      }
+      .bracket-round.W { border-color: rgba(141,255,179,.44); box-shadow: 0 0 0 1px rgba(141,255,179,.08); }
+      .bracket-round.L, .bracket-round.locked { opacity: .62; }
+      .bracket-round small {
+        color: #9feeb8;
+        font-weight: 1000;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        font-size: 11px;
+      }
+      .bracket-match {
+        display: grid;
+        gap: 6px;
+      }
+      .bracket-team {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        align-items: center;
+        padding: 9px 10px;
+        border-radius: 12px;
+        background: rgba(0,0,0,.18);
+        color: #f5fff8;
+        font-weight: 900;
+      }
+      .bracket-team.you {
+        background: rgba(141,255,179,.12);
+      }
+      .bracket-team span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .bracket-team b {
+        font-size: 16px;
+      }
+      .bracket-round em {
+        color: #ccefd7;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 800;
+      }
+      @media (max-width: 768px) {
+        .world-cup-bracket-card {
+          margin: 14px -4px;
+          padding: 14px;
+          border-radius: 20px;
+        }
+        .bracket-header {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .group-route-strip {
+          display: flex;
+          gap: 8px;
+          overflow-x: auto;
+          padding-bottom: 4px;
+          -webkit-overflow-scrolling: touch;
+        }
+        .group-route-pill {
+          min-width: 156px;
+        }
+        .bracket-scroll {
+          margin: 0 -14px;
+          padding: 0 14px 8px;
+          scroll-snap-type: x proximity;
+          -webkit-overflow-scrolling: touch;
+        }
+        .bracket-lanes {
+          min-width: 760px;
+          grid-template-columns: repeat(5, minmax(140px, 1fr));
+          gap: 10px;
+        }
+        .bracket-round {
+          padding: 11px;
+          border-radius: 16px;
+          scroll-snap-align: start;
+        }
+        .bracket-team {
+          padding: 8px 9px;
+          font-size: 12px;
+        }
+        .bracket-status {
+          width: 100%;
+          text-align: center;
+        }
+      }
+
       .start-screen {
         padding-bottom: 28px;
       }
@@ -5638,6 +5876,13 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
           color: #06210f;
           background: linear-gradient(135deg, var(--green, #8dffb3), #22c55e);
           box-shadow: 0 8px 18px rgba(57,255,136,.16);
+        }
+        .slot-card,
+        .player-card,
+        .formation-select button,
+        .mode-button,
+        .lifeline-row button {
+          touch-action: manipulation;
         }
         .mobile-quick-actions button:disabled {
           opacity: .58;
@@ -5906,7 +6151,7 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("section", { className: "season-sim auto-focus-section", ref: simulationRef }, /*#__PURE__*/
     React.createElement("div", { className: "season-sim-top" }, /*#__PURE__*/
     React.createElement("span", null, gameMode === "worldcup" ? "Simulating Tournament" : "Simulating Season"), /*#__PURE__*/
-    React.createElement("strong", null, gameMode === "worldcup" ? `Match ${liveSeason.week}/8` : `GW ${liveSeason.week}/38`)), /*#__PURE__*/
+    React.createElement("strong", null, gameMode === "worldcup" ? `Match ${liveSeason.week}/${liveSeason.totalMatches || 8}` : `GW ${liveSeason.week}/38`)), /*#__PURE__*/
 
 
     React.createElement("div", { className: "season-record-card", ref: simulationRecordRef }, /*#__PURE__*/
@@ -5919,6 +6164,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("div", { className: "season-latest" }, /*#__PURE__*/
     React.createElement("small", null, "Latest Result"), /*#__PURE__*/
     React.createElement("p", null, liveSeason.latest)), /*#__PURE__*/
+
+
+    gameMode === "worldcup" && /*#__PURE__*/
+    React.createElement(WorldCupBracket, { matches: liveSeason.allMatches || [], title: "Live World Cup Bracket" }), /*#__PURE__*/
 
 
     React.createElement("div", { className: "season-form" },
@@ -6341,6 +6590,10 @@ function App() {var _results$table, _selectedMatch$scorer, _selectedMatch$oppone
     React.createElement("div", { className: "results-actions" }, /*#__PURE__*/
     React.createElement("button", { type: "button", onClick: copyLatestResult }, shareCopied ? "Copied!" : "Copy Share Card"), /*#__PURE__*/
     React.createElement("button", { className: "share-draft-button", type: "button", onClick: shareDraftXI }, "Share World Cup Draft")),
+
+
+    results.tournamentMode && /*#__PURE__*/
+    React.createElement(WorldCupBracket, { matches: results.matches || [], qualifiedFromGroup: results.qualifiedFromGroup, title: "Final World Cup Bracket" }),
 
 
     ((_results$table = results.table) === null || _results$table === void 0 ? void 0 : _results$table.length) > 0 && /*#__PURE__*/
